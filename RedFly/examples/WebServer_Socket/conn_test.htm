@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <title>RedFly Connection Test</title>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript">
+      function requestCrossDomain(url, callback)
+      {
+        //build YQL query
+        var yql = 'http://query.yahooapis.com/v1/public/yql?q='+encodeURIComponent('select * from html where url="'+url+'"')+'&format=xml&callback=?';
+        //get YSQL string, and run callback function
+        $.getJSON
+        (
+          yql,
+          function(data)
+          {
+            if(data.results[0] && typeof callback === "function")
+            {  
+              data = data.results[0];
+              data = data.replace("/<noscript[^>]*>[\S\s]*?<\/noscript>/g", "");
+              data = data.replace("/<script[^>]*>[\S\s]*?<\/script>/g", "");
+              data = data.replace("/<script.*\/>/", "");
+              callback(data);
+            }
+            else
+            {
+              callback("ERROR");
+            }
+          }
+        );
+      }
+
+      function http_get()
+      {
+        var url = $("input#ip").val();
+        $("textarea#output").text("Start HTTP GET "+url);
+        requestCrossDomain
+        (
+          url,
+          function(data){ $("textarea#output").text(data); }
+        );
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>RedFly Connection Test</h1>
+    RedFly URL: <input type="text" name="ip" id="ip" size="40" value="http://192.168.0.30/">
+    <input type="button" name="get" id="get" value="HTTP GET" onClick="http_get()">
+    <br><br>
+    <textarea cols="75" rows="20" name="output" id="output"></textarea>
+    <br><br><br><br>
+    <i>
+    Using Yahoo YQL to bypass cross site protection.<br>
+    Route: HTML document -> Yahoo YQL -> Cross Domain -> Yahoo YQL -> HTML document
+    </i>
+  </body>
+</html>
