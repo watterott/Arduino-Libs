@@ -298,7 +298,7 @@ void GraphicsLib::drawTriangle(int_least16_t x0, int_least16_t y0, int_least16_t
 
 void GraphicsLib::fillTriangle(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, int_least16_t x2, int_least16_t y2, uint_least16_t color)
 {
- 	int_least16_t a, b, y, last, sa, sb;
+  int_least16_t a, b, y, last, sa, sb;
   int_least16_t dx01, dy01, dx02, dy02, dx12, dy12;
 
   //sort coordinates (y2 >= y1 >= y0)
@@ -600,6 +600,7 @@ int_least16_t GraphicsLib::drawChar(int_least16_t x, int_least16_t y, char c, ui
   ptr    = &font_PGM[pos];
   width  = FONT_WIDTH;
   height = FONT_HEIGHT;
+  size   = size&0x7F;
 
   if(size <= 1)
   {

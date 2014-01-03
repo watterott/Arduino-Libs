@@ -22,12 +22,12 @@ DisplayI2C lcd; //I2C (GLCD-Shield or MI0283QT Adapter v2)
 
 void setup()
 {
-  uint8_t clear_bg=0x00; //0x80 dont clears background for fonts
+  uint8_t clear_bg=0x00; //0x80 = dont clear background for fonts (only for DisplayXXX)
 
   //init display
   lcd.begin();
-  //lcd.begin(SPI_CLOCK_DIV4, 8); //SPI-Display: spi-clk=Fcpu/4, rst=pin 8
-  //lcd.begin(0x20, 8); //I2C-Display: addr=0x20, rst=pin 8
+  //lcd.begin(SPI_CLOCK_DIV4, 8); //SPI-Display: spi-clk=Fcpu/4, rst-pin=8
+  //lcd.begin(0x20, 8); //I2C-Display: addr=0x20, rst-pin=8
   lcd.fillScreen(RGB(255,255,255));
 
 
@@ -66,6 +66,7 @@ void setup()
 
 
   //drawText
+  lcd.drawTextPGM(50, 10, PSTR("String from Flash"), RGB(0,0,0), RGB(255,255,255), 1|clear_bg); //string from flash (only AVR)
   lcd.drawText(50, 20, "String from RAM", RGB(0,0,0), RGB(255,255,255), 1|clear_bg);            //string from ram
   lcd.drawText(50, 30, 12345, RGB(0,0,0), RGB(255,255,255), 1|clear_bg);                        //int value
   lcd.drawText(50, 40, 123456789L, RGB(0,0,0), RGB(255,255,255), 1|clear_bg);                   //long value
