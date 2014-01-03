@@ -1,22 +1,9 @@
 # RedFly-Shield
 
-
-## Installation
-
-Download the files [here](https://github.com/watterott/Arduino-Libs/archive/master.zip).
-
-Copy the content of */libraries/* to your Arduino lib folder */arduino/libraries/* or to your user documents folder */My Documents/Arduino/libraries/*
-If there are existing folders from a previous installation, please delete them before copying.
-
-Further infos: http://arduino.cc/en/Guide/Libraries and http://arduino.cc/en/Hacking/Libraries
-
-
-## Firmware Update
-
-See [Firmware Update Guide](https://github.com/watterott/RedFly-Shield/tree/master/fw/update_guide).
-
-
 ## FAQ
+
+### Howto update the Firmware?
+See the [Firmware Update Guide](https://github.com/watterott/RedFly-Shield/tree/master/fw/update_guide).
 
 ### Which pins does the RedFly use?
 Used pins: D0, D1, D2, D3
