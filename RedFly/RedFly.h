@@ -5,6 +5,16 @@
 #include <inttypes.h>
 #if defined(__AVR__)
 # include <avr/pgmspace.h>
+#else
+# define pgm_read_byte(addr)  (*(const uint8_t *)(addr))
+# define pgm_read_word(addr)  (*(const uint16_t *)(addr))
+# define pgm_read_dword(addr) (*(const uint32_t *)(addr))
+# define PSTR(x)              (x)
+# define PGM_P                char*
+# define strlen_P             strlen
+# define strcpy_P             strcpy
+# define strcat_P             strcat
+# define sprintf_P            sprintf
 #endif
 
 

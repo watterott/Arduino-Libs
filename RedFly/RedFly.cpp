@@ -3,6 +3,9 @@
 # include <avr/io.h>
 # include <avr/pgmspace.h>
 # include <util/delay.h>
+#else
+# include <chip.h>
+# include <itoa.h>
 #endif
 #if ARDUINO >= 100
 # include "Arduino.h"
@@ -1367,7 +1370,11 @@ void REDFLY::flush(void)
   _SERIAL_.flush();
 
   //clear rx buffer
+#if defined(__AVR__)
   for(ms=millis(); ((_UCSRA_&(1<<_RXC_)) || available()) && ((millis()-ms) < 50);) //50ms
+#else
+  for(ms=millis(); available() && ((millis()-ms) < 50);) //50ms
+#endif
   {
     read();
   }
@@ -1434,7 +1441,12 @@ void REDFLY::setbaudrate(uint32_t br) //set serial baudrate and config (8n2)
   _SERIAL_.begin(br);
 
   //8 N 2
+#if defined(__AVR__)
   _UCSRC_ |= (1<<_USBS_);
+#else
+  USART0->US_MR |= US_MR_NBSTOP_2_BIT;
+  //USART0->US_MR = US_MR_USART_MODE_NORMAL | US_MR_USCLKS_MCK | US_MR_CHRL_8_BIT | US_MR_PAR_NO | US_MR_NBSTOP_2_BIT | US_MR_CHMODE_NORMAL;
+#endif
 
   return;
 }
@@ -1460,7 +1472,11 @@ void REDFLY::delay_10ms(uint8_t ms) //delay of 10ms * x
 {
   for(; ms!=0; ms--)
   {
+#if defined(__AVR__)
     _delay_ms(10);
+#else
+    delay(10);
+#endif
   }
 
   return;

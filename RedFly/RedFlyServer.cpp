@@ -347,6 +347,7 @@ size_t RedFlyServer::write(const uint8_t *s, size_t size)
 }
 
 
+#if defined(__AVR__)
 size_t RedFlyServer::print_P(PGM_P s)
 {
   if(s_socket != INVALID_SOCKET)
@@ -382,6 +383,7 @@ size_t RedFlyServer::println_P(PGM_P s)
 
   return len;
 }
+#endif
 
 
 //the next function allows us to use the client returned by

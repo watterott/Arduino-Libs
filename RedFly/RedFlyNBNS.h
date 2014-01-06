@@ -17,7 +17,9 @@ class RedFlyNBNS : RedFlyServer
     ~RedFlyNBNS(void);
 
     void setName(char *name);
+#if defined(__AVR__)
     void setNamePGM(PGM_P name);
+#endif
     uint8_t service(void);
 
   private:

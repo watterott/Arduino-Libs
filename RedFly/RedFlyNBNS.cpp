@@ -69,7 +69,7 @@ typedef struct __attribute__((packed))
 
 RedFlyNBNS::RedFlyNBNS(void) : RedFlyServer(NBNS_PORT)
 {
-  strcpy_P(devname, PSTR("REDFLY"));
+  strcpy(devname, "REDFLY");
 
   return;
 }
@@ -102,12 +102,14 @@ void RedFlyNBNS::setName(char *name)
 }
 
 
+#if defined(__AVR__)
 void RedFlyNBNS::setNamePGM(PGM_P name)
 {
   strcpy_P(devname, name);
 
   return;
 }
+#endif
 
 
 #define SWAP16(x) ((((x)&0x00FF)<<8)| \
