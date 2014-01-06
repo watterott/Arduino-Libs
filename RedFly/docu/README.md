@@ -3,7 +3,7 @@
 ## FAQ
 
 ### Howto update the Firmware?
-See the [Firmware Update Guide](https://github.com/watterott/RedFly-Shield/tree/master/fw/update_guide).
+See the [Firmware Update Guide](https://github.com/watterott/RedFly-Shield/blob/master/fw/update_guide/README.md).
 
 ### Which pins does the RedFly use?
 Used pins: D0, D1, D2, D3

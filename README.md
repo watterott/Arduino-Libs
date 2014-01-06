@@ -10,7 +10,7 @@ Further infos: http://arduino.cc/en/Guide/Libraries and http://arduino.cc/en/Hac
 
 
 ## License
-See [license.txt](https://github.com/watterott/Arduino-Libs/blob/master/src/license.txt).
+See [license.txt](https://raw.github.com/watterott/Arduino-Libs/master/license.txt).
 
 ### Third party libraries/software
 Each package has its own copyright and license agreement, and it is your responsibility to comply with the terms of those agreements.
