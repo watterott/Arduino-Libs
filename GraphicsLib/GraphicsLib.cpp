@@ -901,14 +901,17 @@ void GraphicsLib::write(uint8_t c)
   }
   else if((c != '\r') && (c != '\t'))//skip
   {
-    text_x = drawChar(text_x, text_y, c, text_fg, text_bg, text_size);
-    if(text_wrap && (text_x > (lcd_width-((text_size&0x7F)*FONT_WIDTH))))
+    if((c != ' ') || (text_x != 0))
     {
-      text_x = 0;
-      text_y += (text_size&0x7F)*FONT_HEIGHT;
-      if(text_y > (lcd_height-((text_size&0x7F)*FONT_HEIGHT)))
+      text_x = drawChar(text_x, text_y, c, text_fg, text_bg, text_size);
+      if(text_wrap && (text_x > (lcd_width-((text_size&0x7F)*FONT_WIDTH))))
       {
-        text_y = 0;
+        text_x = 0;
+        text_y += (text_size&0x7F)*FONT_HEIGHT;
+        if(text_y > (lcd_height-((text_size&0x7F)*FONT_HEIGHT)))
+        {
+          text_y = 0;
+        }
       }
     }
   }
