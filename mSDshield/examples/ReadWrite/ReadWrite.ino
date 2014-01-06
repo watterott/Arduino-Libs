@@ -67,7 +67,7 @@ void setup()
   Serial.println("Open File...");
   x = lcd.drawText(5, 5, "Open File...", RGB(0,0,0), RGB(255,255,255), 1);
   myFile = SD.open("test.txt");
-  if (myFile)
+  if(myFile)
   {
     Serial.println("Reading...");
     lcd.drawText(x, 5, "Reading...", RGB(0,0,0), RGB(255,255,255), 1);
