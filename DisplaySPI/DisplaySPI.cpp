@@ -2,7 +2,6 @@
 #if defined(__AVR__)
 # include <avr/io.h>
 # include <avr/pgmspace.h>
-# include <util/delay.h>
 #endif
 #if ARDUINO >= 100
 # include "Arduino.h"
@@ -228,6 +227,17 @@ void DisplaySPI::led(uint_least8_t power)
     SPI.transfer(power); //0...100
     CS_DISABLE();
   }
+
+  return;
+}
+
+
+void DisplaySPI::invertDisplay(uint_least8_t invert)
+{
+  CS_ENABLE();
+  SPI.transfer(CMD_LCD_INVERT);
+  SPI.transfer(invert);
+  CS_DISABLE();
 
   return;
 }

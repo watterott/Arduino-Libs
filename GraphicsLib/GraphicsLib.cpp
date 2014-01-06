@@ -86,6 +86,12 @@ uint_least16_t GraphicsLib::getRotation(void)
 }
 
 
+void GraphicsLib::invertDisplay(uint_least8_t invert)
+{
+  return;
+}
+
+
 void GraphicsLib::setOrientation(uint_least16_t o)
 {
   switch(o)
@@ -116,12 +122,6 @@ void GraphicsLib::setOrientation(uint_least16_t o)
 uint_least16_t GraphicsLib::getOrientation(void)
 {
   return lcd_orientation;
-}
-
-
-void GraphicsLib::invertDisplay(uint_least8_t invert)
-{
-  return;
 }
 
 
@@ -156,9 +156,16 @@ void GraphicsLib::fillScreen(uint_least16_t color)
   setArea(0, 0, lcd_width-1, lcd_height-1);
 
   drawStart();
-  for(size=(uint_least32_t)(lcd_width*lcd_height); size!=0; size--)
+  for(size=(((uint_least32_t)lcd_width*lcd_height)/8UL); size!=0; size--)
   {
-    draw(color);
+    draw(color); //1
+    draw(color); //2
+    draw(color); //3
+    draw(color); //4
+    draw(color); //5
+    draw(color); //6
+    draw(color); //7
+    draw(color); //8
   }
   drawStop();
 

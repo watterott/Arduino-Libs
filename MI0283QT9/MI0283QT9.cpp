@@ -1,7 +1,6 @@
 #include <inttypes.h>
 #if defined(__AVR__)
 # include <avr/io.h>
-# include <util/delay.h>
 #endif
 #if ARDUINO >= 100
 # include "Arduino.h"
@@ -203,6 +202,21 @@ void MI0283QT9::led(uint_least8_t power)
 }
 
 
+void MI0283QT9::invertDisplay(uint_least8_t invert)
+{
+  if(invert == 0)
+  {
+     wr_cmd(LCD_CMD_INV_OFF);
+  }
+  else
+  {
+     wr_cmd(LCD_CMD_INV_ON);
+  }
+
+  return;
+}
+
+
 void MI0283QT9::setOrientation(uint_least16_t o)
 {
   #define MEM_Y   (7) //MY row address order
@@ -271,30 +285,6 @@ void MI0283QT9::setArea(int_least16_t x0, int_least16_t y0, int_least16_t x1, in
   wr_cmd(LCD_CMD_PAGE);
   wr_data16(y0);
   wr_data16(y1);
-
-  return;
-}
-
-
-void MI0283QT9::fillScreen(uint_least16_t color)
-{
-  uint_least16_t size;
-
-  setArea(0, 0, lcd_width-1, lcd_height-1);
-
-  drawStart();
-  for(size=(320UL*240UL/8UL); size!=0; size--)
-  {
-    draw(color); //1
-    draw(color); //2
-    draw(color); //3
-    draw(color); //4
-    draw(color); //5
-    draw(color); //6
-    draw(color); //7
-    draw(color); //8
-  }
-  drawStop();
 
   return;
 }

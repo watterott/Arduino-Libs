@@ -47,9 +47,9 @@ class GraphicsLib : public Print
     void setRotation(uint_least16_t r);
     uint_least16_t getRotation(void);
 
+    virtual void invertDisplay(uint_least8_t invert);
     virtual void setOrientation(uint_least16_t o);
     virtual uint_least16_t getOrientation(void);
-    virtual void invertDisplay(uint_least8_t invert);
     virtual void setArea(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1);
     virtual void drawStart(void);
     virtual void draw(uint_least16_t color);

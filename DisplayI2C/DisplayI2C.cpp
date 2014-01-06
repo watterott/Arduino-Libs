@@ -2,7 +2,6 @@
 #if defined(__AVR__)
 # include <avr/io.h>
 # include <avr/pgmspace.h>
-# include <util/delay.h>
 #endif
 #if ARDUINO >= 100
 # include "Arduino.h"
@@ -196,6 +195,17 @@ void DisplayI2C::led(uint_least8_t power)
     Wire.write(power); //0...100
     Wire.endTransmission();
   }
+
+  return;
+}
+
+
+void DisplayI2C::invertDisplay(uint_least8_t invert)
+{
+  Wire.beginTransmission(i2c_addr);
+  Wire.write(CMD_LCD_INVERT);
+  Wire.write(invert);
+  Wire.endTransmission();
 
   return;
 }

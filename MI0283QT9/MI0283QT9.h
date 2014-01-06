@@ -15,9 +15,9 @@ class MI0283QT9 : public GraphicsLib
     void begin(uint_least8_t clock_div);
     void begin(void);
     void led(uint_least8_t power);
+    void invertDisplay(uint_least8_t invert);
     void setOrientation(uint_least16_t o);
     void setArea(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1);
-    void fillScreen(uint_least16_t color);
     void drawStart(void);
     void draw(uint_least16_t color);
     void drawStop(void);

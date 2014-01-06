@@ -16,8 +16,9 @@ class DisplayI2C : public GraphicsLib
     void begin(void);
     uint_least8_t getSize(void);
     uint_least8_t getVersion(char *v);
-    void led(uint_least8_t power); //0-100
-    void setOrientation(uint_least16_t o); //0 90 180 270
+    void led(uint_least8_t power);
+    void invertDisplay(uint_least8_t invert);
+    void setOrientation(uint_least16_t o);
     void fillScreen(uint_least16_t color);
     void drawPixel(int_least16_t x0, int_least16_t y0, uint_least16_t color);
     void drawLine(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, uint_least16_t color);

@@ -1,7 +1,6 @@
 #include <inttypes.h>
 #if defined(__AVR__)
 # include <avr/io.h>
-# include <util/delay.h>
 #endif
 #if ARDUINO >= 100
 # include "Arduino.h"
@@ -224,30 +223,6 @@ void MI0283QT2::setArea(int_least16_t x0, int_least16_t y0, int_least16_t x1, in
 }
 
 
-void MI0283QT2::fillScreen(uint_least16_t color)
-{
-  uint_least16_t size;
-
-  setArea(0, 0, lcd_width-1, lcd_height-1);
-
-  drawStart();
-  for(size=(320UL*240UL/8UL); size!=0; size--)
-  {
-    draw(color); //1
-    draw(color); //2
-    draw(color); //3
-    draw(color); //4
-    draw(color); //5
-    draw(color); //6
-    draw(color); //7
-    draw(color); //8
-  }
-  drawStop();
-
-  return;
-}
-
-
 void MI0283QT2::drawStart(void)
 {
   CS_ENABLE();
@@ -324,13 +299,13 @@ void MI0283QT2::reset(uint_least8_t clock_div, uint_least8_t rst_pin)
   wr_cmd(0x19, 0x01); //start osc
   wr_cmd(0x01, 0x00); //wakeup
   wr_cmd(0x1F, 0x88);
-  _delay_ms(5);
+  delay(5);
   wr_cmd(0x1F, 0x80);
-  _delay_ms(5);
+  delay(5);
   wr_cmd(0x1F, 0x90);
-  _delay_ms(5);
+  delay(5);
   wr_cmd(0x1F, 0xD0);
-  _delay_ms(5);
+  delay(5);
 
   //color selection
   wr_cmd(0x17, 0x05); //0x05=65k, 0x06=262k
