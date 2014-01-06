@@ -170,6 +170,18 @@ void MI0283QT9::begin(uint_least8_t clock_div, uint_least8_t rst_pin)
 }
 
 
+void MI0283QT9::begin(uint_least8_t clock_div)
+{
+  return begin(clock_div, 0xFF);
+}
+
+
+void MI0283QT9::begin(void)
+{
+  return begin(SPI_CLOCK_DIV4, 0xFF);
+}
+
+
 void MI0283QT9::led(uint_least8_t power)
 {
   if(power == 0) //off

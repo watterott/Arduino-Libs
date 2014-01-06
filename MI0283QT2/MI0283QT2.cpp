@@ -132,6 +132,12 @@ void MI0283QT2::begin(uint_least8_t clock_div)
 }
 
 
+void MI0283QT2::begin(void)
+{
+  return begin(SPI_CLOCK_DIV4, 0xFF);
+}
+
+
 void MI0283QT2::led(uint_least8_t power)
 {
   if(power == 0) //off
