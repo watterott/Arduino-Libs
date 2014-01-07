@@ -1,5 +1,5 @@
 /*
-  Twitter Writer
+  Twitter Writer (Socket API)
  
   This sketch connects to Twitter and posts a message on
   http://twitter.com/RedFlyShield
@@ -8,27 +8,31 @@
   http://www.arduino.cc/playground/Code/TwitterLibrary
   http://arduino-tweet.appspot.com
 
-  Requires RedFly + mSD-shield with MI0283QT-Adapter and the 
+  Requires RedFly (CS Pin4) + mSD-shield with MI0283QT-Adapter and the 
   PS2Keyboard Library http://www.pjrc.com/teensy/td_libs_PS2Keyboard.html
  */
 
-#include <MI0283QT2.h> //include <MI0283QT2.h> or <MI0283QT9.h>
-#include <ADS7846.h>
+#include <SPI.h>
+#include <GraphicsLib.h>
+#include <MI0283QT2.h>
+#include <MI0283QT9.h>
 #include <PS2Keyboard.h>
 #include <RedFly.h>
 
 
-#define TP_EEPROMADDR (0x00) //eeprom address for calibration data
+//Declare only one display !
+// MI0283QT2 lcd;  //MI0283QT2 Adapter v1
+MI0283QT9 lcd;  //MI0283QT9 Adapter v1
 
-MI0283QT2 lcd; //declare MI0283QT2 or MI0283QT9
-ADS7846 tp;
 PS2Keyboard keyboard;
-
+/*
 byte ip[]        = { 192,168,  0, 30 }; //ip from shield (client)
 byte netmask[]   = { 255,255,255,  0 }; //netmask
 byte gateway[]   = { 192,168,  0,100 }; //ip from gateway/router
 byte dnsserver[] = { 192,168,  0,100 }; //ip from dns server
+*/
 byte server[]    = {   0,  0,  0,  0 }; //ip from server
+
 #define HOSTNAME "arduino-tweet.appspot.com" //host
 #define TOKEN    "273978908-s6eBqQrr97iXcrXVw4abHcpZ0bof2v5mKdQANXEI" //token from twitter.com/RedFlyShield
 
@@ -37,55 +41,38 @@ uint8_t m_pos=0;
 
 
 //display output functions
-#define infoClear()  lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth()-1,(lcd.getHeight()/2)+5, COLOR_WHITE);
-#define infoText(x)  lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth()-1,(lcd.getHeight()/2)+5, COLOR_BLACK); lcd.drawTextPGM((lcd.getWidth()/2)-60, (lcd.getHeight()/2)-10, PSTR(x), 1, COLOR_WHITE, COLOR_BLACK)
-#define errorText(x) lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth()-1,(lcd.getHeight()/2)+5, COLOR_BLACK); lcd.drawTextPGM((lcd.getWidth()/2)-60, (lcd.getHeight()/2)-10, PSTR(x), 1, COLOR_RED, COLOR_BLACK)
+#define infoClear()  lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth(), 20, RGB(255,255,255))
+#define infoText(x)  lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth(), 20, RGB(0,0,0)); lcd.drawTextPGM((lcd.getWidth()/2)-60, (lcd.getHeight()/2)-10, PSTR(x), RGB(255,255,255), RGB(0,0,0), 1)
+#define errorText(x) lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth(), 20, RGB(0,0,0)); lcd.drawTextPGM((lcd.getWidth()/2)-60, (lcd.getHeight()/2)-10, PSTR(x), RGB(255,0,0), RGB(0,0,0), 1)
 
 
 uint8_t clearall(void)
 {
-  lcd.clear(COLOR_WHITE);
-  lcd.fillRect(0, 0, lcd.getWidth()-1, 20, COLOR_BLACK);
-  lcd.drawTextPGM(20, 3, PSTR("Write a message and press Enter..."), 1, COLOR_WHITE, COLOR_BLACK);
+  lcd.fillScreen(RGB(255,255,255));
+  lcd.fillRect(0, 0, lcd.getWidth(), 20, RGB(0,0,0));
+  lcd.drawTextPGM(20, 3, PSTR("Write a message and press Enter..."), RGB(255,255,255), RGB(0,0,0), 1);
 }
 
 
 void setup()
 {
-  uint8_t ret;
-  
+  //init display
+  lcd.begin(SPI_CLOCK_DIV2, 8); //SPI Displays: spi-clk=Fcpu/2, rst-pin=8
+  lcd.fillScreen(RGB(255,255,255));
+
   //init RedFly
   RedFly.init(115200, HIGH_POWER);
 
   //init keyboard
   keyboard.begin(5, 3, PS2Keymap_German); //Data, Clock/IRQ (Uno: 2 3 | Mega: 2 3 18 19 20 21)
 
-  //init display
-  lcd.init(2); //spi-clk = Fcpu/2
-  lcd.setOrientation(0);
-
-  //init touch controller
-  tp.init();
-  tp.setOrientation(0);
-
-  //touch-panel calibration
-/*
-  tp.service();
-  if(tp.getPressure() > 5)
-  {
-    tp.doCalibration(&lcd, TP_EEPROMADDR, 0); //dont check EEPROM for calibration data
-  }
-  else
-  {
-    tp.doCalibration(&lcd, TP_EEPROMADDR, 1); //check EEPROM for calibration data
-  }
-*/
   //draw screen background
   clearall();
 
   //set print options
-  lcd.printOptions(2, COLOR_BLACK, COLOR_WHITE);
-  lcd.printXY(2, 25);
+  lcd.setCursor(2, 25);
+  lcd.setTextColor(RGB(0,0,0), RGB(255,255,255));
+  lcd.setTextSize(2);
 }
 
 
@@ -141,7 +128,7 @@ uint8_t start_wifi(void)
   // ret = RedFly.begin(ip, dnsserver, gateway);
   // ret = RedFly.begin(ip, dnsserver, gateway, netmask);
   infoText("Set IP...");
-  ret = RedFly.begin(ip, dnsserver, gateway, netmask);
+  ret = RedFly.begin();
   if(ret)
   {
     errorText("Set IP...Error");
@@ -211,7 +198,10 @@ uint8_t send_msg(void)
 
       //print response
       infoClear();
-      lcd.drawMLText(2, 25, lcd.getWidth()-1, lcd.getHeight()-1, message, 1, COLOR_BLACK, COLOR_WHITE);
+      lcd.setCursor(2, 25);
+      lcd.setTextSize(1);
+      lcd.print(message);
+      lcd.setTextSize(2);
       delay(5000);
 
       RedFly.socketClose(http);
@@ -255,7 +245,7 @@ void loop()
           message[0] = 0;
           m_pos      = 0;
           clearall();
-          lcd.printXY(2, 25);
+          lcd.setCursor(2, 25);
           while(keyboard.read() != -1); //clear keyboard buffer
         }
         break;
@@ -266,7 +256,7 @@ void loop()
           memset(message, 0, sizeof(message));
           m_pos = 0;
           clearall();
-          lcd.printXY(2, 25);
+          lcd.setCursor(2, 25);
           while(keyboard.read() != -1); //clear keyboard buffer
         }
         break;
@@ -275,15 +265,9 @@ void loop()
         if(m_pos > 0)
         {
           message[--m_pos] = 0;
-          if(lcd.printGetX() > 5)
-          {
-            lcd.printXY(lcd.printGetX()-(FONT_WIDTH*2), lcd.printGetY());
-          }
-          else
-          {
-            lcd.printXY(((FONT_WIDTH*2)*(((lcd.getWidth()-2)/(FONT_WIDTH*2))-1))+2, lcd.printGetY()-1-(FONT_HEIGHT*2));
-          }
-          lcd.fillRect(lcd.printGetX(), lcd.printGetY(), lcd.printGetX()+(FONT_WIDTH*2), lcd.printGetY()+(FONT_HEIGHT*2), COLOR_WHITE);
+          lcd.fillRect(0, 20, lcd.getWidth(), lcd.getHeight()-20, RGB(255,255,255));
+          lcd.setCursor(2, 25);
+          lcd.print(message);
           while(keyboard.read() != -1); //clear keyboard buffer
         }
         break;

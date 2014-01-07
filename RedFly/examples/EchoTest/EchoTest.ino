@@ -1,5 +1,5 @@
 /*
-  Echo Test
+  Echo Test (Socket API)
  
   This sketch acts as a echo server using a RedFly-Shield.
   All received data will be resend to the client.

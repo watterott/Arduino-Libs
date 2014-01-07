@@ -1,5 +1,5 @@
 /*
-  FW Update
+  Firmware Update
 
   Sketch that should be loaded on a Firmare Update.
  */

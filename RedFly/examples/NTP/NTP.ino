@@ -1,22 +1,19 @@
 /*
-  NBNS Test
+  NTP (Network Time Protocol) Test
  
-  This sketch shows the basic NetBIOS Name Service (NBNS) support in action.
-  For testing, open in your browser http://redfly/
+  This sketch connects to a NTP server and gets the current time.
  */
 
 #include <RedFly.h>
-#include <RedFlyServer.h>
-#include <RedFlyNBNS.h>
 
 
-byte ip[] = { 192,168,  0, 30 }; //ip from shield (client)
+byte ip[]        = { 192,168,  0, 30 }; //ip from shield (client)
+byte netmask[]   = { 255,255,255,  0 }; //netmask
+byte gateway[]   = { 192,168,  0,100 }; //ip from gateway/router
+byte dnsserver[] = { 192,168,  0,100 }; //ip from dns server
+byte server[]    = {   0,  0,  0,  0 }; //{ 188,138,107,156 }; //ip from pool.ntp.org (server)
 
-//initialize the server library with the port 
-//you want to use (port 80 is default for HTTP)
-RedFlyServer server(80);
-//initialize the NBNS library with the device name (max. 16 characters)
-RedFlyNBNS NBNS("REDFLY");
+#define HOSTNAME "pool.ntp.org" //host
 
 
 //debug output functions (9600 Baud, 8N2)
@@ -90,7 +87,7 @@ void setup()
       // ret = RedFly.begin(ip, dnsserver);
       // ret = RedFly.begin(ip, dnsserver, gateway);
       // ret = RedFly.begin(ip, dnsserver, gateway, netmask);
-      ret = RedFly.begin(ip);
+      ret = RedFly.begin(ip, dnsserver, gateway, netmask);
       if(ret)
       {
         debugoutln("BEGIN ERR");
@@ -99,15 +96,29 @@ void setup()
       }
       else
       {
-        //receive shield IP in case of DHCP/Auto-IP
-        RedFly.getlocalip(ip);
-
-        //start server
-        server.begin();
-
-        //set other device name
-        // NBNS.setName("REDFLY");
-        // NBNS.setNamePGM(PSTR("REDFLY"));
+        if(RedFly.getip(HOSTNAME, server) == 0) //get ip
+        {
+          uint32_t time;
+          time = RedFly.gettime(server); //get time
+          if(time != 0UL)
+          {
+            char tmp[64];
+            sprintf_P(tmp, PSTR("Time: %lu sec since 1970"), time);
+            debugoutln(tmp);
+          }
+          else
+          {
+            debugoutln("NTP ERR");
+            RedFly.disconnect();
+            for(;;); //do nothing forevermore
+          }
+        }
+        else
+        {
+          debugoutln("DNS ERR");
+          RedFly.disconnect();
+          for(;;); //do nothing forevermore
+        }
       }
     }
   }
@@ -116,57 +127,5 @@ void setup()
 
 void loop()
 {
-  //NBNS service routine
-  NBNS.service();
 
-  //listen for incoming clients (HTTP server)
-  if(server.available())
-  {
-    //an http request ends with a blank line
-    boolean currentLineIsBlank = true;
-    while(server.available())
-    {
-      char c = server.read();
-      //if you've gotten to the end of the line (received a newline
-      //character) and the line is blank, the http request has ended,
-      //so you can send a reply
-      if(c == '\n' && currentLineIsBlank)
-      {
-        //clear input buffer
-        server.flush(); 
-
-        //send standard HTTP 200 header
-        server.print_P(PSTR("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n"));
-
-        //send some text
-        server.println_P(PSTR("Hello, World! <br><br>"));
-
-        //show IP address of RedFly
-        server.println_P(PSTR("My IP is: "));
-        server.print(ip[0], DEC); server.print(".");
-        server.print(ip[1], DEC); server.print(".");
-        server.print(ip[2], DEC); server.print(".");
-        server.print(ip[3], DEC);
-        break;
-      }
-      if(c == '\n')
-      {
-        //you're starting a new line
-        currentLineIsBlank = true;
-      } 
-      else if(c != '\r')
-      {
-        //you've gotten a character on the current line
-        currentLineIsBlank = false;
-      }
-    }
-
-    //close connection
-    server.stop();
-  }
-  else if(!server.connected()) //listening port still open?
-  {
-    server.stop(); //stop and reset server
-    server.begin(); //start server
-  }
 }

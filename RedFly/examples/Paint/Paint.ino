@@ -5,17 +5,23 @@
   Requires RedFly + mSD-shield with MI0283QT-Adapter.
  */
 
-#include <MI0283QT2.h> //include <MI0283QT2.h> or <MI0283QT9.h>
+#include <SPI.h>
+#include <GraphicsLib.h>
+#include <MI0283QT2.h>
+#include <MI0283QT9.h>
 #include <ADS7846.h>
 #include <RedFly.h>
 #include <RedFlyClient.h>
 #include <RedFlyServer.h>
 
 
-#define TP_EEPROMADDR (0x00) //eeprom address for calibration data
+//Declare only one display !
+// MI0283QT2 lcd;  //MI0283QT2 Adapter v1
+MI0283QT9 lcd;  //MI0283QT9 Adapter v1
 
-MI0283QT2 lcd; //declare MI0283QT2 or MI0283QT9
 ADS7846 tp;
+
+#define TP_EEPROMADDR (0x00) //eeprom address for calibration data
 
 byte ip_server[] = { 192,168,  0, 50 }; //ip from server shield
 byte ip_client[] = { 192,168,  0, 51 }; //ip from client shield
@@ -27,13 +33,13 @@ RedFlyServer server(comm_port);
 
 uint8_t working_mode=0; //0=server, 1=client
 
-static uint16_t last_x=0, last_y=0, color=COLOR_BLACK;
+static uint16_t last_x=0, last_y=0, color=RGB(0,0,0);
 
 
 //display output functions
-#define infoClear()  lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth()-1,(lcd.getHeight()/2)+5, COLOR_WHITE);
-#define infoText(x)  lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth()-1,(lcd.getHeight()/2)+5, COLOR_BLACK); lcd.drawTextPGM((lcd.getWidth()/2)-60, (lcd.getHeight()/2)-10, PSTR(x), 1, COLOR_WHITE, COLOR_BLACK)
-#define errorText(x) lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth()-1,(lcd.getHeight()/2)+5, COLOR_BLACK); lcd.drawTextPGM((lcd.getWidth()/2)-60, (lcd.getHeight()/2)-10, PSTR(x), 1, COLOR_RED, COLOR_BLACK)
+#define infoClear()  lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth(), 20, RGB(255,255,255))
+#define infoText(x)  lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth(), 20, RGB(0,0,0)); lcd.drawTextPGM((lcd.getWidth()/2)-60, (lcd.getHeight()/2)-10, PSTR(x), RGB(255,255,255), RGB(0,0,0), 1)
+#define errorText(x) lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth(), 20, RGB(0,0,0)); lcd.drawTextPGM((lcd.getWidth()/2)-60, (lcd.getHeight()/2)-10, PSTR(x), RGB(255,0,0), RGB(0,0,0), 1)
 
 
 uint8_t clearall(uint8_t send) //redraw complete screen
@@ -51,9 +57,9 @@ uint8_t clearall(uint8_t send) //redraw complete screen
     }
   }
 
-  lcd.fillRect(0, 0, 20, lcd.getHeight()-1, color);
-  lcd.fillRect(lcd.getWidth()-20, 0, lcd.getWidth()-1, lcd.getHeight()-1, COLOR_BLACK);
-  lcd.fillRect(21, 0, lcd.getWidth()-21, lcd.getHeight()-1, COLOR_WHITE);
+  lcd.fillRect(0, 0, 20, lcd.getHeight(), color);
+  lcd.fillRect(lcd.getWidth()-20, 0, 20, lcd.getHeight(), RGB(0,0,0));
+  lcd.fillRect(20, 0, lcd.getWidth()-40, lcd.getHeight(), RGB(255,255,255));
 }
 
 
@@ -136,16 +142,12 @@ uint8_t start_wifi(void)
 void setup()
 {
   //init display
-  lcd.init(2); //spi-clk = Fcpu/2
-  lcd.setOrientation(0);
+  lcd.begin(SPI_CLOCK_DIV2, 8); //SPI Displays: spi-clk=Fcpu/2, rst-pin=8
+  lcd.fillScreen(RGB(255,255,255));
 
   //init touch controller
-  tp.init();
-  tp.setOrientation(0);
+  tp.begin();
 
-  //clear screen
-  lcd.clear(COLOR_WHITE);
-  
   //touch-panel calibration
   tp.service();
   if(tp.getPressure() > 5)
@@ -156,29 +158,27 @@ void setup()
   {
     tp.doCalibration(&lcd, TP_EEPROMADDR, 1); //check EEPROM for calibration data
   }
-
-  //clear screen
-  lcd.clear(COLOR_WHITE);
+  lcd.fillScreen(RGB(255,255,255));
 
   //select working mode
-  lcd.drawTextPGM(30, (lcd.getHeight()/2)-20, PSTR("Server"), 2, COLOR_BLACK, COLOR_WHITE);
-  lcd.drawTextPGM((lcd.getWidth()/2)+30, (lcd.getHeight()/2)-20, PSTR("Client"), 2, COLOR_BLACK, COLOR_WHITE);
-  lcd.fillRect((lcd.getWidth()/2)-1, 0, (lcd.getWidth()/2)+1, lcd.getHeight()-1, COLOR_BLACK);
+  lcd.drawTextPGM(30, (lcd.getHeight()/2)-20, PSTR("Server"), RGB(0,0,0), RGB(255,255,255), 2);
+  lcd.drawTextPGM((lcd.getWidth()/2)+30, (lcd.getHeight()/2)-20, PSTR("Client"), RGB(0,0,0), RGB(255,255,255), 2);
+  lcd.fillRect((lcd.getWidth()/2)-1, 0, 2, lcd.getHeight(), RGB(0,0,0));
   while(tp.getPressure() < 5){ tp.service(); }
   if(tp.getX() < (lcd.getWidth()/2))
   {
     working_mode = 0; //server
-    lcd.drawTextPGM(30, (lcd.getHeight()/2)-20, PSTR("Server"), 2, COLOR_RED, COLOR_WHITE);
-    color = COLOR_BLUE;
+    lcd.drawTextPGM(30, (lcd.getHeight()/2)-20, PSTR("Server"), RGB(255,0,0), RGB(255,255,255), 2);
+    color = RGB(0,0,255);
   }
   else
   {
     working_mode = 1; //client
-    lcd.drawTextPGM((lcd.getWidth()/2)+30, (lcd.getHeight()/2)-20, PSTR("Client"), 2, COLOR_RED, COLOR_WHITE);
-    color = COLOR_RED;
+    lcd.drawTextPGM((lcd.getWidth()/2)+30, (lcd.getHeight()/2)-20, PSTR("Client"), RGB(255,0,0), RGB(255,255,255), 2);
+    color = RGB(255,0,0);
   }
   delay(1000);
-  lcd.clear(COLOR_WHITE);
+  lcd.fillScreen(RGB(255,255,255));
   
   //start WiFi
   while(start_wifi() != 0){ delay(1000); }
@@ -231,7 +231,7 @@ void loop()
           }
           else
           {
-            lcd.fillRect(buf[1]-2, buf[2]-2, buf[1]+2, buf[2]+2, buf[3]);
+            lcd.fillRect(buf[1], buf[2], 4, 4, buf[3]);
           }
         }
       }
@@ -277,7 +277,7 @@ void loop()
           }
           else
           {
-            lcd.fillRect(buf[1]-2, buf[2]-2, buf[1]+2, buf[2]+2, buf[3]);
+            lcd.fillRect(buf[1], buf[2], 4, 4, buf[3]);
           }
         }
       }
@@ -301,10 +301,10 @@ void loop()
       last_x = 0;
       switch(color)
       {
-        case COLOR_BLACK: color = COLOR_RED;   break;
-        case COLOR_RED:   color = COLOR_GREEN; break;
-        case COLOR_GREEN: color = COLOR_BLUE;  break;
-        case COLOR_BLUE:  color = COLOR_BLACK; break;
+        case RGB(0,0,0):   color = RGB(255,0,0); break;
+        case RGB(255,0,0): color = RGB(0,255,0); break;
+        case RGB(0,255,0): color = RGB(0,0,255); break;
+        case RGB(0,0,255): color = RGB(0,0,0);   break;
       }
       lcd.fillRect(0, 0, 20, lcd.getHeight(), color);
       while(tp.getPressure() > 5){ tp.service(); }
@@ -325,7 +325,7 @@ void loop()
       {
         last_x = x;
         last_y = y;
-        lcd.fillRect(x-2, y-2, x+2, y+2, color);
+        lcd.fillRect(x, y, 4, 4, color);
 
         //0xBEEF, x, y, color (all 16bit, total 8 bytes)
         buf[0] = 0xBEEF;

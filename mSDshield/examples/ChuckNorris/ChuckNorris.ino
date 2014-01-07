@@ -108,7 +108,7 @@ void draw_fact(void)
 
   lcd.drawTextPGM(5, 2, PSTR("Chuck Norris Fact:"), RGB(0,0,0), RGB(255,255,255), 2);
 
-  lcd.setCursor(0, 25);
+  lcd.setCursor(2, 25);
   lcd.setTextColor(RGB(200,0,0), RGB(255,255,255));
   lcd.setTextSize(2);
   strcpy_P(tmp, chucknorris[curr_fact]);

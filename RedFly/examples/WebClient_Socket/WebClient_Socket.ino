@@ -1,5 +1,5 @@
 /*
-  Web Client
+  Web Client (Socket API)
  
   This sketch connects to a website using a RedFly-Shield. 
  */
@@ -12,6 +12,7 @@ byte netmask[]   = { 255,255,255,  0 }; //netmask
 byte gateway[]   = { 192,168,  0,100 }; //ip from gateway/router
 byte dnsserver[] = { 192,168,  0,100 }; //ip from dns server
 byte server[]    = {   0,  0,  0,  0 }; //{  85, 13,145,242 }; //ip from www.watterott.net (server)
+
 #define HOSTNAME "www.watterott.net"  //host
 
 uint8_t http=INVALID_SOCKET; //socket handle

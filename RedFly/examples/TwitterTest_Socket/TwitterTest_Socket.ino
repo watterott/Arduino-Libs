@@ -1,5 +1,5 @@
 /*
-  Twitter Test
+  Twitter Test (Socket API)
  
   This sketch connects to Twitter and posts a message on
   http://twitter.com/RedFlyShield
@@ -17,10 +17,10 @@ byte netmask[]   = { 255,255,255,  0 }; //netmask
 byte gateway[]   = { 192,168,  0,100 }; //ip from gateway/router
 byte dnsserver[] = { 192,168,  0,100 }; //ip from dns server
 byte server[]    = {   0,  0,  0,  0 }; //{ 209, 85,149,141 }; //ip from arduino-tweet.appspot.com (server)
+
 #define HOSTNAME "arduino-tweet.appspot.com" //host
 #define TOKEN    "273978908-s6eBqQrr97iXcrXVw4abHcpZ0bof2v5mKdQANXEI" //token from twitter.com/RedFlyShield
 #define MESSAGE  "Hello, World. This is just a test."
-
 
 uint8_t http=INVALID_SOCKET; //socket handle
 uint16_t http_len=0; //receive len

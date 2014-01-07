@@ -5,21 +5,28 @@
   Requires RedFly + mSD-shield with MI0283QT-Adapter.
  */
 
-#include <MI0283QT2.h> //include <MI0283QT2.h> or <MI0283QT9.h>
+#include <SPI.h>
+#include <GraphicsLib.h>
+#include <MI0283QT2.h>
+#include <MI0283QT9.h>
 #include <ADS7846.h>
 #include <RedFly.h>
 #include <RedFlyClient.h>
 
 
-#define TP_EEPROMADDR (0x00) //eeprom address for calibration data
+//Declare only one display !
+// MI0283QT2 lcd;  //MI0283QT2 Adapter v1
+MI0283QT9 lcd;  //MI0283QT9 Adapter v1
 
-MI0283QT2 lcd; //declare MI0283QT2 or MI0283QT9
 ADS7846 tp;
 
+#define TP_EEPROMADDR (0x00) //eeprom address for calibration data
+/*
 byte ip[]        = { 192,168,  0, 30 }; //ip from shield (client)
 byte netmask[]   = { 255,255,255,  0 }; //netmask
 byte gateway[]   = { 192,168,  0,100 }; //ip from gateway/router
 byte dnsserver[] = { 192,168,  0,100 }; //ip from dns server
+*/
 byte server[]    = {   0,  0,  0,  0 }; //ip from server
 
 RedFlyClient client(server, 80);
@@ -38,9 +45,9 @@ RedFlyClient client(server, 80);
 
 
 //display output functions
-#define infoClear()  lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth()-1,(lcd.getHeight()/2)+5, COLOR_WHITE);
-#define infoText(x)  lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth()-1,(lcd.getHeight()/2)+5, COLOR_BLACK); lcd.drawTextPGM((lcd.getWidth()/2)-60, (lcd.getHeight()/2)-10, PSTR(x), 1, COLOR_WHITE, COLOR_BLACK)
-#define errorText(x) lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth()-1,(lcd.getHeight()/2)+5, COLOR_BLACK); lcd.drawTextPGM((lcd.getWidth()/2)-60, (lcd.getHeight()/2)-10, PSTR(x), 1, COLOR_RED, COLOR_BLACK)
+#define infoClear()  lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth(), 20, RGB(255,255,255))
+#define infoText(x)  lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth(), 20, RGB(0,0,0)); lcd.drawTextPGM((lcd.getWidth()/2)-60, (lcd.getHeight()/2)-10, PSTR(x), RGB(255,255,255), RGB(0,0,0), 1)
+#define errorText(x) lcd.fillRect(0, (lcd.getHeight()/2)-15, lcd.getWidth(), 20, RGB(0,0,0)); lcd.drawTextPGM((lcd.getWidth()/2)-60, (lcd.getHeight()/2)-10, PSTR(x), RGB(255,0,0), RGB(0,0,0), 1)
 
 
 uint8_t start_wifi(void)
@@ -95,15 +102,13 @@ uint8_t start_wifi(void)
   // ret = RedFly.begin(ip, dnsserver, gateway);
   // ret = RedFly.begin(ip, dnsserver, gateway, netmask);
   infoText("Set IP...");
-  ret = RedFly.begin(ip, dnsserver, gateway, netmask);
+  ret = RedFly.begin();
   if(ret)
   {
     errorText("Set IP...Error");
     RedFly.disconnect();
     return 3;
   }
-
-  infoClear();
 
   return 0;
 }
@@ -114,15 +119,11 @@ void setup()
   uint8_t ret;
 
   //init display
-  lcd.init(2); //spi-clk = Fcpu/2
-  lcd.setOrientation(0);
+  lcd.begin(SPI_CLOCK_DIV2, 8); //SPI Displays: spi-clk=Fcpu/2, rst-pin=8
+  lcd.fillScreen(RGB(255,255,255));
 
   //init touch controller
-  tp.init();
-  tp.setOrientation(0);
-
-  //clear screen
-  lcd.clear(COLOR_WHITE);
+  tp.begin();
   
   //touch-panel calibration
   tp.service();
@@ -134,59 +135,84 @@ void setup()
   {
     tp.doCalibration(&lcd, TP_EEPROMADDR, 1); //check EEPROM for calibration data
   }
-
-  //clear screen
-  lcd.clear(COLOR_WHITE);
+  lcd.fillScreen(RGB(255,255,255));
 
   //start WiFi
   while(start_wifi() != 0){ delay(1000); }
 
   //draw screen background
-  lcd.fillRect(0, 0, lcd.getWidth()-1, 20, COLOR_BLACK);
-  lcd.drawTextPGM((lcd.getWidth()/2)-20, 3, PSTR("newer"), 1, COLOR_WHITE, COLOR_BLACK);
-  lcd.fillRect(0, lcd.getHeight()-20, lcd.getWidth()-1, lcd.getHeight()-1, COLOR_BLACK);
-  lcd.drawTextPGM((lcd.getWidth()/2)-20, lcd.getHeight()-15, PSTR("older"), 1, COLOR_WHITE, COLOR_BLACK);
+  lcd.fillRect(0, 0, lcd.getWidth(), 20, RGB(0,0,0));
+  lcd.drawTextPGM((lcd.getWidth()/2)-20, 5, PSTR("newer"), RGB(255,255,255), RGB(0,0,0), 1);
+  lcd.fillRect(0, lcd.getHeight()-20, lcd.getWidth(), 20, RGB(0,0,0));
+  lcd.drawTextPGM((lcd.getWidth()/2)-20, lcd.getHeight()-15, PSTR("older"), RGB(255,255,255), RGB(0,0,0), 1);
 
   //send request
-  request_data();
+  while(request_data() != 0)
+  {
+    delay(1000);
+    start_wifi(); //restart wifi connection
+  }
 }
 
 
 char data[128];  //receive buffer
 unsigned int dlen=0; //receive buffer length
-uint8_t state=0, lastc1=0, lastc2=0, rss_item=1, item=0;
+uint8_t state=0, lastc1=0, lastc2=0, lastc3=0, rss_item=1, item=0;
 
 
 uint8_t request_data() //send request to server
 {
+  uint8_t i;
+  unsigned long ms, last_time;
   char txt[8];
-
-  //clear text
-  lcd.fillRect(2, 25, lcd.getWidth()-2, (lcd.getHeight()-25), COLOR_WHITE);
 
   //draw item index
   sprintf(txt, "%i", ((rss_item+1)/2));
-  lcd.drawText((lcd.getWidth()/2)-10, 50, txt, 2, COLOR_BLUE, COLOR_WHITE);
+  lcd.drawText((lcd.getWidth()/2)-10, 50, txt, RGB(0,0,255), RGB(255,255,255), 2);
 
-  infoText("Get IP...");
-  if(RedFly.getip(HOSTNAME, server) == 0) //get ip
+  infoText("Get Server...");
+  if(RedFly.getip(HOSTNAME, server) != 0) //get ip
   {
-    infoText("Connecting...");
-    if(client.connect(server, 80))
-    {
-      infoText("Get data...");
-      client.print_P(PSTR("GET /"FILENAME" HTTP/1.1\r\nHost: "HOSTNAME"\r\n\r\n"));
-    }
-    else
-    {
-      errorText("Connecting...Error");
-      return 2;
-    }
+    errorText("Get Server...Error");
   }
   else
   {
-    errorText("Get IP...Error");
-    return 1;
+    for(i=0, last_time=0; client.connected() == 0;)
+    {
+      ms = millis();
+      if(((ms-last_time) > 2000)) //every 2s
+      {
+        last_time = ms; //save time
+        infoText("Connecting...");
+        if(client.connect(server, 80) == 0)
+        {
+          errorText("Connecting...Error");
+          if(++i > 5)
+          {
+            return 2;
+          }
+        }
+      }
+    }
+
+    for(i=0, last_time=0; client.available() == 0;)
+    {
+      ms = millis();
+      if(((ms-last_time) > 3000)) //every 3s
+      {
+        last_time = ms; //save time
+        infoText("Request...");
+        client.print_P(PSTR("GET /"FILENAME" HTTP/1.0\r\nHost: "HOSTNAME"\r\n\r\n")); //Connection: close\r\n
+        i++;
+      }
+      if((i > 5) || (client.connected() == 0))
+      {
+        errorText("Request...Error");
+        client.stop();
+        return 3;
+      }
+    }
+    infoText("Receive...");
   }
 
   return 0;
@@ -209,9 +235,11 @@ void read_data() //receive data from server
         }
         else if((lastc1 == '\n') && (c == '\r'))
         {
+          infoText("Header found...");
           state++;
           break;
         }
+        lastc3 = lastc2;
         lastc2 = lastc1;
         lastc1 = c;
       }
@@ -225,14 +253,16 @@ void read_data() //receive data from server
         {
           break;
         }
-        else if((lastc2 == 'l') && (lastc1 == 'e') && (c == '>')) //new:<title> old:<description>
+        else if((lastc3 == 'a') && (lastc2 == 'r') && (lastc1 == 'y') && (c == '>')) //new: <summary> old:<title> and <description>
         {
           if(++item == rss_item)
           {
+            infoText("Tag found...");
             state++;
             break;
           }
         }
+        lastc3 = lastc2;
         lastc2 = lastc1;
         lastc1 = c;
       }
@@ -257,7 +287,7 @@ void read_data() //receive data from server
           else
           {
             data[dlen++] = c;
-            if((lastc1 == '<') && (c == '/')) //new:</title> old:</description>
+            if((lastc1 == '<') && (c == '/')) //tag end "</"
             {
               dlen -= 2;
               data[dlen] = 0;
@@ -266,6 +296,7 @@ void read_data() //receive data from server
             }
           }
         }
+        lastc3 = lastc2;
         lastc2 = lastc1;
         lastc1 = c;
       }
@@ -287,9 +318,12 @@ void loop()
   else if(dlen && !client.connected()) //if the server's disconnected, stop the client
   {
     client.stop();
-    infoClear();
     data[dlen] = 0;
-    lcd.drawMLText(2, 25, lcd.getWidth()-2, (lcd.getHeight()-20), data, 2, COLOR_BLACK, COLOR_WHITE);
+    lcd.fillRect(2, 25, lcd.getWidth()-2, lcd.getHeight()-50, RGB(255,255,255)); //clear text
+    lcd.setCursor(2, 25);
+    lcd.setTextColor(RGB(0,0,0), RGB(255,255,255));
+    lcd.setTextSize(2);
+    lcd.print(data);
     dlen = 0;
   }
   else
@@ -314,13 +348,15 @@ void loop()
       state  = 0;
       lastc1 = 0;
       lastc2 = 0;
+      lastc3 = 0;
       item   = 0;
       dlen   = 0;
 
       //send request
-      while(request_data())
+      while(request_data() != 0)
       {
-        while(start_wifi() != 0){ delay(1000); } //restart wifi connection
+        delay(1000);
+        start_wifi(); //restart wifi connection
       }
     }
   }

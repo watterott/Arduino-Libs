@@ -13,6 +13,7 @@ byte netmask[]   = { 255,255,255,  0 }; //netmask
 byte gateway[]   = { 192,168,  0,100 }; //ip from gateway/router
 byte dnsserver[] = { 192,168,  0,100 }; //ip from dns server
 byte server[]    = {   0,  0,  0,  0 }; //{  85, 13,145,242 }; //ip from www.watterott.net (server)
+
 #define HOSTNAME "www.watterott.net"  //host
 
 //initialize the client library with the ip and port of the server 
