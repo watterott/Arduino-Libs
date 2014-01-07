@@ -99,7 +99,7 @@ class GraphicsLib : public Print
   private:
     uint_least8_t text_size, text_wrap;
     uint_least16_t text_fg, text_bg;
-    int_least16_t text_x, text_y;
+    int_least16_t text_x, text_y, start_x;
 };
 
 

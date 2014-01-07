@@ -26,7 +26,7 @@ GraphicsLib::GraphicsLib(void)
   text_wrap = 1;
   text_fg = 0x0000;
   text_bg = 0xFFFF;
-  text_x = text_y = 0;
+  text_x = text_y = start_x = 0;
 
   return;
 }
@@ -41,7 +41,7 @@ GraphicsLib::GraphicsLib(uint_least16_t w, uint_least16_t h)
   text_wrap = 1;
   text_fg = 0x0000;
   text_bg = 0xFFFF;
-  text_x = text_y = 0;
+  text_x = text_y = start_x = 0;
 
   return;
 }
@@ -274,14 +274,14 @@ void GraphicsLib::fillRect(int_least16_t x0, int_least16_t y0, int_least16_t w, 
 
   if(x0   >= lcd_width)  { x0 = lcd_width-1;  }
   if(y0   >= lcd_height) { y0 = lcd_height-1; }
-  if(x0+w >= lcd_width)  { w  = lcd_width-1-x0;  }
-  if(y0+h >= lcd_height) { h  = lcd_height-1-y0; }
+  if(x0+w >= lcd_width)  { w  = lcd_width-x0; }
+  if(y0+h >= lcd_height) { h  = lcd_height-y0;}
 
   setArea(x0, y0, x0+w-1, y0+h-1);
 
   drawStart();
 
-  for(size=(w*h); size!=0; size--)
+  for(size=((uint_least32_t)w*h); size!=0; size--)
   {
     draw(color);
   }
@@ -545,12 +545,6 @@ void GraphicsLib::fillEllipse(int_least16_t x0, int_least16_t y0, int_least16_t 
 {
   int_least16_t x, y;
   int_least32_t e, e2, dx, dy, rx, ry;
-
-  if(((x0-r_x) >= lcd_width) ||
-     ((y0-r_y) >= lcd_width))
-  {
-    return;
-  }
 
   x  = -r_x;
   y  = 0;
@@ -847,8 +841,9 @@ void GraphicsLib::setCursor(int_least16_t x, int_least16_t y)
   if((x < lcd_width) &&
      (y < lcd_height))
   {
-    text_x = x;
-    text_y = y;
+    text_x  = x;
+    start_x = x;
+    text_y  = y;
   }
 
   return;
@@ -896,7 +891,7 @@ void GraphicsLib::write(uint8_t c)
 {
   if(c == '\n')
   {
-    text_x  = 0;
+    text_x  = start_x;
     text_y += (text_size&0x7F)*FONT_HEIGHT;
   }
   else if((c != '\r') && (c != '\t'))//skip
@@ -906,7 +901,7 @@ void GraphicsLib::write(uint8_t c)
       text_x = drawChar(text_x, text_y, c, text_fg, text_bg, text_size);
       if(text_wrap && (text_x > (lcd_width-((text_size&0x7F)*FONT_WIDTH))))
       {
-        text_x = 0;
+        text_x = start_x;
         text_y += (text_size&0x7F)*FONT_HEIGHT;
         if(text_y > (lcd_height-((text_size&0x7F)*FONT_HEIGHT)))
         {

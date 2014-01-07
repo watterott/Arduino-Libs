@@ -272,12 +272,6 @@ void MI0283QT9::setOrientation(uint_least16_t o)
 
 void MI0283QT9::setArea(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1)
 {
-  if((x1 >= lcd_width) ||
-     (y1 >= lcd_height))
-  {
-    return;
-  }
-
   wr_cmd(LCD_CMD_COLUMN);
   wr_data16(x0);
   wr_data16(x1);
