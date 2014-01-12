@@ -5,22 +5,24 @@
   Requires RedFly + mSD-shield with MI0283QT-Adapter.
  */
 
+#include <Wire.h>
 #include <SPI.h>
 #include <GraphicsLib.h>
 #include <MI0283QT2.h>
 #include <MI0283QT9.h>
-#include <ADS7846.h>
+#include <DisplaySPI.h>
+#include <DisplayI2C.h>
 #include <RedFly.h>
 #include <RedFlyClient.h>
 
 
 //Declare only one display !
 // MI0283QT2 lcd;  //MI0283QT2 Adapter v1
-MI0283QT9 lcd;  //MI0283QT9 Adapter v1
+// MI0283QT9 lcd;  //MI0283QT9 Adapter v1
+// DisplaySPI lcd; //SPI (GLCD-Shield or MI0283QT Adapter v2)
+ DisplayI2C lcd; //I2C (GLCD-Shield or MI0283QT Adapter v2)
 
-ADS7846 tp;
 
-#define TP_EEPROMADDR (0x00) //eeprom address for calibration data
 /*
 byte ip[]        = { 192,168,  0, 30 }; //ip from shield (client)
 byte netmask[]   = { 255,255,255,  0 }; //netmask
@@ -55,11 +57,11 @@ uint8_t start_wifi(void)
   uint8_t ret, i;
 
   //init the WiFi module
-  infoText("Init WiFi...");
+  infoText("WiFi...");
   ret = RedFly.init(115200, HIGH_POWER); //baudrate, LOW_POWER MED_POWER HIGH_POWER
   if(ret)
   {
-    errorText("Init WiFi...Error"); //there are problems with the communication between the Arduino and the RedFly
+    errorText("WiFi...Error"); //there are problems with the communication between the Arduino and the RedFly
     return 1;
   }
 
@@ -101,11 +103,11 @@ uint8_t start_wifi(void)
   // ret = RedFly.begin(ip, dnsserver);
   // ret = RedFly.begin(ip, dnsserver, gateway);
   // ret = RedFly.begin(ip, dnsserver, gateway, netmask);
-  infoText("Set IP...");
+  infoText("IP...");
   ret = RedFly.begin();
   if(ret)
   {
-    errorText("Set IP...Error");
+    errorText("IP...Error");
     RedFly.disconnect();
     return 3;
   }
@@ -119,23 +121,11 @@ void setup()
   uint8_t ret;
 
   //init display
-  lcd.begin(SPI_CLOCK_DIV2, 8); //SPI Displays: spi-clk=Fcpu/2, rst-pin=8
-  lcd.fillScreen(RGB(255,255,255));
-
-  //init touch controller
-  tp.begin();
-  
-  //touch-panel calibration
-  tp.service();
-  if(tp.getPressure() > 5)
-  {
-    tp.doCalibration(&lcd, TP_EEPROMADDR, 0); //dont check EEPROM for calibration data
-  }
-  else
-  {
-    tp.doCalibration(&lcd, TP_EEPROMADDR, 1); //check EEPROM for calibration data
-  }
-  lcd.fillScreen(RGB(255,255,255));
+  //init display
+  lcd.begin();
+  //lcd.begin(SPI_CLOCK_DIV4, 8); //SPI Displays: spi-clk=Fcpu/4, rst-pin=8
+  //lcd.begin(0x20, 8); //I2C Displays: addr=0x20, rst-pin=8
+  lcd.touchStartCal(); //calibrate touchpanel
 
   //start WiFi
   while(start_wifi() != 0){ delay(1000); }
@@ -170,10 +160,10 @@ uint8_t request_data() //send request to server
   sprintf(txt, "%i", ((rss_item+1)/2));
   lcd.drawText((lcd.getWidth()/2)-10, 50, txt, RGB(0,0,255), RGB(255,255,255), 2);
 
-  infoText("Get Server...");
+  infoText("Get IP...");
   if(RedFly.getip(HOSTNAME, server) != 0) //get ip
   {
-    errorText("Get Server...Error");
+    errorText("Get IP...Error");
   }
   else
   {
@@ -328,17 +318,17 @@ void loop()
   }
   else
   {
-    tp.service(); //service routine for touch panel
+    lcd.touchRead(); //service routine for touch panel
 
     //touch press?
-    if(tp.getPressure() > 3) 
+    if(lcd.touchZ()) 
     {
-      if(tp.getY() < 50) //newer rss item
+      if(lcd.touchY() < 50) //newer rss item
       {
         if(rss_item > 1) //1 is the first item
           rss_item -= 2;
       }
-      else if(tp.getY() > (lcd.getHeight()-50)) //older rss item
+      else if(lcd.touchY() > (lcd.getHeight()-50)) //older rss item
       {
         if(rss_item < 10)
           rss_item +=2;
