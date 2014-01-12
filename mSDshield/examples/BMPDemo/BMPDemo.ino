@@ -17,7 +17,7 @@
 // MI0283QT2 lcd;  //MI0283QT2 Adapter v1
 // MI0283QT9 lcd;  //MI0283QT9 Adapter v1
 // DisplaySPI lcd; //SPI (GLCD-Shield or MI0283QT Adapter v2)
-DisplayI2C lcd; //I2C (GLCD-Shield or MI0283QT Adapter v2)
+ DisplayI2C lcd; //I2C (GLCD-Shield or MI0283QT Adapter v2)
 
 
 uint8_t OpenBMPFile(char *file, int16_t x, int16_t y)
@@ -69,7 +69,7 @@ uint8_t OpenBMPFile(char *file, int16_t x, int16_t y)
         }
         else
         {
-          lcd.drawText(x, y, "Pic out of screen!", 1, RGB(0,0,0), RGB(255,255,255));
+          lcd.drawText(x, y, "Pic out of screen!", RGB(0,0,0), RGB(255,255,255), 1);
         }
       }
     }

@@ -1,5 +1,5 @@
 /*
-  GraphicsLib Demo 1
+  GraphicsLib Demo
 
   This sketch demonstrates the functions of the GraphicsLib.
  */
@@ -17,7 +17,7 @@
 // MI0283QT2 lcd;  //MI0283QT2 Adapter v1
 // MI0283QT9 lcd;  //MI0283QT9 Adapter v1
 // DisplaySPI lcd; //SPI (GLCD-Shield or MI0283QT Adapter v2)
-DisplayI2C lcd; //I2C (GLCD-Shield or MI0283QT Adapter v2)
+ DisplayI2C lcd; //I2C (GLCD-Shield or MI0283QT Adapter v2)
 
 
 void setup()
@@ -28,6 +28,9 @@ void setup()
   lcd.begin();
   //lcd.begin(SPI_CLOCK_DIV4, 8); //SPI Displays: spi-clk=Fcpu/4, rst-pin=8
   //lcd.begin(0x20, 8); //I2C Displays: addr=0x20, rst-pin=8
+
+
+  //clear screen
   lcd.fillScreen(RGB(255,255,255));
 
 
@@ -68,8 +71,6 @@ void setup()
   //drawText
   lcd.drawTextPGM(50, 10, PSTR("String from Flash"), RGB(0,0,0), RGB(255,255,255), 1|clear_bg); //string from flash (only AVR)
   lcd.drawText(50, 20, "String from RAM", RGB(0,0,0), RGB(255,255,255), 1|clear_bg);            //string from ram
-  lcd.drawText(50, 30, 12345, RGB(0,0,0), RGB(255,255,255), 1|clear_bg);                        //int value
-  lcd.drawText(50, 40, 123456789L, RGB(0,0,0), RGB(255,255,255), 1|clear_bg);                   //long value
 
 
   //drawInteger

@@ -16,7 +16,7 @@
 // MI0283QT2 lcd;  //MI0283QT2 Adapter v1
 // MI0283QT9 lcd;  //MI0283QT9 Adapter v1
 // DisplaySPI lcd; //SPI (GLCD-Shield or MI0283QT Adapter v2)
-DisplayI2C lcd; //I2C (GLCD-Shield or MI0283QT Adapter v2)
+ DisplayI2C lcd; //I2C (GLCD-Shield or MI0283QT Adapter v2)
 
 File myFile;
 

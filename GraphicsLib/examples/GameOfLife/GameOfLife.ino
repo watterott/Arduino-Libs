@@ -203,9 +203,25 @@ void setup()
 
 void loop()
 {
-  play_gol();
-  draw_gol();
+  unsigned long m;
+  static unsigned long prevMillis=0;
 
-  //show current generation
-  lcd.drawInteger(1, 1, (int)generation, DEC, 1, RGB(50,50,50), drawcolor[DEAD_COLOR]);
+  m = millis();
+  if((m - prevMillis) >= 65) //update every 65ms (15Hz)
+  {
+    prevMillis = m;
+
+    if(lcd.touchRead()) //touch press?
+    {
+      init_gol();
+    }
+    else
+    {
+      play_gol();
+      draw_gol();
+    }
+
+    //show current generation
+    lcd.drawInteger(1, 1, generation, DEC, drawcolor[DIE2_COLOR], drawcolor[DEAD_COLOR], 1);
+  }
 }

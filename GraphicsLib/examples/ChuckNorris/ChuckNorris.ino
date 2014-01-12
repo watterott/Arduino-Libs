@@ -1,21 +1,21 @@
 /*
-  Chuck Norris Facts (Display + Rotary Encoder)
+  Chuck Norris Facts
  */
 
+#include <Wire.h>
 #include <SPI.h>
 #include <GraphicsLib.h>
 #include <MI0283QT2.h>
 #include <MI0283QT9.h>
-#include <ADS7846.h>
+#include <DisplaySPI.h>
+#include <DisplayI2C.h>
 
 
 //Declare only one display !
 // MI0283QT2 lcd;  //MI0283QT2 Adapter v1
-MI0283QT9 lcd;  //MI0283QT9 Adapter v1
-
-ADS7846 tp;
-
-#define TP_EEPROMADDR (0x00) //eeprom address for calibration data
+// MI0283QT9 lcd;  //MI0283QT9 Adapter v1
+// DisplaySPI lcd; //SPI (GLCD-Shield or MI0283QT Adapter v2)
+ DisplayI2C lcd; //I2C (GLCD-Shield or MI0283QT Adapter v2)
 
 uint8_t curr_fact=0;
 
@@ -122,21 +122,9 @@ void setup()
   lcd.begin();
   //lcd.begin(SPI_CLOCK_DIV4, 8); //SPI Displays: spi-clk=Fcpu/4, rst-pin=8
   //lcd.begin(0x20, 8); //I2C Displays: addr=0x20, rst-pin=8
-  lcd.fillScreen(RGB(255,255,255));
 
-  //init touch controller
-  tp.begin();
-
-  //touch-panel calibration
-  tp.service();
-  if(tp.getPressure() > 5)
-  {
-    tp.doCalibration(&lcd, TP_EEPROMADDR, 0); //dont check EEPROM for calibration data
-  }
-  else
-  {
-    tp.doCalibration(&lcd, TP_EEPROMADDR, 1); //check EEPROM for calibration data
-  }
+  //calibrate touchpanel
+  lcd.touchStartCal();
 
   //random fact at start-up
   srand(666);
@@ -147,11 +135,9 @@ void setup()
 
 void loop()
 {
-  tp.service();
-
-  if(tp.getPressure() > 5)
+  if(lcd.touchRead()) //touch press? (lcd.touchRead() = service routine for touch panel)
   {
-    if(tp.getX() < (lcd.getWidth()/2))
+    if(lcd.touchX() < (lcd.getWidth()/2))
     {
       if(curr_fact > 0)
       {
@@ -175,5 +161,6 @@ void loop()
     }
 
     draw_fact();
+    delay(500);
   }
 }
