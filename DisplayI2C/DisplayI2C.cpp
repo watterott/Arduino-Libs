@@ -61,10 +61,13 @@ void DisplayI2C::begin(uint_least8_t addr, uint_least8_t rst_pin)
     digitalWrite(rst_pin, HIGH);
   }
 
-  i2c_addr = addr;
+  //reset display
   Wire.begin();
 
-  //reset display
+  bigger_8bit = 0;
+  i2c_addr = addr;
+  lcd_x = lcd_y = lcd_z = 0;
+
   if(getSize())
   {
     if(rst_pin < 0xFF)
@@ -94,6 +97,7 @@ void DisplayI2C::begin(uint_least8_t addr, uint_least8_t rst_pin)
   setOrientation(0); //display rotation
   fillScreen(0); //clear display buffer
   led(50); //enable backlight
+  setFeature(FEATURE_TP); //enable touchpanel
 
   return;
 }
@@ -115,8 +119,6 @@ uint_least8_t DisplayI2C::getSize(void)
 {
   uint_least16_t w=0, h=0;
   
-  bigger_8bit = 0;
-
   Wire.beginTransmission(i2c_addr);
   Wire.write(CMD_LCD_WIDTH);
   Wire.endTransmission();
@@ -183,6 +185,18 @@ uint_least8_t DisplayI2C::getVersion(char *v)
   }
 
   return 0;
+}
+
+
+void DisplayI2C::setFeature(uint_least8_t f)
+{
+  Wire.beginTransmission(i2c_addr);
+  Wire.write(CMD_CTRL);
+  Wire.write(CMD_CTRL_FEATURES);
+  Wire.write(f);
+  Wire.endTransmission();
+
+  return;
 }
 
 
@@ -564,6 +578,11 @@ void DisplayI2C::fillEllipse(int_least16_t x0, int_least16_t y0, int_least16_t r
 
 int_least16_t DisplayI2C::drawChar(int_least16_t x, int_least16_t y, char c, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
 {
+  static uint_least32_t last_time=0;
+
+  while(millis() == last_time); //slow down function calling
+  last_time = millis();
+
   Wire.beginTransmission(i2c_addr);
   Wire.write(CMD_LCD_DRAWTEXT);
   Wire.write(color>>8);
@@ -588,4 +607,251 @@ int_least16_t DisplayI2C::drawChar(int_least16_t x, int_least16_t y, char c, uin
   Wire.endTransmission();
 
   return x+(8*(size&0x7F));
+}
+
+
+int_least16_t DisplayI2C::drawChar(int_least16_t x, int_least16_t y, unsigned char c, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
+{
+  return drawChar(x, y, (char)c, color, bg, size);
+}
+
+
+int_least16_t DisplayI2C::drawText(int_least16_t x, int_least16_t y, char *s, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
+{
+  uint_least16_t len;
+  int_least16_t pos=x;
+
+  len = strlen(s);
+
+  if((len != 0) && (len < 256))
+  {
+    Wire.beginTransmission(i2c_addr);
+    Wire.write(CMD_LCD_DRAWTEXT);
+    Wire.write(color>>8);
+    Wire.write(color>>0);
+    Wire.write(bg>>8);
+    Wire.write(bg>>0);
+    if(bigger_8bit)
+    {
+      Wire.write(x>>8);
+      Wire.write(x>>0);
+      Wire.write(y>>8);
+      Wire.write(y>>0);
+    }
+    else
+    {
+      Wire.write(x);
+      Wire.write(y);
+    }
+    Wire.write(size);
+    Wire.write(len);
+    Wire.endTransmission();
+    size = 8*(size&0x7F);
+    while(*s != 0)
+    {
+      Wire.beginTransmission(i2c_addr);
+      Wire.write((uint8_t)*s++);
+      Wire.endTransmission();
+      pos += size;
+    }
+  }
+
+  return pos;
+}
+
+
+int_least16_t DisplayI2C::drawText(int_least16_t x, int_least16_t y, String &s, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
+{
+  int_least16_t pos=x;
+
+  if((s.length() != 0) && (s.length() < 256))
+  {
+    Wire.beginTransmission(i2c_addr);
+    Wire.write(CMD_LCD_DRAWTEXT);
+    Wire.write(color>>8);
+    Wire.write(color>>0);
+    Wire.write(bg>>8);
+    Wire.write(bg>>0);
+    if(bigger_8bit)
+    {
+      Wire.write(x>>8);
+      Wire.write(x>>0);
+      Wire.write(y>>8);
+      Wire.write(y>>0);
+    }
+    else
+    {
+      Wire.write(x);
+      Wire.write(y);
+    }
+    Wire.write(size);
+    Wire.write((uint8_t)s.length());
+    Wire.endTransmission();
+    size = 8*(size&0x7F);
+    for(uint_least16_t i=0; i < s.length(); i++) 
+    {
+      Wire.beginTransmission(i2c_addr);
+      Wire.write((uint8_t)s[i]);
+      Wire.endTransmission();
+      pos += size;
+    }
+  }
+
+  return pos;
+}
+
+
+#if defined(__AVR__)
+int_least16_t DisplayI2C::drawTextPGM(int_least16_t x, int_least16_t y, PGM_P s, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
+{
+  uint_least16_t len;
+  int_least16_t pos=x;
+  uint_least8_t c;
+
+  len = strlen_P(s);
+
+  if((len != 0) && (len < 256))
+  {
+    Wire.beginTransmission(i2c_addr);
+    Wire.write(CMD_LCD_DRAWTEXT);
+    Wire.write(color>>8);
+    Wire.write(color>>0);
+    Wire.write(bg>>8);
+    Wire.write(bg>>0);
+    if(bigger_8bit)
+    {
+      Wire.write(x>>8);
+      Wire.write(x>>0);
+      Wire.write(y>>8);
+      Wire.write(y>>0);
+    }
+    else
+    {
+      Wire.write(x);
+      Wire.write(y);
+    }
+    Wire.write(size);
+    Wire.write(len);
+    Wire.endTransmission();
+    size = 8*(size&0x7F);
+    c = pgm_read_byte(s++);
+    while(c != 0)
+    {
+      Wire.beginTransmission(i2c_addr);
+      Wire.write(c);
+      Wire.endTransmission();
+      c = pgm_read_byte(s++);
+      pos += size;
+    }
+  }
+
+  return pos;
+}
+#endif
+
+
+uint_least8_t DisplayI2C::touchRead(void)
+{
+  uint_least32_t ms;
+  static uint_least32_t last_time=0;
+
+  ms = millis();
+  if((ms-last_time) > 10) //can only be read every 10ms
+  {
+    last_time = ms; //save time
+    
+    Wire.flush();
+    Wire.beginTransmission(i2c_addr);
+    Wire.write(CMD_TP_POS);
+    Wire.endTransmission();
+
+    if(bigger_8bit)
+    {
+      Wire.requestFrom(i2c_addr, 6);
+      while(Wire.available() == 0);
+      lcd_x  = Wire.read()<<8;
+      lcd_x |= Wire.read()<<0;
+      lcd_y  = Wire.read()<<8;
+      lcd_y |= Wire.read()<<0;
+      lcd_z  = Wire.read()<<8;
+      lcd_z |= Wire.read()<<0;
+    }
+    else
+    {
+      Wire.requestFrom(i2c_addr, 3);
+      while(Wire.available() == 0);
+      lcd_x = Wire.read();
+      lcd_y = Wire.read();
+      lcd_z = Wire.read();
+    }
+
+    if((lcd_z != 0) && (lcd_z != 0xFFFF))
+    {
+      return 1;
+    }
+    else
+    {
+      lcd_z = 0;
+    }
+  }
+
+  return 0;
+}
+
+
+void DisplayI2C::touchStartCal(void)
+{
+  uint_least32_t ms, last_time, timeout;
+
+  Wire.beginTransmission(i2c_addr);
+  Wire.write(CMD_TP_CALIBRATE);
+  Wire.endTransmission();
+
+  for(last_time=0, timeout=0; 1;)
+  { 
+    ms = millis();
+    if((ms-last_time) > 1000) //every 1s
+    {
+      last_time = ms; //save time
+      if(++timeout >= 30) //timeout after 30s
+      {
+        Wire.beginTransmission(i2c_addr);
+        Wire.write((byte)0x00);
+        Wire.endTransmission();
+        break;
+      }
+      Wire.requestFrom(i2c_addr, 1); //request 1 bytes
+    }
+    if(Wire.available())
+    {
+      if(Wire.read() == CMD_TP_CALIBRATE)
+      {
+        break;
+      }
+    }
+  }
+  delay(200);
+  Wire.flush();
+  while(Wire.available()){ Wire.read(); } //read response
+  delay(20);
+
+  return;
+}
+
+
+int_least16_t DisplayI2C::touchX(void)
+{
+  return lcd_x;
+}
+
+
+int_least16_t DisplayI2C::touchY(void)
+{
+  return lcd_y;
+}
+
+
+int_least16_t DisplayI2C::touchZ(void)
+{
+  return lcd_z;
 }

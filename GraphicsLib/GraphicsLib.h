@@ -31,11 +31,34 @@
 #endif
 
 
+typedef struct
+{
+  uint_least32_t x;
+  uint_least32_t y;
+} CAL_POINT; //calibration points for touchpanel
+
+
+typedef struct
+{
+  uint_least32_t a;
+  uint_least32_t b;
+  uint_least32_t c;
+  uint_least32_t d;
+  uint_least32_t e;
+  uint_least32_t f;
+  uint_least32_t div;
+} CAL_MATRIX; //calibration matrix for touchpanel
+
+
 class GraphicsLib : public Print
 {
   public:
-    uint_least16_t lcd_orientation;
-    int_least16_t lcd_width, lcd_height;
+    uint_least16_t lcd_orientation;      //display orientation/rotation
+    int_least16_t lcd_width, lcd_height; //screen size
+    int_least16_t lcd_x, lcd_y, lcd_z;   //calibrated pos (screen)
+    int_least16_t tp_x, tp_y;            //raw pos (touch panel)
+    int_least16_t tp_last_x, tp_last_y;  //last raw pos (touch panel)
+    CAL_MATRIX tp_matrix;                //calibration matrix
 
     GraphicsLib();
     GraphicsLib(uint_least16_t w, uint_least16_t h);
@@ -68,33 +91,39 @@ class GraphicsLib : public Print
     virtual void drawEllipse(int_least16_t x0, int_least16_t y0, int_least16_t r_x, int_least16_t r_y, uint_least16_t color);
     virtual void fillEllipse(int_least16_t x0, int_least16_t y0, int_least16_t r_x, int_least16_t r_y, uint_least16_t color);
     virtual int_least16_t drawChar(int_least16_t x, int_least16_t y, char c, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
-    int_least16_t drawChar(int_least16_t x, int_least16_t y, unsigned char c, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
-    int_least16_t drawText(int_least16_t x, int_least16_t y, char *s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
-    int_least16_t drawText(int_least16_t x, int_least16_t y, unsigned char *s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
-    int_least16_t drawText(int_least16_t x, int_least16_t y, int i, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
-    int_least16_t drawText(int_least16_t x, int_least16_t y, unsigned int i, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
-    int_least16_t drawText(int_least16_t x, int_least16_t y, long l, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
-    int_least16_t drawText(int_least16_t x, int_least16_t y, unsigned long l, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
-    int_least16_t drawText(int_least16_t x, int_least16_t y, String &s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
+    virtual int_least16_t drawChar(int_least16_t x, int_least16_t y, unsigned char c, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
+    virtual int_least16_t drawText(int_least16_t x, int_least16_t y, char *s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
+    virtual int_least16_t drawText(int_least16_t x, int_least16_t y, String &s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
 #if defined(__AVR__)
-    int_least16_t drawTextPGM(int_least16_t x, int_least16_t y, PGM_P s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
+    virtual int_least16_t drawTextPGM(int_least16_t x, int_least16_t y, PGM_P s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
 #endif
     int_least16_t drawInteger(int_least16_t x, int_least16_t y, char val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
     int_least16_t drawInteger(int_least16_t x, int_least16_t y, unsigned char val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
     int_least16_t drawInteger(int_least16_t x, int_least16_t y, int val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
+    int_least16_t drawInteger(int_least16_t x, int_least16_t y, unsigned int val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
     int_least16_t drawInteger(int_least16_t x, int_least16_t y, long val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
+    int_least16_t drawInteger(int_least16_t x, int_least16_t y, unsigned long val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
 
+    //print functions
     void setCursor(int_least16_t x, int_least16_t y);
     void setTextColor(uint_least16_t color);
     void setTextColor(uint_least16_t color, uint_least16_t bg);
     void setTextSize(uint_least8_t size);
     void setTextWrap(uint_least8_t wrap);
-
 #if ARDUINO >= 100
     virtual size_t write(uint8_t c);
 #else
     virtual void write(uint8_t c);
 #endif
+
+    //touch panel funcions
+    virtual uint_least8_t touchRead(void);
+    virtual void touchStartCal(void);
+    uint_least8_t touchSetCal(CAL_POINT *lcd, CAL_POINT *tp);
+    void touchCal(void);
+    virtual int_least16_t touchX(void);
+    virtual int_least16_t touchY(void);
+    virtual int_least16_t touchZ(void);
 
   private:
     uint_least8_t text_size, text_wrap;

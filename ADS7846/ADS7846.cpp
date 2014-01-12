@@ -18,18 +18,21 @@
 
 #define MIN_PRESSURE    (5) //minimum pressure 1...254
 
-#define LCD_WIDTH       (320)
-#define LCD_HEIGHT      (240)
-
-#define CAL_POINT_X1    (20)
-#define CAL_POINT_Y1    (20)
-#define CAL_POINT1      {CAL_POINT_X1,CAL_POINT_Y1}
-#define CAL_POINT_X2    LCD_WIDTH-20 //300
-#define CAL_POINT_Y2    LCD_HEIGHT/2 //120
-#define CAL_POINT2      {CAL_POINT_X2,CAL_POINT_Y2}
-#define CAL_POINT_X3    LCD_WIDTH/2   //160
-#define CAL_POINT_Y3    LCD_HEIGHT-20 //220
-#define CAL_POINT3      {CAL_POINT_X3,CAL_POINT_Y3}
+#ifndef LCD_WIDTH
+# define LCD_WIDTH      (320)
+# define LCD_HEIGHT     (240)
+#endif
+#ifndef CAL_POINT_X1
+# define CAL_POINT_X1   (20)
+# define CAL_POINT_Y1   (20)
+# define CAL_POINT1     {CAL_POINT_X1,CAL_POINT_Y1}
+# define CAL_POINT_X2   LCD_WIDTH-20 //300
+# define CAL_POINT_Y2   LCD_HEIGHT/2 //120
+# define CAL_POINT2     {CAL_POINT_X2,CAL_POINT_Y2}
+# define CAL_POINT_X3   LCD_WIDTH/2   //160
+# define CAL_POINT_Y3   LCD_HEIGHT-20 //220
+# define CAL_POINT3     {CAL_POINT_X3,CAL_POINT_Y3}
+#endif
 
 #define CMD_START       (0x80)
 #define CMD_12BIT       (0x00)
@@ -146,12 +149,12 @@ void ADS7846::begin(void)
 
   //set vars
   tp_matrix.div  = 0;
-  tp.x           = 0;
-  tp.y           = 0;
-  tp_last.x      = 0;
-  tp_last.y      = 0;
-  lcd.x          = 0;
-  lcd.y          = 0;
+  tp_x           = 0;
+  tp_y           = 0;
+  tp_last_x      = 0;
+  tp_last_y      = 0;
+  lcd_x          = 0;
+  lcd_y          = 0;
   pressure       = 0;
   setOrientation(0);
 
@@ -387,27 +390,27 @@ void ADS7846::calibrate(void)
   uint_least32_t x, y;
 
   //calc x pos
-  if(tp.x != tp_last.x)
+  if(tp_x != tp_last_x)
   {
-    tp_last.x = tp.x;
-    x = tp.x;
-    y = tp.y;
+    tp_last_x = tp_x;
+    x = tp_x;
+    y = tp_y;
     x = ((tp_matrix.a * x) + (tp_matrix.b * y) + tp_matrix.c) / tp_matrix.div;
          if(x < 0)          { x = 0; }
     else if(x >= LCD_WIDTH) { x = LCD_WIDTH-1; }
-    lcd.x = x;
+    lcd_x = x;
   }
 
   //calc y pos
-  if(tp.y != tp_last.y)
+  if(tp_y != tp_last_y)
   {
-    tp_last.y = tp.y;
-    x = tp.x;
-    y = tp.y;
+    tp_last_y = tp_y;
+    x = tp_x;
+    y = tp_y;
     y = ((tp_matrix.d * x) + (tp_matrix.e * y) + tp_matrix.f) / tp_matrix.div;
          if(y < 0)           { y = 0; }
     else if(y >= LCD_HEIGHT) { y = LCD_HEIGHT-1; }
-    lcd.y = y;
+    lcd_y = y;
   }
 
   return;
@@ -420,10 +423,10 @@ uint_least16_t ADS7846::getX(void)
 
   switch(lcd_orientation)
   {
-    case   0: return lcd.x;
-    case  90: return lcd.y;
-    case 180: return LCD_WIDTH-lcd.x;
-    case 270: return LCD_HEIGHT-lcd.y;
+    case   0: return lcd_x;
+    case  90: return lcd_y;
+    case 180: return LCD_WIDTH-lcd_x;
+    case 270: return LCD_HEIGHT-lcd_y;
   }
 
   return 0;
@@ -436,10 +439,10 @@ uint_least16_t ADS7846::getY(void)
 
   switch(lcd_orientation)
   {
-    case   0: return lcd.y;
-    case  90: return LCD_WIDTH-lcd.x;
-    case 180: return LCD_HEIGHT-lcd.y;
-    case 270: return lcd.x;
+    case   0: return lcd_y;
+    case  90: return LCD_WIDTH-lcd_x;
+    case 180: return LCD_HEIGHT-lcd_y;
+    case 270: return lcd_x;
   }
 
   return 0;
@@ -448,13 +451,13 @@ uint_least16_t ADS7846::getY(void)
 
 uint_least16_t ADS7846::getXraw(void)
 {
-  return tp.x;
+  return tp_x;
 }
 
 
 uint_least16_t ADS7846::getYraw(void)
 {
-  return tp.y;
+  return tp_y;
 }
 
 
@@ -549,8 +552,8 @@ void ADS7846::rd_data(void)
         y = ((a2<<2)|(b2>>6)); //12bit: ((a<<4)|(b>>4)) //10bit: ((a<<2)|(b>>6))
         if(x && y)
         {
-          tp.x = x;
-          tp.y = y;
+          tp_x = x;
+          tp_y = y;
         }
         pressure = p;
       }

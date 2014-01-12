@@ -22,6 +22,9 @@ GraphicsLib::GraphicsLib(void)
 {
   lcd_orientation = 0;
   lcd_width = lcd_height = 128;
+  lcd_x = lcd_y = lcd_z = 0;
+  tp_x = tp_y = tp_last_x = tp_last_y = 0;
+  tp_matrix.div = 0;
   text_size = 1;
   text_wrap = 1;
   text_fg = 0x0000;
@@ -37,6 +40,9 @@ GraphicsLib::GraphicsLib(uint_least16_t w, uint_least16_t h)
   lcd_orientation = 0;
   lcd_width = w;
   lcd_height = h;
+  lcd_x = lcd_y = lcd_z = 0;
+  tp_x = tp_y = tp_last_x = tp_last_y = 0;
+  tp_matrix.div = 0;
   text_size = 1;
   text_wrap = 1;
   text_fg = 0x0000;
@@ -94,26 +100,17 @@ void GraphicsLib::invertDisplay(uint_least8_t invert)
 
 void GraphicsLib::setOrientation(uint_least16_t o)
 {
-  switch(o)
-  {
-    default:
-    case   0:
-      lcd_orientation =   0;
-      break;
-    case   9:
-    case  90:
-      lcd_orientation =  90;
-      break;
-    case  18:
-    case 180:
-      lcd_orientation = 180;
-      break;
-    case  27:
-    case  14: //270&0xFF
-    case 270:
-      lcd_orientation = 270;
-      break;
-  }
+       if((o ==   9) || 
+          (o ==  90))   { lcd_orientation = 90; }
+
+  else if((o ==  18) || 
+          (o == 180))   { lcd_orientation = 180; }
+
+  else if((o ==  27) || 
+          (o ==  14) || 
+          (o == 270))   { lcd_orientation = 270; }
+
+  else                  { lcd_orientation = 0; }
 
   return;
 }
@@ -695,7 +692,7 @@ int_least16_t GraphicsLib::drawChar(int_least16_t x, int_least16_t y, char c, ui
 
 int_least16_t GraphicsLib::drawChar(int_least16_t x, int_least16_t y, unsigned char c, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
 {
-  return drawChar(x, y, (char) c, color, bg, size);
+  return drawChar(x, y, (char)c, color, bg, size);
 }
 
 
@@ -711,52 +708,6 @@ int_least16_t GraphicsLib::drawText(int_least16_t x, int_least16_t y, char *s, u
   }
 
   return x;
-}
-
-
-int_least16_t GraphicsLib::drawText(int_least16_t x, int_least16_t y, unsigned char *s, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
-{
-  return drawText(x, y, (char*) s, color, bg, size);
-}
-
-
-int_least16_t GraphicsLib::drawText(int_least16_t x, int_least16_t y, int i, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
-{
-  char tmp[16];
-
-  itoa(i, tmp, 10);
-
-  return drawText(x, y, tmp, color, bg, size);
-}
-
-
-int_least16_t GraphicsLib::drawText(int_least16_t x, int_least16_t y, unsigned int i, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
-{
-  char tmp[16];
-
-  utoa(i, tmp, 10);
-
-  return drawText(x, y, tmp, color, bg, size);
-}
-
-
-int_least16_t GraphicsLib::drawText(int_least16_t x, int_least16_t y, long l, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
-{
-  char tmp[16];
-
-  ltoa(l, tmp, 10);
-
-  return drawText(x, y, tmp, color, bg, size);
-}
-
-
-int_least16_t GraphicsLib::drawText(int_least16_t x, int_least16_t y, unsigned long l, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
-{
-  char tmp[16];
-
-  ultoa(l, tmp, 10);
-
-  return drawText(x, y, tmp, color, bg, size);
 }
 
 
@@ -798,21 +749,13 @@ int_least16_t GraphicsLib::drawTextPGM(int_least16_t x, int_least16_t y, PGM_P s
 
 int_least16_t GraphicsLib::drawInteger(int_least16_t x, int_least16_t y, char val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
 {
-  char tmp[16+1];
-
-  itoa((int)val, tmp, base);
-
-  return drawText(x, y, tmp, color, bg, size);
+  return drawInteger(x, y, (int)val, base, color, bg, size);
 }
 
 
 int_least16_t GraphicsLib::drawInteger(int_least16_t x, int_least16_t y, unsigned char val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
 {
-  char tmp[16+1];
-
-  utoa((int)val, tmp, base);
-
-  return drawText(x, y, tmp, color, bg, size);
+  return drawInteger(x, y, (unsigned int)val, base, color, bg, size);
 }
 
 
@@ -820,7 +763,17 @@ int_least16_t GraphicsLib::drawInteger(int_least16_t x, int_least16_t y, int val
 {
   char tmp[16+1];
 
-  itoa((int)val, tmp, base);
+  itoa(val, tmp, base);
+
+  return drawText(x, y, tmp, color, bg, size);
+}
+
+
+int_least16_t GraphicsLib::drawInteger(int_least16_t x, int_least16_t y, unsigned int val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
+{
+  char tmp[16+1];
+
+  utoa(val, tmp, base);
 
   return drawText(x, y, tmp, color, bg, size);
 }
@@ -830,7 +783,17 @@ int_least16_t GraphicsLib::drawInteger(int_least16_t x, int_least16_t y, long va
 {
   char tmp[16+1];
 
-  ltoa((int)val, tmp, base);
+  ltoa(val, tmp, base);
+
+  return drawText(x, y, tmp, color, bg, size);
+}
+
+
+int_least16_t GraphicsLib::drawInteger(int_least16_t x, int_least16_t y, unsigned long val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
+{
+  char tmp[16+1];
+
+  ultoa(val, tmp, base);
 
   return drawText(x, y, tmp, color, bg, size);
 }
@@ -916,4 +879,140 @@ void GraphicsLib::write(uint8_t c)
 #else
   return;
 #endif
+}
+
+
+uint_least8_t GraphicsLib::touchRead(void)
+{
+  return 0;
+}
+
+
+void GraphicsLib::touchStartCal(void)
+{
+  return;
+}
+
+
+uint_least8_t GraphicsLib::touchSetCal(CAL_POINT *lcd, CAL_POINT *tp)
+{
+  tp_matrix.div = ((tp[0].x - tp[2].x) * (tp[1].y - tp[2].y)) -
+                  ((tp[1].x - tp[2].x) * (tp[0].y - tp[2].y));
+
+  if(tp_matrix.div == 0)
+  {
+    return 1; //error
+  }
+
+  tp_matrix.a = ((lcd[0].x - lcd[2].x) * (tp[1].y - tp[2].y)) -
+                ((lcd[1].x - lcd[2].x) * (tp[0].y - tp[2].y));
+
+  tp_matrix.b = ((tp[0].x - tp[2].x) * (lcd[1].x - lcd[2].x)) -
+                ((lcd[0].x - lcd[2].x) * (tp[1].x - tp[2].x));
+
+  tp_matrix.c = (tp[2].x * lcd[1].x - tp[1].x * lcd[2].x) * tp[0].y +
+                (tp[0].x * lcd[2].x - tp[2].x * lcd[0].x) * tp[1].y +
+                (tp[1].x * lcd[0].x - tp[0].x * lcd[1].x) * tp[2].y;
+
+  tp_matrix.d = ((lcd[0].y - lcd[2].y) * (tp[1].y - tp[2].y)) -
+                ((lcd[1].y - lcd[2].y) * (tp[0].y - tp[2].y));
+
+  tp_matrix.e = ((tp[0].x - tp[2].x) * (lcd[1].y - lcd[2].y)) -
+                ((lcd[0].y - lcd[2].y) * (tp[1].x - tp[2].x));
+
+  tp_matrix.f = (tp[2].x * lcd[1].y - tp[1].x * lcd[2].y) * tp[0].y +
+                (tp[0].x * lcd[2].y - tp[2].x * lcd[0].y) * tp[1].y +
+                (tp[1].x * lcd[0].y - tp[0].x * lcd[1].y) * tp[2].y;
+
+  return 0;
+}
+
+
+void GraphicsLib::touchCal(void)
+{
+  uint_least32_t x, y;
+
+  //calc x pos
+  if(tp_x != tp_last_x)
+  {
+    tp_last_x = tp_x;
+    x = tp_x;
+    y = tp_y;
+    x = ((tp_matrix.a * x) + (tp_matrix.b * y) + tp_matrix.c) / tp_matrix.div;
+
+    switch(lcd_orientation)
+    {
+      case   0:
+      case 180:
+             if(x >= (lcd_width*2)) { x = 0; }
+        else if(x >= (lcd_width*1)) { x = lcd_width-1; }
+        break;
+      case  90:
+      case 270:
+             if(x >= (lcd_height*2)) { x = 0; }
+        else if(x >= (lcd_height*1)) { x = lcd_height-1; }
+        break;
+    }
+
+    lcd_x = x;
+  }
+
+  //calc y pos
+  if(tp_y != tp_last_y)
+  {
+    tp_last_y = tp_y;
+    x = tp_x;
+    y = tp_y;
+    y = ((tp_matrix.d * x) + (tp_matrix.e * y) + tp_matrix.f) / tp_matrix.div;
+
+    switch(lcd_orientation)
+    {
+      case   0:
+      case 180:
+             if(y >= (lcd_height*2)) { y = 0; }
+        else if(y >= (lcd_height*1)) { y = lcd_height-1; }
+        break;
+      case  90:
+      case 270:
+             if(y >= (lcd_width*2)) { y = 0; }
+        else if(y >= (lcd_width*1)) { y = lcd_width-1; }
+        break;
+    }
+
+    lcd_y = y;
+  }
+
+  return;
+}
+
+
+int_least16_t GraphicsLib::touchX(void)
+{
+  touchCal();
+
+       if(lcd_orientation ==   0){ return lcd_x; }
+  else if(lcd_orientation ==  90){ return lcd_y; }
+  else if(lcd_orientation == 180){ return lcd_width-lcd_x; }
+  else                           { return lcd_width-lcd_y; } //else if(lcd_orientation == 270)
+
+  return 0;
+}
+
+
+int_least16_t GraphicsLib::touchY(void)
+{
+  touchCal();
+  
+       if(lcd_orientation ==   0){ return lcd_y; }
+  else if(lcd_orientation ==  90){ return lcd_height-lcd_x; }
+  else if(lcd_orientation == 180){ return lcd_height-lcd_y; }
+  else                           { return lcd_x; } //else if(lcd_orientation == 270)
+
+  return 0;
+}
+
+
+int_least16_t GraphicsLib::touchZ(void)
+{
+  return lcd_z;
 }

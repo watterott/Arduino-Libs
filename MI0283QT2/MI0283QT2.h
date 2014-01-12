@@ -21,9 +21,13 @@ class MI0283QT2 : public GraphicsLib
     void draw(uint_least16_t color);
     void drawStop(void);
 
+    uint_least8_t touchRead(void);
+    void touchStartCal(void);
+
   private:
     void reset(uint_least8_t clock_div, uint_least8_t rst_pin);
     void wr_cmd(uint_least8_t cmd, uint_least8_t param);
+    uint_least8_t rd_spi(void);
     void wr_spi(uint_least8_t data);
 };
 

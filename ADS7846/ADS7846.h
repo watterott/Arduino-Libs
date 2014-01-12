@@ -8,41 +8,15 @@
 #include "../MI0283QT9/MI0283QT9.h"
 
 
-typedef struct 
-{
-  uint_least16_t x;
-  uint_least16_t y;
-} TP_POINT;
-
-
-typedef struct 
-{
-  uint_least32_t x;
-  uint_least32_t y;
-} CAL_POINT;
-
-
-typedef struct 
-{
-  uint_least32_t a;
-  uint_least32_t b;
-  uint_least32_t c;
-  uint_least32_t d;
-  uint_least32_t e;
-  uint_least32_t f;
-  uint_least32_t div;
-} CAL_MATRIX;
-
-
 class ADS7846
 {
   public:
-    uint_least16_t lcd_orientation; //lcd_orientation
-    TP_POINT lcd;                   //calibrated pos (screen)
-    TP_POINT tp;                    //raw pos (touch panel)
-    TP_POINT tp_last;               //last raw pos (touch panel)
-    CAL_MATRIX tp_matrix;           //calibrate matrix
-    uint_least8_t pressure;         //touch panel pressure
+    uint_least16_t lcd_orientation;      //lcd_orientation
+    uint_least16_t lcd_x, lcd_y;         //calibrated pos (screen)
+    uint_least16_t tp_x, tp_y;           //raw pos (touch panel)
+    uint_least16_t tp_last_x, tp_last_y; //last raw pos (touch panel)
+    CAL_MATRIX tp_matrix;                //calibrate matrix
+    uint_least8_t pressure;              //touch panel pressure
 
     ADS7846();
 
@@ -64,7 +38,7 @@ class ADS7846
 
   private:
     void rd_data(void);
-    uint8_t rd_spi(void);
+    uint_least8_t rd_spi(void);
     void wr_spi(uint_least8_t data);
 };
 
