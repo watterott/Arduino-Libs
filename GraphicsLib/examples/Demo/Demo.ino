@@ -83,7 +83,7 @@ void setup()
   //print
   lcd.setTextSize(1|clear_bg);
   lcd.setTextColor(RGB(200,0,0), RGB(255,255,255));
-  lcd.setCursor(0, 60);
+  lcd.setCursor(2, 60);
   lcd.print("String from RAM\nnext line1\n"); //string from ram
   lcd.println(12345);      //int
   lcd.println('A');        //char

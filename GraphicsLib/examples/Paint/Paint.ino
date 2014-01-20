@@ -65,8 +65,9 @@ void setup()
   //lcd.begin(SPI_CLOCK_DIV4, 8); //SPI Displays: spi-clk=Fcpu/4, rst-pin=8
   //lcd.begin(0x20, 8); //I2C Displays: addr=0x20, rst-pin=8
 
-  //init touchpanel
-  if(readCalData()) //calibration data in EEPROM?
+  //set touchpanel calibration data
+  lcd.touchRead();
+  if(lcd.touchZ() || readCalData()) //calibration data in EEPROM?
   {
     lcd.touchStartCal(); //calibrate touchpanel
     writeCalData(); //write data to EEPROM
