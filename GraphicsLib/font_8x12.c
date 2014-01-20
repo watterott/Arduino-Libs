@@ -1,5 +1,7 @@
 #include <inttypes.h>
-#include <avr/pgmspace.h>
+#if defined(__AVR__)
+# include <avr/pgmspace.h>
+#endif
 #include "fonts.h"
 
 #ifdef FONT_8X12

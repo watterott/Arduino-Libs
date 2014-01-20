@@ -1,6 +1,10 @@
 #ifndef fonts_h
 #define fonts_h
 
+#if defined(__AVR__)
+# include <avr/pgmspace.h>
+#endif
+
 // All font data from Benedikt K.
 // http://www.mikrocontroller.net/topic/54860
 
