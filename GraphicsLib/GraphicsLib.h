@@ -77,25 +77,25 @@ class GraphicsLib : public Print
     virtual void drawStart(void);
     virtual void draw(uint_least16_t color);
     virtual void drawStop(void);
-    virtual void fillScreen(uint_least16_t color);
-    virtual void drawPixel(int_least16_t x0, int_least16_t y0, uint_least16_t color);
-    virtual void drawLine(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, uint_least16_t color);
-    virtual void drawRect(int_least16_t x0, int_least16_t y0, int_least16_t w, int_least16_t h, uint_least16_t color);
-    virtual void fillRect(int_least16_t x0, int_least16_t y0, int_least16_t w, int_least16_t h, uint_least16_t color);
-    virtual void drawTriangle(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, int_least16_t x2, int_least16_t y2, uint_least16_t color);
-    virtual void fillTriangle(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, int_least16_t x2, int_least16_t y2, uint_least16_t color);
-    virtual void drawRoundRect(int_least16_t x0, int_least16_t y0, int_least16_t w, int_least16_t h, int_least16_t r, uint_least16_t color);
-    virtual void fillRoundRect(int_least16_t x0, int_least16_t y0, int_least16_t w, int_least16_t h, int_least16_t r, uint_least16_t color);
-    virtual void drawCircle(int_least16_t x0, int_least16_t y0, int_least16_t r, uint_least16_t color);
-    virtual void fillCircle(int_least16_t x0, int_least16_t y0, int_least16_t r, uint_least16_t color);
-    virtual void drawEllipse(int_least16_t x0, int_least16_t y0, int_least16_t r_x, int_least16_t r_y, uint_least16_t color);
-    virtual void fillEllipse(int_least16_t x0, int_least16_t y0, int_least16_t r_x, int_least16_t r_y, uint_least16_t color);
+    void fillScreen(uint_least16_t color);
+    void drawPixel(int_least16_t x0, int_least16_t y0, uint_least16_t color);
+    void drawLine(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, uint_least16_t color);
+    void drawRect(int_least16_t x0, int_least16_t y0, int_least16_t w, int_least16_t h, uint_least16_t color);
+    void fillRect(int_least16_t x0, int_least16_t y0, int_least16_t w, int_least16_t h, uint_least16_t color);
+    void drawTriangle(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, int_least16_t x2, int_least16_t y2, uint_least16_t color);
+    void fillTriangle(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, int_least16_t x2, int_least16_t y2, uint_least16_t color);
+    void drawRoundRect(int_least16_t x0, int_least16_t y0, int_least16_t w, int_least16_t h, int_least16_t r, uint_least16_t color);
+    void fillRoundRect(int_least16_t x0, int_least16_t y0, int_least16_t w, int_least16_t h, int_least16_t r, uint_least16_t color);
+    void drawCircle(int_least16_t x0, int_least16_t y0, int_least16_t r, uint_least16_t color);
+    void fillCircle(int_least16_t x0, int_least16_t y0, int_least16_t r, uint_least16_t color);
+    void drawEllipse(int_least16_t x0, int_least16_t y0, int_least16_t r_x, int_least16_t r_y, uint_least16_t color);
+    void fillEllipse(int_least16_t x0, int_least16_t y0, int_least16_t r_x, int_least16_t r_y, uint_least16_t color);
     virtual int_least16_t drawChar(int_least16_t x, int_least16_t y, char c, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
     virtual int_least16_t drawChar(int_least16_t x, int_least16_t y, unsigned char c, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
-    virtual int_least16_t drawText(int_least16_t x, int_least16_t y, char *s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
-    virtual int_least16_t drawText(int_least16_t x, int_least16_t y, String &s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
+    int_least16_t drawText(int_least16_t x, int_least16_t y, char *s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
+    int_least16_t drawText(int_least16_t x, int_least16_t y, String &s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
 #if defined(__AVR__)
-    virtual int_least16_t drawTextPGM(int_least16_t x, int_least16_t y, PGM_P s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
+    int_least16_t drawTextPGM(int_least16_t x, int_least16_t y, PGM_P s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
 #endif
     int_least16_t drawInteger(int_least16_t x, int_least16_t y, char val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
     int_least16_t drawInteger(int_least16_t x, int_least16_t y, unsigned char val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
@@ -117,13 +117,13 @@ class GraphicsLib : public Print
 #endif
 
     //touch panel funcions
-    virtual uint_least8_t touchRead(void);
-    virtual void touchStartCal(void);
+    uint_least8_t touchRead(void);
+    void touchStartCal(void);
     uint_least8_t touchSetCal(CAL_POINT *lcd, CAL_POINT *tp);
     void touchCal(void);
-    virtual int_least16_t touchX(void);
-    virtual int_least16_t touchY(void);
-    virtual int_least16_t touchZ(void);
+    int_least16_t touchX(void);
+    int_least16_t touchY(void);
+    int_least16_t touchZ(void);
 
   private:
     uint_least8_t text_size, text_wrap;

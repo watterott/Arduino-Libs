@@ -100,18 +100,6 @@ void GraphicsLib::invertDisplay(uint_least8_t invert)
 
 void GraphicsLib::setOrientation(uint_least16_t o)
 {
-       if((o ==   9) || 
-          (o ==  90))   { lcd_orientation = 90; }
-
-  else if((o ==  18) || 
-          (o == 180))   { lcd_orientation = 180; }
-
-  else if((o ==  27) || 
-          (o ==  14) || 
-          (o == 270))   { lcd_orientation = 270; }
-
-  else                  { lcd_orientation = 0; }
-
   return;
 }
 
