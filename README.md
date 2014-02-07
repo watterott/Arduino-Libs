@@ -1,4 +1,20 @@
 # Arduino Libraries
+```
+ADS7846          -> ADS7846/TSC2046 Touch-Controller
+ArdOSC           -> OSC for RedFly
+CANdiy           -> CANdiy-Shield (CAN-Bus)
+digitalWriteFast -> Fast pin access for AVR
+DisplayI2C       -> MI0283QT-Adapter v2 + GLCD-Shield (SPI)
+DisplaySPI       -> MI0283QT-Adapter v2 + GLCD-Shield (I2C)
+DS1307           -> DS1307 RTC (Real-Time-Clock)
+GraphicsLib      -> General grahipcs library
+MCP2515          -> MCP2515 CAN-Controller
+MI0283QT2        -> MI0283QT-2 Display (SPI)
+MI0283QT9        -> MI0283QT-9 / MI0283QT-9A / MI0283QT-11 Display (SPI)
+mSD              -> mSD-Shield (microSD, RTC)
+RedFly           -> RedFly-Shield (WiFi/WLAN)
+```
+
 
 ## Installation
 Download the complete libraries [here](https://github.com/watterott/Arduino-Libs/archive/master.zip).

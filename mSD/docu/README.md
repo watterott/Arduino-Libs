@@ -23,4 +23,4 @@ For using the RTC on Mega boards the I2C pins have to be changed.
 
 ## Examples
 
-Examples can be found in the Arduino IDE under ```File -> Examples -> mSDshield```.
+Examples can be found in the Arduino IDE under ```File -> Examples -> mSD```.
