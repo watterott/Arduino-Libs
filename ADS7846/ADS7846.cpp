@@ -578,8 +578,9 @@ void ADS7846::rd_data(void)
 uint_least8_t ADS7846::rd_spi(void)
 {
 #if defined(SOFTWARE_SPI)
+  uint_least8_t data=0;
   MOSI_LOW();
-  for(uint_least8_t data=0, bit=8; bit!=0; bit--)
+  for(uint_least8_t bit=8; bit!=0; bit--)
   {
     CLK_HIGH();
     data <<= 1;
