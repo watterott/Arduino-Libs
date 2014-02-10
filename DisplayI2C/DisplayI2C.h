@@ -23,11 +23,17 @@ class DisplayI2C : public GraphicsLib
     void led(uint_least8_t power);
     void invertDisplay(uint_least8_t invert);
     void setOrientation(uint_least16_t o);
+    void setArea(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1);
+    void drawStart(void);
+    void draw(uint_least16_t color);
+    void drawStop(void);
     void fillScreen(uint_least16_t color);
     void drawPixel(int_least16_t x0, int_least16_t y0, uint_least16_t color);
     void drawLine(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, uint_least16_t color);
     void drawRect(int_least16_t x0, int_least16_t y0, int_least16_t w, int_least16_t h, uint_least16_t color);
     void fillRect(int_least16_t x0, int_least16_t y0, int_least16_t w, int_least16_t h, uint_least16_t color);
+    void drawTriangle(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, int_least16_t x2, int_least16_t y2, uint_least16_t color);
+    void fillTriangle(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, int_least16_t x2, int_least16_t y2, uint_least16_t color);
     void drawRoundRect(int_least16_t x0, int_least16_t y0, int_least16_t w, int_least16_t h, int_least16_t r, uint_least16_t color);
     void fillRoundRect(int_least16_t x0, int_least16_t y0, int_least16_t w, int_least16_t h, int_least16_t r, uint_least16_t color);
     void drawCircle(int_least16_t x0, int_least16_t y0, int_least16_t r, uint_least16_t color);

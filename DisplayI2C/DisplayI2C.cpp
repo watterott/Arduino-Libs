@@ -270,6 +270,30 @@ void DisplayI2C::setOrientation(uint_least16_t o)
 }
 
 
+void DisplayI2C::setArea(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1)
+{
+  return;
+}
+
+
+void DisplayI2C::drawStart(void)
+{
+  return;
+}
+
+
+void DisplayI2C::draw(uint_least16_t color)
+{
+  return;
+}
+
+
+void DisplayI2C::drawStop(void)
+{
+  return;
+}
+
+
 void DisplayI2C::fillScreen(uint_least16_t color)
 {
   Wire.beginTransmission(i2c_addr);
@@ -391,6 +415,73 @@ void DisplayI2C::fillRect(int_least16_t x0, int_least16_t y0, int_least16_t w, i
   Wire.write(color>>8);
   Wire.write(color>>0);
   Wire.endTransmission();
+
+  return;
+}
+
+
+void DisplayI2C::drawTriangle(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, int_least16_t x2, int_least16_t y2, uint_least16_t color)
+{
+  drawLine(x0, y0, x1, y1, color);
+  drawLine(x1, y1, x2, y2, color);
+  drawLine(x2, y2, x0, y0, color);
+
+  return;
+}
+
+
+void DisplayI2C::fillTriangle(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, int_least16_t x2, int_least16_t y2, uint_least16_t color)
+{
+  int_least16_t a, b, y, last, sa, sb;
+  int_least16_t dx01, dy01, dx02, dy02, dx12, dy12;
+
+  //sort coordinates (y2 >= y1 >= y0)
+  if(y0 > y1){ SWAP(y0, y1); SWAP(x0, x1); }
+  if(y1 > y2){ SWAP(y2, y1); SWAP(x2, x1); }
+  if(y0 > y1){ SWAP(y0, y1); SWAP(x0, x1); }
+
+  if(y0 == y2) //all on the same line
+  {
+    a = b = x0;
+         if(x1 < a){ a = x1; }
+    else if(x1 > b){ b = x1; }
+         if(x2 < a){ a = x2; }
+    else if(x2 > b){ b = x2; }
+    drawLine(a, y0, b, y0, color);
+    return;
+  }
+
+  dx01 = x1 - x0,
+  dy01 = y1 - y0,
+  dx02 = x2 - x0,
+  dy02 = y2 - y0,
+  dx12 = x2 - x1,
+  dy12 = y2 - y1;
+
+  //upper part of triangle
+  if(y1 == y2) last = y1;
+  else         last = y1-1;
+
+  for(y=y0, sa=0, sb=0; y<=last; y++)
+  {
+    a   = x0 + sa / dy01;
+    b   = x0 + sb / dy02;
+    sa += dx01;
+    sb += dx02;
+    drawLine(a, y, b, y, color);
+  }
+
+  //lower part of triangle
+  sa = dx12 * (y - y1);
+  sb = dx02 * (y - y0);
+  for(; y<=y2; y++)
+  {
+    a   = x1 + sa / dy12;
+    b   = x0 + sb / dy02;
+    sa += dx12;
+    sb += dx02;
+    drawLine(a, y, b, y, color);
+  }
 
   return;
 }
@@ -785,7 +876,7 @@ uint_least8_t DisplayI2C::touchRead(void)
       lcd_z = Wire.read();
     }
 
-    if((lcd_z != 0) && (lcd_z != 0xFFFF))
+    if((lcd_z != 0) && (lcd_z != 0xFFFF) && (lcd_x >= 0) && (lcd_y >= 0))
     {
       return 1;
     }

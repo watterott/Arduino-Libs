@@ -69,14 +69,15 @@ class GraphicsLib : public Print
     int_least16_t height(void);
     void setRotation(uint_least16_t r);
     uint_least16_t getRotation(void);
+    uint_least16_t getOrientation(void);
+    void invertDisplay(uint_least8_t invert);
 
-    virtual void invertDisplay(uint_least8_t invert);
-    virtual void setOrientation(uint_least16_t o);
-    virtual uint_least16_t getOrientation(void);
-    virtual void setArea(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1);
-    virtual void drawStart(void);
-    virtual void draw(uint_least16_t color);
-    virtual void drawStop(void);
+    virtual void setOrientation(uint_least16_t o) = 0;
+    virtual void setArea(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1) = 0;
+    virtual void drawStart(void) = 0;
+    virtual void draw(uint_least16_t color) = 0;
+    virtual void drawStop(void) = 0;
+
     void fillScreen(uint_least16_t color);
     void drawPixel(int_least16_t x0, int_least16_t y0, uint_least16_t color);
     void drawLine(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, uint_least16_t color);

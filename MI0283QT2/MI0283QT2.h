@@ -11,7 +11,6 @@ class MI0283QT2 : public GraphicsLib
   public:
     MI0283QT2();
 
-    void begin(uint_least8_t clock_div, uint_least8_t rst_pin);
     void begin(uint_least8_t clock_div);
     void begin(void);
     void led(uint_least8_t power);
@@ -25,7 +24,7 @@ class MI0283QT2 : public GraphicsLib
     void touchStartCal(void);
 
   private:
-    void reset(uint_least8_t clock_div, uint_least8_t rst_pin);
+    void reset(uint_least8_t clock_div);
     void wr_cmd(uint_least8_t cmd, uint_least8_t param);
     uint_least8_t rd_spi(void);
     void wr_spi(uint_least8_t data);

@@ -88,19 +88,7 @@ void GraphicsLib::setRotation(uint_least16_t r)
 
 uint_least16_t GraphicsLib::getRotation(void)
 {
-  return getOrientation();
-}
-
-
-void GraphicsLib::invertDisplay(uint_least8_t invert)
-{
-  return;
-}
-
-
-void GraphicsLib::setOrientation(uint_least16_t o)
-{
-  return;
+  return lcd_orientation;
 }
 
 
@@ -110,25 +98,7 @@ uint_least16_t GraphicsLib::getOrientation(void)
 }
 
 
-void GraphicsLib::setArea(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1)
-{
-  return;
-}
-
-
-void GraphicsLib::drawStart(void)
-{
-  return;
-}
-
-
-void GraphicsLib::draw(uint_least16_t color)
-{
-  return;
-}
-
-
-void GraphicsLib::drawStop(void)
+void GraphicsLib::invertDisplay(uint_least8_t invert)
 {
   return;
 }
@@ -297,9 +267,9 @@ void GraphicsLib::fillTriangle(int_least16_t x0, int_least16_t y0, int_least16_t
   if(y0 > y1){ SWAP(y0, y1); SWAP(x0, x1); }
   if(y1 > y2){ SWAP(y2, y1); SWAP(x2, x1); }
   if(y0 > y1){ SWAP(y0, y1); SWAP(x0, x1); }
-  
+
   if(y0 == y2) //all on the same line
-  { 
+  {
     a = b = x0;
          if(x1 < a){ a = x1; }
     else if(x1 > b){ b = x1; }

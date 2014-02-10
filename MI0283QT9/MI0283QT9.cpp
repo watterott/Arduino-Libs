@@ -18,7 +18,7 @@
 #include "MI0283QT9.h"
 
 
-//#define SOFTWARE_SPI
+//#define SOFTWARE_SPI //use software SPI om pins 11,12,13
 
 #define ADS7846 //enable ADS7846 support
 
@@ -28,6 +28,7 @@
 # define LCD_WIDTH      (320)
 # define LCD_HEIGHT     (240)
 #endif
+
 #ifndef CAL_POINT_X1
 # define CAL_POINT_X1   (20)
 # define CAL_POINT_Y1   (20)
@@ -40,12 +41,14 @@
 # define CAL_POINT3     {CAL_POINT_X3,CAL_POINT_Y3}
 #endif
 
+
 #if (defined(__AVR_ATmega1280__) || \
      defined(__AVR_ATmega1281__) || \
      defined(__AVR_ATmega2560__) || \
      defined(__AVR_ATmega2561__))      //--- Arduino Mega ---
 
 # define LED_PIN        (9) //PH6
+# define RST_PIN        (8)
 # define CS_PIN         (7)
 # define ADSCS_PIN      (6)
 # if defined(SOFTWARE_SPI)
@@ -62,6 +65,7 @@
        defined(__AVR_ATmega644P__))    //--- Arduino 644 (www.mafu-foto.de) ---
 
 # define LED_PIN        (3) //PB3
+# define RST_PIN        (12)
 # define CS_PIN         (13)
 # define ADSCS_PIN      (14)
 # define MOSI_PIN       (5)
@@ -71,15 +75,23 @@
 #elif defined(__AVR_ATmega32U4__)      //--- Arduino Leonardo ---
 
 # define LED_PIN        (9) //PB5
+# define RST_PIN        (8)
 # define CS_PIN         (7)
 # define ADSCS_PIN      (6)
-# define MOSI_PIN       (16) //PB2
-# define MISO_PIN       (14) //PB3
-# define CLK_PIN        (15) //PB1
+# if defined(SOFTWARE_SPI)
+#  define MOSI_PIN      (11)
+#  define MISO_PIN      (12)
+#  define CLK_PIN       (13)
+# else
+#  define MOSI_PIN      (16) //PB2
+#  define MISO_PIN      (14) //PB3
+#  define CLK_PIN       (15) //PB1
+# endif
 
 #else                                  //--- Arduino Uno ---
 
 # define LED_PIN        (9) //PB1
+# define RST_PIN        (8)
 # define CS_PIN         (7)
 # define ADSCS_PIN      (6)
 # define MOSI_PIN       (11)
@@ -91,6 +103,9 @@
 
 #define LED_ENABLE()    digitalWriteFast(LED_PIN, HIGH)
 #define LED_DISABLE()   digitalWriteFast(LED_PIN, LOW)
+
+#define RST_DISABLE()   digitalWriteFast(RST_PIN, HIGH)
+#define RST_ENABLE()    digitalWriteFast(RST_PIN, LOW)
 
 #define CS_DISABLE()    digitalWriteFast(CS_PIN, HIGH)
 #define CS_ENABLE()     digitalWriteFast(CS_PIN, LOW)
@@ -182,14 +197,13 @@ MI0283QT9::MI0283QT9(void) : GraphicsLib(LCD_WIDTH, LCD_HEIGHT)
 //-------------------- Public --------------------
 
 
-void MI0283QT9::begin(uint_least8_t clock_div, uint_least8_t rst_pin)
+void MI0283QT9::begin(uint_least8_t clock_div)
 {
   //init pins
-  if(rst_pin < 0xFF)
-  {
-    pinMode(rst_pin, OUTPUT);
-    digitalWrite(rst_pin, LOW);
-  }
+#if defined(RST_PIN)
+  pinMode(RST_PIN, OUTPUT);
+  RST_ENABLE();
+#endif
   pinMode(LED_PIN, OUTPUT);
   pinMode(CS_PIN, OUTPUT);
   pinMode(CLK_PIN, OUTPUT);
@@ -210,7 +224,7 @@ void MI0283QT9::begin(uint_least8_t clock_div, uint_least8_t rst_pin)
 #endif
 
   //reset display
-  reset(clock_div, rst_pin);
+  reset(clock_div);
 
   //enable backlight
   led(50);
@@ -219,15 +233,9 @@ void MI0283QT9::begin(uint_least8_t clock_div, uint_least8_t rst_pin)
 }
 
 
-void MI0283QT9::begin(uint_least8_t clock_div)
-{
-  return begin(clock_div, 0xFF);
-}
-
-
 void MI0283QT9::begin(void)
 {
-  return begin(SPI_CLOCK_DIV4, 0xFF);
+  return begin(SPI_CLOCK_DIV4);
 }
 
 
@@ -563,10 +571,10 @@ const uint8_t initdataQT9[] =
 #endif
 {
   //0x40| 1, LCD_CMD_RESET,
-  //0xC0|60,
-  //0xC0|60,
+  //0xC0|60, //60ms
+  //0xC0|60, //60ms
   0x40| 1, LCD_CMD_DISPLAY_OFF,
-  0xC0|20,
+  0xC0|20, //20ms
   0x40| 1, LCD_CMD_POWER_CTRLB,
   0x80| 3, 0x00, 0x83, 0x30, //0x83 0x81 0xAA
   0x40| 1, LCD_CMD_POWERON_SEQ_CTRL,
@@ -614,15 +622,15 @@ const uint8_t initdataQT9[] =
   0x80| 2, 0x00, 0x00,
   0x80| 2, ((LCD_HEIGHT-1)>>8)&0xFF, (LCD_HEIGHT-1)&0xFF,
   0x40| 1, LCD_CMD_SLEEPOUT,
-  0xC0|60,
-  0xC0|60,
+  0xC0|60, //60ms
+  0xC0|60, //60ms
   0x40| 1, LCD_CMD_DISPLAY_ON,
-  0xC0|20,
+  0xC0|20, //20ms
   0xFF   , 0xFF
 };
 
 
-void MI0283QT9::reset(uint_least8_t clock_div, uint_least8_t rst_pin)
+void MI0283QT9::reset(uint_least8_t clock_div)
 {
   uint_least8_t c, i;
 #if defined(__AVR__)
@@ -638,13 +646,12 @@ void MI0283QT9::reset(uint_least8_t clock_div, uint_least8_t rst_pin)
 
   //reset
   CS_DISABLE();
-  if(rst_pin < 0xFF)
-  {
-    digitalWrite(rst_pin, LOW);
-    delay(50);
-    digitalWrite(rst_pin, HIGH);
-    delay(120);
-  }
+#if defined(RST_PIN)
+  RST_ENABLE();
+  delay(50);
+  RST_DISABLE();
+  delay(120);
+#endif
 
   //send init commands and data
   ptr = &initdataQT9[0];
@@ -774,8 +781,9 @@ void MI0283QT9::wr_data(uint_least8_t data)
 uint_least8_t MI0283QT9::rd_spi(void)
 {
 #if defined(SOFTWARE_SPI)
+  uint_least8_t data=0;
   MOSI_LOW();
-  for(uint_least8_t data=0, bit=8; bit!=0; bit--)
+  for(uint_least8_t bit=8; bit!=0; bit--)
   {
     CLK_HIGH();
     data <<= 1;
