@@ -18,7 +18,9 @@
 #include "MI0283QT9.h"
 
 
-//#define SOFTWARE_SPI //use software SPI om pins 11,12,13
+//#define SOFTWARE_SPI //use software SPI on pins 11,12,13
+
+//#define USE_8BIT_SPI //use 8bit SPI for the display
 
 #define ADS7846 //enable ADS7846 support
 
@@ -50,6 +52,7 @@
 # define LED_PIN        (9) //PH6
 # define RST_PIN        (8)
 # define CS_PIN         (7)
+# define RS_PIN         (5)
 # define ADSCS_PIN      (6)
 # if defined(SOFTWARE_SPI)
 #  define MOSI_PIN      (11)
@@ -67,6 +70,7 @@
 # define LED_PIN        (3) //PB3
 # define RST_PIN        (12)
 # define CS_PIN         (13)
+# define RS_PIN         (15)
 # define ADSCS_PIN      (14)
 # define MOSI_PIN       (5)
 # define MISO_PIN       (6)
@@ -77,6 +81,7 @@
 # define LED_PIN        (9) //PB5
 # define RST_PIN        (8)
 # define CS_PIN         (7)
+# define RS_PIN         (5)
 # define ADSCS_PIN      (6)
 # if defined(SOFTWARE_SPI)
 #  define MOSI_PIN      (11)
@@ -93,6 +98,7 @@
 # define LED_PIN        (9) //PB1
 # define RST_PIN        (8)
 # define CS_PIN         (7)
+# define RS_PIN         (5)
 # define ADSCS_PIN      (6)
 # define MOSI_PIN       (11)
 # define MISO_PIN       (12)
@@ -109,6 +115,9 @@
 
 #define CS_DISABLE()    digitalWriteFast(CS_PIN, HIGH)
 #define CS_ENABLE()     digitalWriteFast(CS_PIN, LOW)
+
+#define RS_HIGH()       digitalWriteFast(RS_PIN, HIGH)
+#define RS_LOW()        digitalWriteFast(RS_PIN, LOW)
 
 #define MOSI_HIGH()     digitalWriteFast(MOSI_PIN, HIGH)
 #define MOSI_LOW()      digitalWriteFast(MOSI_PIN, LOW)
@@ -206,6 +215,10 @@ void MI0283QT9::begin(uint_least8_t clock_div)
 #endif
   pinMode(LED_PIN, OUTPUT);
   pinMode(CS_PIN, OUTPUT);
+#if defined(USE_8BIT_SPI)
+  pinMode(RS_PIN, OUTPUT);
+  RS_HIGH();
+#endif
   pinMode(CLK_PIN, OUTPUT);
   pinMode(MOSI_PIN, OUTPUT);
   pinMode(MISO_PIN, INPUT);
@@ -356,28 +369,36 @@ void MI0283QT9::drawStart(void)
 
 void MI0283QT9::draw(uint_least16_t color)
 {
+#if defined(USE_8BIT_SPI)
+//  RS_HIGH(); //data
+# else
   //9th bit
   MOSI_HIGH(); //data
   CLK_LOW();
-#if defined(SOFTWARE_SPI)
-  CLK_HIGH();
-#else if defined(__AVR__)
+# if defined(__AVR__) && !defined(SOFTWARE_SPI)
   SPCR &= ~(1<<SPE); //disable SPI
   CLK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
+# else
+  CLK_HIGH();
+# endif
 #endif
 
   wr_spi(color>>8);
 
+#if defined(USE_8BIT_SPI)
+//  RS_HIGH(); //data
+# else
   //9th bit
   MOSI_HIGH(); //data
   CLK_LOW();
-#if defined(SOFTWARE_SPI)
-  CLK_HIGH();
-#else if defined(__AVR__)
+# if defined(__AVR__) && !defined(SOFTWARE_SPI)
   SPCR &= ~(1<<SPE); //disable SPI
   CLK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
+# else
+  CLK_HIGH();
+# endif
 #endif
 
   wr_spi(color);
@@ -700,20 +721,28 @@ void MI0283QT9::wr_cmd(uint_least8_t cmd)
 {
   CS_ENABLE();
 
+#if defined(USE_8BIT_SPI)
+  RS_LOW(); //cmd
+# else
   //9th bit
   MOSI_LOW(); //cmd
   CLK_LOW();
-#if defined(__AVR__) && !defined(SOFTWARE_SPI)
+# if defined(__AVR__) && !defined(SOFTWARE_SPI)
   SPCR &= ~(1<<SPE); //disable SPI
   CLK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
-#else
+# else
   CLK_HIGH();
+# endif
 #endif
 
   wr_spi(cmd);
 
   CS_DISABLE();
+
+#if defined(USE_8BIT_SPI)
+  RS_HIGH(); //data
+#endif
 
   return;
 }
@@ -723,28 +752,36 @@ void MI0283QT9::wr_data16(uint_least16_t data)
 {
   CS_ENABLE();
 
+#if defined(USE_8BIT_SPI)
+//  RS_HIGH(); //data
+# else
   //9th bit
   MOSI_HIGH(); //data
   CLK_LOW();
-#if defined(__AVR__) && !defined(SOFTWARE_SPI)
+# if defined(__AVR__) && !defined(SOFTWARE_SPI)
   SPCR &= ~(1<<SPE); //disable SPI
   CLK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
-#else
+# else
   CLK_HIGH();
+# endif
 #endif
 
   wr_spi(data>>8);
 
+#if defined(USE_8BIT_SPI)
+//  RS_HIGH(); //data
+# else
   //9th bit
   MOSI_HIGH(); //data
   CLK_LOW();
-#if defined(__AVR__) && !defined(SOFTWARE_SPI)
+# if defined(__AVR__) && !defined(SOFTWARE_SPI)
   SPCR &= ~(1<<SPE); //disable SPI
   CLK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
-#else
+# else
   CLK_HIGH();
+# endif
 #endif
 
   wr_spi(data);
@@ -759,15 +796,19 @@ void MI0283QT9::wr_data(uint_least8_t data)
 {
   CS_ENABLE();
 
+#if defined(USE_8BIT_SPI)
+  RS_HIGH(); //data
+#else
   //9th bit
   MOSI_HIGH(); //data
   CLK_LOW();
-#if defined(__AVR__) && !defined(SOFTWARE_SPI)
+# if defined(__AVR__) && !defined(SOFTWARE_SPI)
   SPCR &= ~(1<<SPE); //disable SPI
   CLK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
-#else
+# else
   CLK_HIGH();
+# endif
 #endif
 
   wr_spi(data);
