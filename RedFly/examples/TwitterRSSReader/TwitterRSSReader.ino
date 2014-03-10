@@ -38,12 +38,12 @@ RedFlyClient client(server, 80);
 // #define FILENAME "statuses/user_timeline/redflyshield.rss?count=5"
 
 //alternative 1: http://www.rssitfor.me/getrss?name=USERNAME
- #define HOSTNAME "rssitfor.me"
- #define FILENAME "getrss?name=redflyshield?count=5"
+// #define HOSTNAME "rssitfor.me"
+// #define FILENAME "getrss?name=redflyshield?count=5"
 
 //alternatives 2: http://twfeed.com/feed/USERNAME or http://twfeed.com/atom/USERNAME
-// #define HOSTNAME "twfeed.com"
-// #define FILENAME "feed/redflyshield"
+ #define HOSTNAME "twfeed.com"
+ #define FILENAME "feed/redflyshield?count=5"
 
 
 //display output functions
@@ -170,7 +170,7 @@ uint8_t request_data() //send request to server
     for(i=0, last_time=0; client.connected() == 0;)
     {
       ms = millis();
-      if(((ms-last_time) > 2000)) //every 2s
+      if(((ms-last_time) > 3000)) //every 3s
       {
         last_time = ms; //save time
         infoText("Connecting...");

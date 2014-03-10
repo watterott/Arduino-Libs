@@ -138,7 +138,7 @@ void loop()
       c = (server.read()!=0) ? HIGH : LOW;
       digitalWrite(led_pin, c);
     }
-    else if(((ms-last_time) > 100)) //check switch every 100ms
+    else if((ms-last_time) > 100) //check switch every 100ms
     {
       last_time = ms; //save time
       c = digitalRead(sw_pin); //read switch
@@ -161,7 +161,7 @@ void loop()
       c = (client.read()!=0) ? HIGH : LOW;
       digitalWrite(led_pin, c);
     }
-    else if(((ms-last_time) > 100)) //check switch every 100ms
+    else if((ms-last_time) > 100) //check switch every 100ms
     {
       last_time = ms; //save time
       c = digitalRead(sw_pin); //read switch
