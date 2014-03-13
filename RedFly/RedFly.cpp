@@ -30,24 +30,27 @@
 #define CS_DISABLE()    digitalWrite(CS_PIN, HIGH)
 #define CS_ENABLE()     digitalWrite(CS_PIN, LOW)
 
-#if defined(UBRRH) && defined(UBRRL)
+#if defined(__AVR__) && defined(UBRRH) && defined(UBRRL)
 # define _UCSRA_  UCSRA
 # define _RXC_    RXC
 # define _UCSRC_  UCSRC
 # define _USBS_   USBS
 # define _SERIAL_ Serial
-#elif !defined(UBRR0H) && !defined(UBRR0L)
+#elif defined(__AVR__) && !defined(UBRR0H) && !defined(UBRR0L)
 # define _UCSRA_ UCSR1A
 # define _RXC_   RXC1
 # define _UCSRC_ UCSR1C
 # define _USBS_  USBS1
 # define _SERIAL_ Serial1
-#else
+#elif defined(__AVR__)
 # define _UCSRA_ UCSR0A
 # define _RXC_   RXC0
 # define _UCSRC_ UCSR0C
 # define _USBS_  USBS0
 # define _SERIAL_ Serial
+#else
+# define _SERIAL_ Serial
+# define _USART_  USART0
 #endif
 
 
@@ -1444,8 +1447,8 @@ void REDFLY::setbaudrate(uint32_t br) //set serial baudrate and config (8n2)
 #if defined(__AVR__)
   _UCSRC_ |= (1<<_USBS_);
 #else
-  USART0->US_MR |= US_MR_NBSTOP_2_BIT;
-  //USART0->US_MR = US_MR_USART_MODE_NORMAL | US_MR_USCLKS_MCK | US_MR_CHRL_8_BIT | US_MR_PAR_NO | US_MR_NBSTOP_2_BIT | US_MR_CHMODE_NORMAL;
+  _USART_->US_MR |= US_MR_NBSTOP_2_BIT;
+  //_USART_->US_MR = US_MR_USART_MODE_NORMAL | US_MR_USCLKS_MCK | US_MR_CHRL_8_BIT | US_MR_PAR_NO | US_MR_NBSTOP_2_BIT | US_MR_CHMODE_NORMAL;
 #endif
 
   return;

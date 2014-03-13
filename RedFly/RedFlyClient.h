@@ -7,6 +7,7 @@
 # include <avr/pgmspace.h>
 #endif
 #include "Print.h"
+#include "RedFly.h"
 #include "Server.h"
 
 
@@ -43,10 +44,9 @@ class RedFlyClient : public Server
     virtual size_t write(uint8_t b);
     virtual size_t write(const char *s);
     virtual size_t write(const uint8_t *s, size_t sz);
-#if defined(__AVR__)
     virtual size_t print_P(PGM_P s);
     virtual size_t println_P(PGM_P s);
-#endif
+
     virtual operator bool();
 
     using Print::write;
