@@ -18,7 +18,7 @@
 #include "MI0283QT2.h"
 
 
-//#define SOFTWARE_SPI //use software SPI om pins 11,12,13
+//#define SOFTWARE_SPI //use software SPI on pins 11,12,13
 
 #define ADS7846 //enable ADS7846 support
 

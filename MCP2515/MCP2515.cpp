@@ -67,29 +67,29 @@
 #define CNF2 0x29
 #define CNF1 0x2A
 #define CANINTE 0x2B
-	#define MERRE 7
-	#define WAKIE 6
-	#define ERRIE 5
-	#define TX2IE 4
-	#define TX1IE 3
-	#define TX0IE 2
-	#define RX1IE 1
-	#define RX0IE 0
+  #define MERRE 7
+  #define WAKIE 6
+  #define ERRIE 5
+  #define TX2IE 4
+  #define TX1IE 3
+  #define TX0IE 2
+  #define RX1IE 1
+  #define RX0IE 0
 #define CANINTF 0x2C
-	#define MERRF 7
-	#define WAKIF 6
-	#define ERRIF 5
-	#define TX2IF 4
-	#define TX1IF 3
-	#define TX0IF 2
-	#define RX1IF 1
-	#define RX0IF 0
+  #define MERRF 7
+  #define WAKIF 6
+  #define ERRIF 5
+  #define TX2IF 4
+  #define TX1IF 3
+  #define TX0IF 2
+  #define RX1IF 1
+  #define RX0IF 0
 #define EFLG 0x2D
 #define TXB0CTRL 0x30
-	#define TXREQ 3
+  #define TXREQ 3
 #define TXB0SIDH 0x31
 #define TXB0SIDL 0x32
-	#define EXIDE 3
+  #define EXIDE 3
 #define TXB0EID8 0x33
 #define TXB0EID0 0x34
 #define TXB0DLC 0x35
@@ -97,10 +97,10 @@
 #define TXB0D0 0x36 
 
 #define RXB0CTRL 0x60
-	#define RXM1 6
-	#define RXM0 5
-	#define RXRTR 3
-	// Bits 2:0 FILHIT2:0
+  #define RXM1 6
+  #define RXM0 5
+  #define RXRTR 3
+  //Bits 2:0 FILHIT2:0
 #define RXB0SIDH 0x61
 #define RXB0SIDL 0x62
 #define RXB0EID8 0x63
