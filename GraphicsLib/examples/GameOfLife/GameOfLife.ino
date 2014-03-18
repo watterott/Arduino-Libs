@@ -5,6 +5,9 @@
 #include <Wire.h>
 #include <SPI.h>
 #include <GraphicsLib.h>
+#include <S65L2F50.h>
+#include <S65LPH88.h>
+#include <S65LS020.h>
 #include <MI0283QT2.h>
 #include <MI0283QT9.h>
 #include <DisplaySPI.h>
@@ -12,6 +15,9 @@
 
 
 //Declare only one display !
+// S65L2F50 lcd;
+// S65LPH88 lcd;
+// S65LS020 lcd;
 // MI0283QT2 lcd;  //MI0283QT2 Adapter v1
 // MI0283QT9 lcd;  //MI0283QT9 Adapter v1
 // DisplaySPI lcd; //SPI (GLCD-Shield or MI0283QT Adapter v2)
