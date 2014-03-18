@@ -1,18 +1,23 @@
 # Arduino Libraries
 ```
-ADS7846          -> ADS7846/TSC2046 Touch-Controller
-ArdOSC           -> OSC for RedFly
-CANdiy           -> CANdiy-Shield (CAN-Bus)
-digitalWriteFast -> Fast pin access for AVR
-DisplayI2C       -> MI0283QT-Adapter v2 + GLCD-Shield (SPI)
-DisplaySPI       -> MI0283QT-Adapter v2 + GLCD-Shield (I2C)
-DS1307           -> DS1307 RTC (Real-Time-Clock)
-GraphicsLib      -> General grahipcs library
-MCP2515          -> MCP2515 CAN-Controller
-MI0283QT2        -> MI0283QT-2 Display (SPI)
-MI0283QT9        -> MI0283QT-9 / MI0283QT-9A / MI0283QT-11 Display (SPI)
-mSD              -> mSD-Shield (microSD, RTC)
-RedFly           -> RedFly-Shield (WiFi/WLAN)
+ADS1147          - ADS1147 ADC (Analog-Digital-Converter)
+ADS7846          - ADS7846/TSC2046 Touch-Controller
+ArdOSC           - OSC for RedFly
+CANdiy_Shield    - CANdiy-Shield (CAN-Bus)
+digitalWriteFast - Fast pin access for AVR
+DisplayI2C       - MI0283QT-Adapter v2 + GLCD-Shield (SPI)
+DisplaySPI       - MI0283QT-Adapter v2 + GLCD-Shield (I2C)
+DS1307           - DS1307 RTC (Real-Time-Clock)
+GraphicsLib      - General Grahipcs Library
+LCD_BackPack     - LCD-BackPack (for HD44780 compatible displays)
+MCP2515          - MCP2515 CAN-Controller
+MI0283QT2        - MI0283QT-2 Display (HX8347D, SPI)
+MI0283QT9        - MI0283QT-9 / -9A / -11 Display (ILI9341, SPI)
+mSD_Shield       - mSD-Shield (Display, microSD, RTC)
+RedFly           - RedFly-Shield (WiFi/WLAN)
+S65L2F50         - S65 L2F50 Display (SPI)
+S65LPH88         - S65 LPH88 Display (SPI)
+S65LS020         - S65 LS020 Display (SPI)
 ```
 
 
