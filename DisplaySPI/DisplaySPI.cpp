@@ -114,6 +114,7 @@ void DisplaySPI::begin(uint_least8_t clock_div, uint_least8_t rst_pin)
       delay(20);
       digitalWrite(CS_PIN, HIGH);
       SPI.begin();
+      delay(10);
 
       if(getSize()) //older displays need about 800ms
       {
@@ -126,6 +127,7 @@ void DisplaySPI::begin(uint_least8_t clock_div, uint_least8_t rst_pin)
         delay(800);
         digitalWrite(CS_PIN, HIGH);
         SPI.begin();
+        delay(10);
       }
     }
 
@@ -145,7 +147,13 @@ void DisplaySPI::begin(uint_least8_t clock_div, uint_least8_t rst_pin)
   setOrientation(0); //display rotation
   fillScreen(0); //clear display buffer
   led(50); //enable backlight
-  setFeature(FEATURE_TP); //enable touchpanel
+  features = getFeatures();
+  if(features & FEATURE_TP)
+  {
+    setFeatures(FEATURE_TP); //enable touchpanel
+  }
+
+  delay(80); //wait till all commands are progressed
 
   return;
 }
@@ -229,13 +237,28 @@ uint_least8_t DisplaySPI::getVersion(char *v)
 }
 
 
-void DisplaySPI::setFeature(uint_least8_t f)
+uint_least8_t DisplaySPI::getFeatures(void)
+{
+  uint_least8_t f=0;
+
+  CS_ENABLE();
+  SPI.transfer(CMD_FEATURES);
+  delay(1);
+  f = SPI.transfer(0xFF);
+  CS_DISABLE();
+
+  return f;
+}
+
+
+void DisplaySPI::setFeatures(uint_least8_t f)
 {
   CS_ENABLE();
   SPI.transfer(CMD_CTRL);
   SPI.transfer(CMD_CTRL_FEATURES);
   SPI.transfer(f);
   CS_DISABLE();
+  delay(10); //wait to set features
 
   return;
 }
@@ -880,6 +903,11 @@ uint_least8_t DisplaySPI::touchRead(void)
   uint_least32_t ms;
   static uint_least32_t last_time=0;
 
+  if(!(features & FEATURE_TP))
+  {
+    return 0;
+  }
+
   ms = millis();
   if((ms-last_time) > 10) //can only be read every 10ms
   {
@@ -907,14 +935,15 @@ uint_least8_t DisplaySPI::touchRead(void)
 
     CS_DISABLE();
 
-    if((lcd_z != 0) && (lcd_z != 0xFFFF) && (lcd_x >= 0) && (lcd_y >= 0))
-    {
-      return 1;
-    }
-    else
+    if((lcd_z == 0xFFFF) || (lcd_x < 0) || (lcd_y < 0))
     {
       lcd_z = 0;
     }
+  }
+
+  if(lcd_z)
+  {
+    return 1;
   }
 
   return 0;
@@ -925,6 +954,11 @@ void DisplaySPI::touchStartCal(void)
 {
   uint_least32_t ms, last_time, timeout;
 
+  if(!(features & FEATURE_TP))
+  {
+    return;
+  }
+
   CS_ENABLE();
   SPI.transfer(CMD_TP_CALIBRATE);
   CS_DISABLE();
@@ -932,7 +966,7 @@ void DisplaySPI::touchStartCal(void)
   for(last_time=0, timeout=0; 1;)
   { 
     ms = millis();
-    if((ms-last_time) > 1000) //every 1s
+    if((ms-last_time) > 1000) //check every 1s
     {
       last_time = ms; //save time
       CS_ENABLE();

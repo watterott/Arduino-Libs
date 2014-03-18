@@ -581,7 +581,8 @@ void MI0283QT2::reset(uint_least8_t clock_div)
         }
         break;
       case 0xC0: //delay
-        delay(c&0x3F);
+        c = c&0x3F;
+        delay(c);
         break;
     }
   }

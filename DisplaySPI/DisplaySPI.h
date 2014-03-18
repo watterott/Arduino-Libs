@@ -19,7 +19,8 @@ class DisplaySPI : public GraphicsLib
     void begin(void); 
     uint_least8_t getSize(void);
     uint_least8_t getVersion(char *v);
-    void setFeature(uint_least8_t f);
+    uint_least8_t getFeatures(void);
+    void setFeatures(uint_least8_t f);
     void led(uint_least8_t power);
     void invertDisplay(uint_least8_t invert);
     void setOrientation(uint_least16_t o);
@@ -56,7 +57,7 @@ class DisplaySPI : public GraphicsLib
     int_least16_t touchZ(void);
 
   private:
-    uint_least8_t bigger_8bit;
+    uint_least8_t bigger_8bit, features;
 };
 
 
