@@ -1,6 +1,4 @@
-# LCD-BackPack
-
-## SerLCD Firmware
+# SerLCD Firmware for LCD-BackPack
 
 All standard characters received over the serial port will be shown on the display.
 **Special characters:**
@@ -8,12 +6,12 @@ All standard characters received over the serial port will be shown on the displ
 0x0A (LF) -> new line, 
 0x08 (Backspace) -> deleting last character
 
-### Reset
+## Reset
 The firmware needs about 2s to start because of the Arduino bootloader.
 If 0x12 (18) is sent after this time and within 500ms then the baudrate will be set to 9600.
 
-### Commands
-* Display Commands
+## Commands
+* **Display Commands**
     * Start Byte: 0xFE (254)
     * Data Byte (HD44780 compatible commands)
         * 0x01 - clear display
@@ -26,7 +24,7 @@ If 0x12 (18) is sent after this time and within 500ms then the baudrate will be 
         * 0x18 - scroll left
         * 0x1C - scroll right
         * 0x80... - set cursor position
-* Special Commands
+* **Special Commands**
     * Start Byte: 0x7C (124)
     * Data Byte
         * 0x01 - backlight on (100%)

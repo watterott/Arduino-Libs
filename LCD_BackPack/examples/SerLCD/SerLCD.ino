@@ -1,5 +1,7 @@
 /*
   SerLCD Firmware for LCD-BackPack
+  
+  Docu: see SerLCD.md
  */
 
 #include <digitalWriteFast.h>
