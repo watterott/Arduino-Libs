@@ -19,6 +19,7 @@ If you have receiving problems, e.g. on a high data volume, then set a higher co
 
 ### A connection cannot be established to the RedFly?
 Check if your AP has a *client isolation* option and if it is disabled.
+Also some customers reported problems with AVM FritzBox routers as AP. In this case disable the automatic WiFi power managment and try with maximum WiFi power and fixed data rate.
 
 ### The WiFi connection does not work (*join()* or *begin()* return an error)?
 In high power transmit mode an external power supply is recommended, because in some cases the USB port has not enough power.
