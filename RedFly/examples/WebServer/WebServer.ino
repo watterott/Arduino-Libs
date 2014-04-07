@@ -108,6 +108,8 @@ void setup()
 
 void loop()
 {
+  uint8_t rssi;
+
   //listen for incoming clients
   if(server.available())
   {
@@ -124,27 +126,35 @@ void loop()
         //clear input buffer
         server.flush(); 
 
+        //get RSSI before sending data
+        rssi = RedFly.getrssi();
+
         //send standard HTTP 200 header
         server.print_P(PSTR("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n"));
 
         //send some text
-        server.println_P(PSTR("Hello, World! <br><br>"));
+        server.println_P(PSTR("<h1>Hello, World!</h1><br>"));
 
         //output the value of each analog input pin
         for(int chn=0; chn < 6; chn++)
         {
           char tmp[32];
           sprintf_P(tmp, PSTR("analog input %i is %i <br>"), chn, analogRead(chn));
-          server.print(tmp);
+          server.println(tmp);
         }
 
+        //show RSSI
+        server.print_P(PSTR("<br><i>RSSI: -"));
+        server.print(rssi, DEC); server.print(" dBm");
+        server.println_P(PSTR("</i><br>"));
+
         //show IP address of RedFly
-        server.println_P(PSTR("<br><i>RedFly IP: "));
+        server.print_P(PSTR("<br><i>RedFly IP: "));
         server.print(ip[0], DEC); server.print(".");
         server.print(ip[1], DEC); server.print(".");
         server.print(ip[2], DEC); server.print(".");
         server.print(ip[3], DEC);
-        server.println_P(PSTR("<br></i>"));
+        server.println_P(PSTR("</i><br>"));
         break;
       }
       if(c == '\n')

@@ -87,7 +87,7 @@ void loop()
   {
     //show mode (0=Open, 1=WPA, 2=WPA2, 3=WEP) and RSSI
     debugout(buf);
-    sprintf_P(buf, PSTR(", mode %i, rssi %i"), mode, rssi);
+    sprintf_P(buf, PSTR(", mode %i, rssi -%i dBm"), mode, rssi);
     debugoutln(buf);
 
     //get and show type (0=Ad-hoc, 1=Infrastructure)
