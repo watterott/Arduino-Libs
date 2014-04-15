@@ -119,7 +119,8 @@ void draw_fact(void)
 void setup()
 {
   //init display
-  lcd.begin();
+  lcd.begin(); //spi-clk=SPI_CLOCK_DIV4
+  //lcd.begin(SPI_CLOCK_DIV2); //spi-clk=SPI_CLOCK_DIV2
   //lcd.begin(SPI_CLOCK_DIV4, 8); //SPI Displays: spi-clk=Fcpu/4, rst-pin=8
   //lcd.begin(0x20, 8); //I2C Displays: addr=0x20, rst-pin=8
 
