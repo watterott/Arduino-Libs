@@ -409,6 +409,5 @@ void S65L2F50::wr_spi(uint_least8_t data)
 #else
   SPI.transfer(data);
 #endif
-
   return;
 }

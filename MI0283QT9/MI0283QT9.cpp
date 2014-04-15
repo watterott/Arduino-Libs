@@ -866,6 +866,5 @@ void MI0283QT9::wr_spi(uint_least8_t data)
 #else
   SPI.transfer(data);
 #endif
-
   return;
 }

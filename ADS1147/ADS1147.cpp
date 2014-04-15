@@ -570,6 +570,5 @@ void ADS1147::wr_spi(uint_least8_t data)
 #else
   SPI.transfer(data);
 #endif
-
   return;
 }
