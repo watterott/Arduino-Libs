@@ -35,11 +35,9 @@
 # define RS_PIN         (5)
 # if defined(SOFTWARE_SPI)
 #  define MOSI_PIN      (11)
-#  define MISO_PIN      (12)
 #  define CLK_PIN       (13)
 # else
 #  define MOSI_PIN      (51)
-#  define MISO_PIN      (50)
 #  define CLK_PIN       (52)
 # endif
 
@@ -50,7 +48,6 @@
 # define CS_PIN         (13)
 # define RS_PIN         (15)
 # define MOSI_PIN       (5)
-# define MISO_PIN       (6)
 # define CLK_PIN        (7)
 
 #elif defined(__AVR_ATmega32U4__)      //--- Arduino Leonardo ---
@@ -60,11 +57,9 @@
 # define RS_PIN         (5)
 # if defined(SOFTWARE_SPI)
 #  define MOSI_PIN      (11)
-#  define MISO_PIN      (12)
 #  define CLK_PIN       (13)
 # else
 #  define MOSI_PIN      (16) //PB2
-#  define MISO_PIN      (14) //PB3
 #  define CLK_PIN       (15) //PB1
 # endif
 
@@ -74,7 +69,6 @@
 # define CS_PIN         (7) //7, Adafruit: 10
 # define RS_PIN         (5) //5, Adafruit: 8
 # define MOSI_PIN       (11)
-# define MISO_PIN       (12)
 # define CLK_PIN        (13)
 
 #endif
@@ -91,8 +85,6 @@
 
 #define MOSI_HIGH()     digitalWriteFast(MOSI_PIN, HIGH)
 #define MOSI_LOW()      digitalWriteFast(MOSI_PIN, LOW)
-
-#define MISO_READ()     digitalReadFast(MISO_PIN)
 
 #define CLK_HIGH()      digitalWriteFast(CLK_PIN, HIGH)
 #define CLK_LOW()       digitalWriteFast(CLK_PIN, LOW)
@@ -161,7 +153,6 @@ void SSD1331::begin(uint_least8_t clock_div)
   RS_HIGH();
   pinMode(CLK_PIN, OUTPUT);
   pinMode(MOSI_PIN, OUTPUT);
-  pinMode(MISO_PIN, INPUT);
 
   SPI.setDataMode(SPI_MODE3);
   SPI.setBitOrder(MSBFIRST);

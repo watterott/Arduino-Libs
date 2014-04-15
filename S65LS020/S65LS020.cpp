@@ -37,11 +37,9 @@
 # define RS_PIN         (4)
 # if defined(SOFTWARE_SPI)
 #  define MOSI_PIN      (11)
-#  define MISO_PIN      (12)
 #  define CLK_PIN       (13)
 # else
 #  define MOSI_PIN      (51)
-#  define MISO_PIN      (50)
 #  define CLK_PIN       (52)
 # endif
 
@@ -52,11 +50,9 @@
 # define RS_PIN         (4)
 # if defined(SOFTWARE_SPI)
 #  define MOSI_PIN      (11)
-#  define MISO_PIN      (12)
 #  define CLK_PIN       (13)
 # else
 #  define MOSI_PIN      (16) //PB2
-#  define MISO_PIN      (14) //PB3
 #  define CLK_PIN       (15) //PB1
 # endif
 
@@ -66,7 +62,6 @@
 # define CS_PIN         (16) //A2=16
 # define RS_PIN         (4)
 # define MOSI_PIN       (11)
-# define MISO_PIN       (12)
 # define CLK_PIN        (13)
 
 #endif
@@ -83,8 +78,6 @@
 
 #define MOSI_HIGH()     digitalWriteFast(MOSI_PIN, HIGH)
 #define MOSI_LOW()      digitalWriteFast(MOSI_PIN, LOW)
-
-#define MISO_READ()     digitalReadFast(MISO_PIN)
 
 #define CLK_HIGH()      digitalWriteFast(CLK_PIN, HIGH)
 #define CLK_LOW()       digitalWriteFast(CLK_PIN, LOW)
@@ -113,7 +106,6 @@ void S65LS020::begin(uint_least8_t clock_div)
   pinMode(RS_PIN, OUTPUT);
   pinMode(CLK_PIN, OUTPUT);
   pinMode(MOSI_PIN, OUTPUT);
-  pinMode(MISO_PIN, INPUT);
   CS_DISABLE();
 
 #if !defined(SOFTWARE_SPI)

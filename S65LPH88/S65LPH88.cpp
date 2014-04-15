@@ -35,11 +35,9 @@
 # define CS_PIN         (56) //A2=56
 # if defined(SOFTWARE_SPI)
 #  define MOSI_PIN      (11)
-#  define MISO_PIN      (12)
 #  define CLK_PIN       (13)
 # else
 #  define MOSI_PIN      (51)
-#  define MISO_PIN      (50)
 #  define CLK_PIN       (52)
 # endif
 
@@ -49,11 +47,9 @@
 # define CS_PIN         (16) //A2=16
 # if defined(SOFTWARE_SPI)
 #  define MOSI_PIN      (11)
-#  define MISO_PIN      (12)
 #  define CLK_PIN       (13)
 # else
 #  define MOSI_PIN      (16) //PB2
-#  define MISO_PIN      (14) //PB3
 #  define CLK_PIN       (15) //PB1
 # endif
 
@@ -62,7 +58,6 @@
 # define RST_PIN        (17) //A3=17
 # define CS_PIN         (16) //A2=16
 # define MOSI_PIN       (11)
-# define MISO_PIN       (12)
 # define CLK_PIN        (13)
 
 #endif
@@ -76,8 +71,6 @@
 
 #define MOSI_HIGH()     digitalWriteFast(MOSI_PIN, HIGH)
 #define MOSI_LOW()      digitalWriteFast(MOSI_PIN, LOW)
-
-#define MISO_READ()     digitalReadFast(MISO_PIN)
 
 #define CLK_HIGH()      digitalWriteFast(CLK_PIN, HIGH)
 #define CLK_LOW()       digitalWriteFast(CLK_PIN, LOW)
@@ -105,7 +98,6 @@ void S65LPH88::begin(uint_least8_t clock_div)
   pinMode(CS_PIN, OUTPUT);
   pinMode(CLK_PIN, OUTPUT);
   pinMode(MOSI_PIN, OUTPUT);
-  pinMode(MISO_PIN, INPUT);
   CS_DISABLE();
 
 #if !defined(SOFTWARE_SPI)
