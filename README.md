@@ -20,7 +20,7 @@ S65_Shield       - S65-Shield (Display, microSD, Rotary Encoder)
 S65L2F50         - S65 L2F50 Display (SPI)
 S65LPH88         - S65 LPH88 Display (SPI)
 S65LS020         - S65 LS020 Display (SPI)
-SSD1331          - OLE-Display (SSD1331, SPI)
+SSD1331          - OLED-Display (SSD1331, SPI)
 ```
 
 
