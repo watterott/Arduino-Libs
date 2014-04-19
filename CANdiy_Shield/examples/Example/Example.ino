@@ -1,9 +1,6 @@
 /*
   Example sketch for CANdiy-Shield
-  
-  MCP2515 Arduino Lib from Frank Kienast:
-  https://github.com/franksmicro/Arduino/tree/master/libraries/MCP2515
-*/
+ */
 
 #include <SPI.h>
 #include <MCP2515.h>

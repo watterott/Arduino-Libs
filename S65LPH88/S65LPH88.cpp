@@ -1,3 +1,8 @@
+/*
+  S65 LPH88 Display Lib for Arduino
+  by Watterott electronic (www.watterott.com)
+ */
+
 #include <inttypes.h>
 #if defined(__AVR__)
 # include <avr/io.h>

@@ -1,3 +1,8 @@
+/*
+  General Grahipcs Lib for Arduino
+  by Watterott electronic (www.watterott.com)
+ */
+
 #include <inttypes.h>
 #if defined(__AVR__)
 # include <avr/pgmspace.h>
