@@ -149,16 +149,16 @@ void DisplaySPI::begin(uint_least8_t clock_div, uint_least8_t rst_pin)
     }
   }
 
-  setOrientation(0); //display rotation
-  fillScreen(0); //clear display buffer
-  led(50); //enable backlight
   features = getFeatures();
   if(features & FEATURE_TP)
   {
     setFeatures(FEATURE_TP); //enable touchpanel
   }
+  setOrientation(0); //display rotation
+  fillScreen(0); //clear display buffer
+  led(50); //enable backlight
 
-  delay(80); //wait till all commands are progressed
+  delay(100); //wait till all commands are progressed
 
   return;
 }

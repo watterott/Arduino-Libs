@@ -99,16 +99,16 @@ void DisplayI2C::begin(uint_least8_t addr, uint_least8_t rst_pin)
     getSize();
   }
 
-  setOrientation(0); //display rotation
-  fillScreen(0); //clear display buffer
-  led(50); //enable backlight
   features = getFeatures();
   if(features & FEATURE_TP)
   {
     setFeatures(FEATURE_TP); //enable touchpanel
   }
+  setOrientation(0); //display rotation
+  fillScreen(0); //clear display buffer
+  led(50); //enable backlight
 
-  delay(80); //wait till all commands are progressed
+  delay(100); //wait till all commands are progressed
 
   return;
 }
@@ -188,11 +188,11 @@ uint_least8_t DisplayI2C::getVersion(char *v)
     v[2] = (char)Wire.read();
     v[3] = (char)Wire.read();
     v[4] = 0;
-  }
-
-  if(v[1] != '.')
-  {
-    return 1;
+    
+    if(v[1] != '.')
+    {
+      return 1;
+    }
   }
 
   return 0;
