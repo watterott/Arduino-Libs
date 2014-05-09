@@ -158,8 +158,8 @@ uint_least8_t DisplayI2C::getSize(void)
     return 1;
   }
 
-  lcd_width  = w;
-  lcd_height = h;
+  lcd_width  = display_width = w;
+  lcd_height = display_height = h;
 
   if((w > 255) || (h > 255))
   {
@@ -257,37 +257,40 @@ void DisplayI2C::invertDisplay(uint_least8_t invert)
 
 void DisplayI2C::setOrientation(uint_least16_t o)
 {
-  uint_least16_t w=lcd_width, h=lcd_height;
+  if(o == lcd_orientation)
+  {
+    return;
+  }
 
   switch(o)
   {
     default:
     case 0:
       lcd_orientation = 0;
-      lcd_width  = w;
-      lcd_height = h;
+      lcd_width  = display_width;
+      lcd_height = display_height;
       break;
 
     case  9:
     case 90:
       lcd_orientation = 90;
-      lcd_width  = h;
-      lcd_height = w;
+      lcd_width  = display_height;
+      lcd_height = display_width;
       break;
 
     case  18:
     case 180:
       lcd_orientation = 180;
-      lcd_width  = w;
-      lcd_height = h;
+      lcd_width  = display_width;
+      lcd_height = display_height;
       break;
 
     case  27:
     case  14: //270&0xFF
     case 270:
       lcd_orientation = 270;
-      lcd_width  = h;
-      lcd_height = w;
+      lcd_width  = display_height;
+      lcd_height = display_width;
       break;
   }
 

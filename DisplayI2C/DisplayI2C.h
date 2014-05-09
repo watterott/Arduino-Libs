@@ -58,6 +58,7 @@ class DisplayI2C : public GraphicsLib
 
   private:
     uint_least8_t bigger_8bit, features;
+    int_least16_t display_width, display_height;
     int i2c_addr;
 };
 
