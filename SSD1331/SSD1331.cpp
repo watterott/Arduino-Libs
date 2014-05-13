@@ -253,7 +253,6 @@ void SSD1331::setArea(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_
     wr_cmd(x0);
     wr_cmd(x1);
   }
-
   else  //0 or 180
   {
     wr_cmd(LCD_CMD_COLUMN);

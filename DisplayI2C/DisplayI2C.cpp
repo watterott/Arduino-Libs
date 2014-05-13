@@ -257,11 +257,6 @@ void DisplayI2C::invertDisplay(uint_least8_t invert)
 
 void DisplayI2C::setOrientation(uint_least16_t o)
 {
-  if(o == lcd_orientation)
-  {
-    return;
-  }
-
   switch(o)
   {
     default:
