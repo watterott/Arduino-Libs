@@ -82,6 +82,7 @@ void DS1307::get(uint8_t *sec, uint8_t *min, uint8_t *hour, uint8_t *day, uint8_
   Wire.beginTransmission(I2C_ADDR);
   Wire.write(byte(0x00));
   Wire.endTransmission();
+
   Wire.requestFrom(I2C_ADDR, 7);
   *sec   = bcd2bin(Wire.read() & 0x7F);
   *min   = bcd2bin(Wire.read());
@@ -97,7 +98,20 @@ void DS1307::get(uint8_t *sec, uint8_t *min, uint8_t *hour, uint8_t *day, uint8_
 
 void DS1307::get(int *sec, int *min, int *hour, int *day, int *month, int *year)
 {
-  return get((uint8_t*)sec, (uint8_t*)min, (uint8_t*)hour, (uint8_t*)day, (uint8_t*)month, (uint16_t*)year);
+  Wire.beginTransmission(I2C_ADDR);
+  Wire.write(byte(0x00));
+  Wire.endTransmission();
+
+  Wire.requestFrom(I2C_ADDR, 7);
+  *sec   = bcd2bin(Wire.read() & 0x7F);
+  *min   = bcd2bin(Wire.read());
+  *hour  = bcd2bin(Wire.read());
+           bcd2bin(Wire.read()); //day of week
+  *day   = bcd2bin(Wire.read());
+  *month = bcd2bin(Wire.read());
+  *year  = bcd2bin(Wire.read()) + 2000;
+
+  return;
 }
 
 
