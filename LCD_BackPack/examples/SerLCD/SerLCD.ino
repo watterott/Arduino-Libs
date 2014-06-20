@@ -147,8 +147,8 @@ void read_settings(void)
   }
   else
   {
-    addr++; //eeprom_magic  = EEPROM.read(addr++);
-    splash_screen = EEPROM.read(addr++); //eeprom_addr+0
+    addr++; //eeprom_magic  = EEPROM.read(addr++); //eeprom_addr+0
+    splash_screen = EEPROM.read(addr++); //eeprom_addr+1
     baudrate      = EEPROM.read(addr++);
     lcd_width     = EEPROM.read(addr++);
     lcd_lines     = EEPROM.read(addr++);
