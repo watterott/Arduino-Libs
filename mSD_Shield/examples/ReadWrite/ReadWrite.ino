@@ -62,7 +62,7 @@ void setup()
     Serial.println("error");
     lcd.drawText(x, 5, "error", RGB(0,0,0), RGB(255,255,255), 1);
   }
-  
+
   //open file for reading
   Serial.println("Open File...");
   x = lcd.drawText(5, 5, "Open File...", RGB(0,0,0), RGB(255,255,255), 1);
