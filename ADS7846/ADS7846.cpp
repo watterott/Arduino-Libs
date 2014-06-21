@@ -503,9 +503,9 @@ void ADS7846::rd_data(void)
   //get pressure
   CS_ENABLE();
   wr_spi(CMD_START | CMD_8BIT | CMD_DIFF | CMD_Z1_POS);
-  a1 = rd_spi();
+  a1 = rd_spi()&0x7F;
   wr_spi(CMD_START | CMD_8BIT | CMD_DIFF | CMD_Z2_POS);
-  b1 = 127-(rd_spi()&0x7F);
+  b1 = (255-rd_spi())&0x7F;
   CS_DISABLE();
   p = a1 + b1;
 

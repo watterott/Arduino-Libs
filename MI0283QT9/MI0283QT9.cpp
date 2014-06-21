@@ -443,9 +443,9 @@ uint_least8_t MI0283QT9::touchRead(void)
   //get pressure
   ADSCS_ENABLE();
   wr_spi(ADS_CMD_START | ADS_CMD_8BIT | ADS_CMD_DIFF | ADS_CMD_Z1_POS);
-  a1 = rd_spi();
+  a1 = rd_spi()&0x7F;
   wr_spi(ADS_CMD_START | ADS_CMD_8BIT | ADS_CMD_DIFF | ADS_CMD_Z2_POS);
-  b1 = 127-(rd_spi()&0x7F);
+  b1 = (255-rd_spi())&0x7F;
   ADSCS_DISABLE();
   p = a1 + b1;
 
