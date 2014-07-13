@@ -4,6 +4,7 @@ ADS1147          - ADS1147 ADC (Analog-Digital-Converter)
 ADS7846          - ADS7846/TSC2046 Touch-Controller
 ArdOSC           - OSC for RedFly
 CANdiy_Shield    - CANdiy-Shield (CAN-Bus)
+DAC8760          - DAC8760 DAC (Digital-Analog-Converter)
 digitalWriteFast - Fast pin access for AVR
 DisplayI2C       - MI0283QT-Adapter v2 + GLCD-Shield (SPI)
 DisplaySPI       - MI0283QT-Adapter v2 + GLCD-Shield (I2C)
