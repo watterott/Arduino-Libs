@@ -373,6 +373,7 @@ int_least16_t ADS1147::rd_data(void)
   SPI.setClockDivider(SPI_CLOCK_DIV4);
 # endif
   SPI.setDataMode(SPI_MODE1); //SPI_MODE1
+  //SPI.setBitOrder(MSBFIRST);
 #endif
 
   wr_cmd(CMD_SYNC);
@@ -422,6 +423,7 @@ void ADS1147::wr_cmd(uint_least8_t cmd)
   SPI.setClockDivider(SPI_CLOCK_DIV4);
 # endif
   SPI.setDataMode(SPI_MODE1); //SPI_MODE1
+  //SPI.setBitOrder(MSBFIRST);
 #endif
 
   CS_ENABLE();
@@ -472,6 +474,7 @@ uint_least8_t ADS1147::rd_reg(uint_least8_t reg)
   SPI.setClockDivider(SPI_CLOCK_DIV4);
 # endif
   SPI.setDataMode(SPI_MODE1); //SPI_MODE1
+  //SPI.setBitOrder(MSBFIRST);
 #endif
 
   CS_ENABLE();
@@ -509,6 +512,7 @@ void ADS1147::wr_reg(uint_least8_t reg, uint_least8_t data)
   SPI.setClockDivider(SPI_CLOCK_DIV4);
 # endif
   SPI.setDataMode(SPI_MODE1); //SPI_MODE1
+  //SPI.setBitOrder(MSBFIRST);
 #endif
 
   CS_ENABLE();
