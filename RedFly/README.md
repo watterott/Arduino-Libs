@@ -220,7 +220,7 @@ __Example for using 2 sockets with the same port number:__
         }
         else if(s == socket2)
         {
-          if(RedFly.socketClosed(socket1)) //check if 2nd socket is closed
+          if(RedFly.socketClosed(socket1)) //check if 1st socket is closed
           {
             socket1 = RedFly.socketListen(PROTO_TCP, 123); //open 1st socket
           }

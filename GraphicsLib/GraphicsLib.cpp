@@ -153,7 +153,7 @@ void GraphicsLib::drawPixel(int_least16_t x0, int_least16_t y0, uint_least16_t c
 
 void GraphicsLib::drawLine(int_least16_t x0, int_least16_t y0, int_least16_t x1, int_least16_t y1, uint_least16_t color)
 {
-	int_least16_t dx, dy, dx2, dy2, err, stepx, stepy;
+  int_least16_t dx, dy, dx2, dy2, err, stepx, stepy;
 
   if(x0 == x1) //horizontal line
   {
