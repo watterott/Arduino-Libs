@@ -116,6 +116,7 @@ class GraphicsLib : public Print
 #else
     virtual void write(uint8_t c);
 #endif
+    using Print::write; //pull in write(str) and write(buf, size) from Print
 
     //touch panel funcions
     uint_least8_t touchRead(void);
