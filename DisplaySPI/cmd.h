@@ -13,7 +13,8 @@ enum _COMMANDS
   //general commands
   CMD_NOP1 = 0xFF,           //NOP / poll
   CMD_NOP2 = 0x00,           //NOP / poll
-  CMD_VERSION,               //get firmware version (4bytes "x.xx")
+  CMD_SYNC = 0xFA,           //synchronize
+  CMD_VERSION = 0x01,        //get firmware version (4bytes "x.xx")
   CMD_TEST,                  //start test program
   CMD_STATUS,                //get status (1byte)
   CMD_FEATURES,              //get available features (_CMDFEATURES)
