@@ -13,6 +13,7 @@
 
 #include <util/delay.h>
 #include <SPI.h>
+#include <digitalWriteFast.h>
 #include <DAC8760.h>
 
 

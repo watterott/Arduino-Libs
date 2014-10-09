@@ -3,7 +3,7 @@
 
 
 #include <inttypes.h>
-#include "../GraphicsLib/GraphicsLib.h"
+#include "GraphicsLib.h"
 
 
 class MI0283QT9 : public GraphicsLib

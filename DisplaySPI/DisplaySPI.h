@@ -6,7 +6,7 @@
 #if defined(__AVR__)
 # include <avr/pgmspace.h>
 #endif
-#include "../GraphicsLib/GraphicsLib.h"
+#include "GraphicsLib.h"
 
 
 class DisplaySPI : public GraphicsLib

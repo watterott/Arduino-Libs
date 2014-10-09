@@ -8,6 +8,7 @@
  */
 
 #include <SPI.h>
+#include <digitalWriteFast.h>
 #include <ADS1147.h>
 
 

@@ -13,8 +13,8 @@
 #else
 # include "WProgram.h"
 #endif
-#include "../Wire/Wire.h"
-#include "../GraphicsLib/GraphicsLib.h"
+#include "Wire.h"
+#include "GraphicsLib.h"
 #include "DisplayI2C.h"
 #include "cmd.h"
 

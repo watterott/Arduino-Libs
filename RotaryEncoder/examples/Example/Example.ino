@@ -4,6 +4,7 @@
   The pins can be changed in the file RotaryEncoder.cpp
  */
 
+#include <digitalWriteFast.h>
 #include <RotaryEncoder.h>
 
 

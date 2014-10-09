@@ -15,7 +15,7 @@
 #else
 # include "WProgram.h"
 #endif
-#include "../digitalWriteFast/digitalWriteFast.h"
+#include "digitalWriteFast.h"
 #include "RotaryEncoder.h"
 
 

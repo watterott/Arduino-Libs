@@ -6,6 +6,7 @@
 
 #include <Wire.h>
 #include <SPI.h>
+#include <digitalWriteFast.h>
 #include <GraphicsLib.h>
 #include <SSD1331.h>
 #include <S65L2F50.h>

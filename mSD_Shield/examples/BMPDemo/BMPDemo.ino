@@ -4,6 +4,7 @@
 
 #include <Wire.h>
 #include <SPI.h>
+#include <digitalWriteFast.h>
 #include <GraphicsLib.h>
 #include <MI0283QT2.h>
 #include <MI0283QT9.h>
@@ -102,7 +103,7 @@ void setup()
   //open windows bmp file (24bit RGB)
   x = lcd.drawText(5, 5, "Open File...", RGB(0,0,0), RGB(255,255,255), 1);
   i = OpenBMPFile("image.bmp", 20, 20);
-  lcd.drawText(x, 5, i, RGB(0,0,0), RGB(255,255,255), 1);
+  lcd.drawInteger(x, 5, i, 10, RGB(0,0,0), RGB(255,255,255), 1);
 }
 
 

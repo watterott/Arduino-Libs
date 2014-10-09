@@ -18,7 +18,7 @@
 #else
 # include "WProgram.h"
 #endif
-#include "../SPI/SPI.h"
+#include "SPI.h"
 #include "MCP2515.h"
 
 

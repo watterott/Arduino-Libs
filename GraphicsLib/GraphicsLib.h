@@ -10,11 +10,11 @@
 
 
 #ifndef RGB
-#define RGB(r,g,b)   (((r&0xF8)<<8)|((g&0xFC)<<3)|((b&0xF8)>>3)) //RGB565: 5 red | 6 green | 5 blue
+#define RGB(r,g,b) (((r&0xF8)<<8)|((g&0xFC)<<3)|((b&0xF8)>>3)) //RGB565: 5 red | 6 green | 5 blue
 #endif
 
 #ifndef SWAP
-#define SWAP(x,y)    do{ (x)=(x)^(y); (y)=(x)^(y); (x)=(x)^(y); }while(0)
+#define SWAP(x,y) do{ (x)=(x)^(y); (y)=(x)^(y); (x)=(x)^(y); }while(0)
 #endif
 
 #ifndef DEC

@@ -3,9 +3,9 @@
 
 
 #include <inttypes.h>
-#include "../GraphicsLib/GraphicsLib.h"
-#include "../MI0283QT2/MI0283QT2.h"
-#include "../MI0283QT9/MI0283QT9.h"
+#include "GraphicsLib.h"
+#include "MI0283QT2.h"
+#include "MI0283QT9.h"
 
 
 class ADS7846

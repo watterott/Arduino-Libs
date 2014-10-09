@@ -7,6 +7,7 @@
 #include <Wire.h>
 #include <SPI.h>
 #include <OneWire.h>
+#include <digitalWriteFast.h>
 #include <GraphicsLib.h>
 #include <MI0283QT2.h>
 #include <MI0283QT9.h>

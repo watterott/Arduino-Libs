@@ -18,9 +18,9 @@
 #else
 # include "WProgram.h"
 #endif
-#include "../SPI/SPI.h"
-#include "../digitalWriteFast/digitalWriteFast.h"
-#include "../GraphicsLib/GraphicsLib.h"
+#include "SPI.h"
+#include "digitalWriteFast.h"
+#include "GraphicsLib.h"
 #include "S65LS020.h"
 
 

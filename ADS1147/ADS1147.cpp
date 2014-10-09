@@ -12,8 +12,8 @@
 #else
 #include "WProgram.h"
 #endif
-#include "../SPI/SPI.h"
-#include "../digitalWriteFast/digitalWriteFast.h"
+#include "SPI.h"
+#include "digitalWriteFast.h"
 #include "ADS1147.h"
 
 

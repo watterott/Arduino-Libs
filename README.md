@@ -17,7 +17,6 @@ MI0283QT9        - MI0283QT-9 / -9A / -11 Display (ILI9341, SPI)
 mSD_Shield       - mSD-Shield (Display, microSD, RTC)
 RedFly           - RedFly-Shield (WiFi/WLAN)
 RotaryEncoder    - Rotary Encoder
-S65_Shield       - S65-Shield (Display, microSD, Rotary Encoder)
 S65L2F50         - S65 L2F50 Display (SPI)
 S65LPH88         - S65 LPH88 Display (SPI)
 S65LS020         - S65 LS020 Display (SPI)

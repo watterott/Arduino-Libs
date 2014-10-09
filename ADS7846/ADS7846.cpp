@@ -13,11 +13,11 @@
 #else
 # include "WProgram.h"
 #endif
-#include "../SPI/SPI.h"
-#include "../digitalWriteFast/digitalWriteFast.h"
-#include "../GraphicsLib/GraphicsLib.h"
-#include "../MI0283QT2/MI0283QT2.h"
-#include "../MI0283QT9/MI0283QT9.h"
+#include "SPI.h"
+#include "digitalWriteFast.h"
+#include "GraphicsLib.h"
+#include "MI0283QT2.h"
+#include "MI0283QT9.h"
 #include "ADS7846.h"
 
 
