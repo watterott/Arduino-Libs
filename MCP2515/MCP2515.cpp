@@ -93,7 +93,7 @@
 #define TXB0EID8 0x33
 #define TXB0EID0 0x34
 #define TXB0DLC 0x35
-  #define TXRTR 7
+  #define TXRTR 6
 #define TXB0D0 0x36 
 
 #define RXB0CTRL 0x60
