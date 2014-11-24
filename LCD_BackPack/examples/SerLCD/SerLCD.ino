@@ -9,7 +9,9 @@
 #include <EEPROM.h>
 
 
-#define VERSION  "0.01" //v0.01
+#define VERSION  "0.02" //v0.02
+
+//#define FIXED_BAUDRATE 9600 //uncomment for a fixed baudrate
 
 #define LCD_EN   2  //enable
 #define LCD_RS   A2 //command/data
@@ -182,30 +184,30 @@ void read_settings(void)
 
 void set_baudrate(uint8_t i)
 {
-  uint8_t b;
+#ifdef FIXED_BAUDRATE
+  Serial.end();
+  Serial.begin(FIXED_BAUDRATE);
+
+#else
   uint32_t br;
 
   switch(i)
   {
-    case 0: b=i; br=  2400; break;
-    case 1: b=i; br=  4800; break;
+    case 0: baudrate=i; br=  2400; break;
+    case 1: baudrate=i; br=  4800; break;
     default:
-    case 2: b=i; br=  9600; break;
-    case 3: b=i; br= 14400; break;
-    case 4: b=i; br= 19200; break;
-    case 5: b=i; br= 38400; break;
-    case 6: b=i; br= 57600; break;
-    case 7: b=i; br=115200; break;
-    case 8: b=i; br= 28800; break;
+    case 2: baudrate=i; br=  9600; break;
+    case 3: baudrate=i; br= 14400; break;
+    case 4: baudrate=i; br= 19200; break;
+    case 5: baudrate=i; br= 38400; break;
+    case 6: baudrate=i; br= 57600; break;
+    case 7: baudrate=i; br=115200; break;
+    case 8: baudrate=i; br= 28800; break;
   }
 
-  if(baudrate != b)
-  {
-    baudrate = b;
-    EEPROM.write(eeprom_addr+2, baudrate);
-  }
   Serial.end();
   Serial.begin(br);
+#endif
 }
 
 
@@ -283,6 +285,7 @@ void setup()
   lcd.setCursor(0, 0);
   lcd.clear();
 
+#ifndef FIXED_BAUDRATE
   if(Serial.available()) //serial data available?
   {
     if(Serial.read() == 0x12) //0x12 = 18
@@ -292,6 +295,7 @@ void setup()
       lcd.setCursor(0, 0);
     }
   }
+#endif
 
   //init serial port
   set_baudrate(baudrate);
@@ -355,7 +359,7 @@ void loop()
     {
       set_backlight(0);
     }
-    else if(c == 0x03) //lcd type
+    else if(c == 0x03) //lcd type 20
     {
       if(lcd_width != 20)
       {
@@ -363,7 +367,7 @@ void loop()
         EEPROM.write(eeprom_addr+2, lcd_width);
       }
     }
-    else if(c == 0x04) //lcd type
+    else if(c == 0x04) //lcd type 16
     {
       if(lcd_width != 16)
       {
@@ -371,7 +375,7 @@ void loop()
         EEPROM.write(eeprom_addr+2, lcd_width);
       }
     }
-    else if(c == 0x05) //lcd lines
+    else if(c == 0x05) //lcd lines 4
     {
       if(lcd_lines != 4)
       {
@@ -379,7 +383,7 @@ void loop()
         EEPROM.write(eeprom_addr+3, lcd_lines);
       }
     }
-    else if(c == 0x06) //lcd lines
+    else if(c == 0x06) //lcd lines 2
     {
       if(lcd_lines != 2)
       {
@@ -387,7 +391,7 @@ void loop()
         EEPROM.write(eeprom_addr+3, lcd_lines);
       }
     }
-    else if(c == 0x07) //lcd lines
+    else if(c == 0x07) //lcd lines 1
     {
       if(lcd_lines != 1)
       {
@@ -423,13 +427,21 @@ void loop()
     {
       set_baudrate(c-0x0B);
     }
+    else if(c == 0x14) //save baudrate
+    {
+      EEPROM.write(eeprom_addr+2, baudrate);
+    }
     else if(c == 0x15) //contrast 0-100
     {
       while(Serial.available() == 0);
       c = Serial.read();
-      if(c > 97) { contrast = 32;  }
-      else       { contrast = c/3; }
-      EEPROM.write(eeprom_addr+5, contrast);
+      if(c > 97) { c = 32;  }
+      else       { c = c/3; }
+      if(c != contrast)
+      {
+        contrast = c;
+        EEPROM.write(eeprom_addr+5, contrast);
+      }
     }
     else if(c == 0x16) //rgb backlight on/off
     {

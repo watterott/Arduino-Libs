@@ -46,6 +46,7 @@ If 0x12 (18) is sent after this time and within 500ms then the baudrate will be 
         * 0x11 - baudrate:  57600
         * 0x12 - baudrate: 115200
         * 0x13 - baudrate:  28800
+        * 0x14 - save baudrate as default
         * 0x15 - contrast 0-100%
             * Parameter Byte: 0x00...0x64
         * 0x16 - RGB backlight on/off
