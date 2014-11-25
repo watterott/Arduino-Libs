@@ -12,6 +12,9 @@
 #define VERSION  "0.02" //v0.02
 
 //#define FIXED_BAUDRATE 9600 //uncomment for a fixed baudrate
+//#define FIXED_WIDTH 16 //uncomment for a fixed lcd width
+//#define FIXED_LINES 2 //uncomment for a fixed lcd lines
+
 
 #define LCD_EN   2  //enable
 #define LCD_RS   A2 //command/data
@@ -260,7 +263,14 @@ void setup()
   TIMSK2 = (1<<TOIE2);
 
   //init lcd
+#ifdef FIXED_WIDTH
+  lcd_width = FIXED_WIDTH;
+#endif
+#ifdef FIXED_LINES
+  lcd_lines = FIXED_LINES;
+#endif
   lcd.begin(lcd_width, lcd_lines);
+
   if(splash_screen)
   {
     if((splash_line[0][0] == 0x00) || (splash_line[0][0] == 0xFF)) //no custom splash screen
@@ -320,7 +330,6 @@ void loop()
 
     if((c>>4) != 3) //if not 0b.0000.0011, then send it to lcd
     {
-      lcd.command(c);
       if(c == 0x01) //clear lcd
       {
         lcd.clear();
@@ -328,9 +337,14 @@ void loop()
         cursor_pos = 0;
         line_pos = 0;
       }
-      else if (c & 0x80) //move cursor
+      else if(c & 0x80) //move cursor
       {
+        lcd.command(c);
         cursor_pos = c & 0x7F; //ignore first bit - obtain address
+      }
+      else
+      {
+        lcd.command(c);
       }
     }
   }
@@ -359,6 +373,7 @@ void loop()
     {
       set_backlight(0);
     }
+#ifndef FIXED_WIDTH
     else if(c == 0x03) //lcd type 20
     {
       if(lcd_width != 20)
@@ -375,6 +390,8 @@ void loop()
         EEPROM.write(eeprom_addr+2, lcd_width);
       }
     }
+#endif
+#ifndef FIXED_LINES
     else if(c == 0x05) //lcd lines 4
     {
       if(lcd_lines != 4)
@@ -399,6 +416,7 @@ void loop()
         EEPROM.write(eeprom_addr+3, lcd_lines);
       }
     }
+#endif
     else if(c == 0x08) //re-init lcd
     {
       lcd.begin(lcd_width, lcd_lines);
@@ -423,6 +441,7 @@ void loop()
         EEPROM.write(eeprom_addr+11, 0x00); //disable alternate splash screen
       }
     }
+#ifndef FIXED_BAUDRATE
     else if((c >= 0x0B) && (c <= 0x13))  //baudrate = 2400,4800,9600,14400,19200,38400,57600,115200,28800
     {
       set_baudrate(c-0x0B);
@@ -431,6 +450,7 @@ void loop()
     {
       EEPROM.write(eeprom_addr+2, baudrate);
     }
+#endif
     else if(c == 0x15) //contrast 0-100
     {
       while(Serial.available() == 0);
