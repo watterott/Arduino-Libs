@@ -1,7 +1,10 @@
 /*
-  Frequency to Voltage Converter
+  Frequency to Voltage Converter with forward/backward output
 
-  Frequency-Input - D8/PB0/ICP1
+  F-Input   - D8/PB0/ICP1 //frequency
+  DIR-Input - D2          //direction
+  F-Output  - D3          //forward
+  B-Output  - D4          //backward
 
   DAC8760
   CLR   - connected to GND
@@ -11,15 +14,25 @@
   SCLK  - D13/CLK
  */
 
+#include <avr/wdt.h>
 #include <util/delay.h>
-#include <SPI.h>
 #include <digitalWriteFast.h>
+#include <SPI.h>
 #include <DAC8760.h>
 
 
 //#define DEBUG //enable serial debug output (9600 baud)
 
 #define INPUT_PIN 8 //D8/PB0/ICP1 (frequency input pin)
+#define DIR_PIN   2 //D2 (direction input pin)
+#define F_PIN     3 //D3 (forward output pin)
+#define B_PIN     4 //D4 (backward output pin)
+
+#define DIR_READ()digitalReadFast(DIR_PIN)
+#define F_ON()    digitalWriteFast(F_PIN, HIGH)
+#define F_OFF()   digitalWriteFast(F_PIN, LOW)
+#define B_ON()    digitalWriteFast(B_PIN, HIGH)
+#define B_OFF()   digitalWriteFast(B_PIN, LOW)
 
 //F_CPU = 16000000 Hz = 62.5ns
 //t = 800.....16000 (*62.5ns)
@@ -38,8 +51,13 @@ volatile uint_least16_t t_avg=0;
 uint_least8_t t_over=0;
 
 
-ISR(TIMER1_OVF_vect) //overflow after about 4ms
+ISR(TIMER1_OVF_vect) //overflow irq after about 4ms
 {
+  if(t_over) //2*4ms=8ms
+  {
+    F_OFF();
+    B_OFF();
+  }
   t_over = 1;
   t_avg  = F_CPU/F_MIN; //set to min. freq.
 }
@@ -113,6 +131,12 @@ void setup()
   print("Init Pins...\n");
   pinMode(INPUT_PIN, INPUT);
   digitalWrite(INPUT_PIN, HIGH); //pull-up
+  pinMode(DIR_PIN, INPUT);
+  digitalWrite(DIR_PIN, HIGH); //pull-up
+  pinMode(F_PIN, OUTPUT);
+  pinMode(B_PIN, OUTPUT);
+  F_OFF();
+  B_OFF();
 
   //init DAC
   print("Init DAC...\n");
@@ -143,6 +167,9 @@ void setup()
   TCCR2A = 0x00;
   TCCR2B = 0x00;
   sei(); //enable all interrupts
+
+  //enable watchdog
+  wdt_enable(WDTO_1S);
 }
 
 
@@ -153,6 +180,10 @@ void loop()
   uint_least32_t f;
   uint8_t oldSREG;
 
+  //reset watchdog
+  wdt_reset();
+
+  //get timer value
   oldSREG = SREG;
   cli();
   t = t_avg;
@@ -165,26 +196,46 @@ void loop()
     f = F_CPU/(uint_least32_t)t; //calculate f from t
          if(f < F_MIN){ f = F_MIN; } //freq. to low?
     else if(f > F_MAX){ f = F_MAX; } //freq. to high?
-    n = map(f, F_MIN, F_MAX, N_MIN, N_MAX); //map freq. to voltage
+    n = map(f, F_MIN, F_MAX, N_MIN, N_MAX); //map freq. to n (voltage)
 
     if(n != n_last) //n changed?
     {
       n_last = n;
 
       //set DAC output
-      dac.write(n); //set DAC output
+      dac.write(n);
+
+      //set digital outputs
+      if(n)
+      {
+        if(DIR_READ())
+        {
+          F_ON();
+          B_OFF();
+        }
+        else
+        {
+          F_OFF();
+          B_ON();
+        }
+      }
+      else
+      {
+        F_OFF();
+        B_OFF();
+      }
 
 #ifdef DEBUG
-      //print("t:");
-      //print(t);
-      print(" f:");
-      print(f);
-      //print(" n:");
-      //print(n);
-      print(" mV:");
-      n = map(n, 0, 65535, 0, 10000); //map n to voltage
-      print(n);
-      print("\n");
+    //print("t:");
+    //print(t);
+    print(" f:");
+    print(f);
+    //print(" n:");
+    //print(n);
+    print(" mV:");
+    n = map(n, 0, 65535, 0, 10000); //map n to voltage
+    print(n);
+    print("\n");
 #endif
     }
   }
