@@ -10,10 +10,11 @@
 # define pgm_read_word(addr)  (*(const uint16_t *)(addr))
 # define pgm_read_dword(addr) (*(const uint32_t *)(addr))
 # define PSTR(x)              (x)
-# define PGM_P                char*
+# define PGM_P                const char*
 # define strlen_P             strlen
 # define strcpy_P             strcpy
 # define strcat_P             strcat
+# define strcmp_P             strcmp
 # define sprintf_P            sprintf
 #endif
 
