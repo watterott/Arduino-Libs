@@ -15,6 +15,8 @@
 # define strcpy_P             strcpy
 # define strcat_P             strcat
 # define strcmp_P             strcmp
+# define strncmp_P            strncmp
+# define strncasecmp_P        strncasecmp
 # define sprintf_P            sprintf
 #endif
 
