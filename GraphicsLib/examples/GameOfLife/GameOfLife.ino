@@ -85,9 +85,9 @@ uint8_t neighbors(uint8_t x, uint8_t y)
 }
 
 
-void play_gol(void)
+uint8_t play_gol(void)
 {
-  uint8_t x, y, count;
+  uint8_t x, y, count, same=1;
 
   //update cells
   for(x=0; x < X_SIZE; x++)
@@ -98,10 +98,12 @@ void play_gol(void)
       if((count == 3) && !alive(x, y))
       {
         frame[x][y] = NEW_CELL; //new cell
+        same = 0;
       }
       if(((count < 2) || (count > 3)) && alive(x, y))
       {
         frame[x][y] = DEL_CELL; //cell dies
+        same = 0;
       }
     }
   }
@@ -111,6 +113,8 @@ void play_gol(void)
   {
     init_gol();
   }
+
+  return same;
 }
 
 
@@ -133,12 +137,12 @@ void draw_gol(void)
         }
         else if(c == 1) //del
         {
-          frame[x][y] = 0;
+          frame[x][y]--;
           color = DEAD_COLOR;
         }
         else if(c == 2) //die
         {
-          frame[x][y] = 1;
+          frame[x][y]--;
           color = DIE1_COLOR;
         }
         else if(c <= DEL_CELL) //die
@@ -214,8 +218,9 @@ void setup()
 
 void loop()
 {
-  unsigned long m;
-  static unsigned long prevMillis=0;
+  uint32_t m;
+  static uint32_t prevMillis=0;
+  static uint8_t same=0;
 
   m = millis();
   if((m - prevMillis) >= 65) //update every 65ms (15Hz)
@@ -228,7 +233,18 @@ void loop()
     }
     else
     {
-      play_gol();
+      if(play_gol()) //no generation change
+      {
+        if(++same > 50) //no change since 50 runs-> restart
+        {
+          same = 0;
+          init_gol();
+        }
+      }
+      else
+      {
+        same = 0;
+      }
       draw_gol();
     }
 
