@@ -21,8 +21,14 @@ void setup()
 
   //init RTC
   Serial.println("Init RTC...");
+
   //only set the date+time one time
-  //  rtc.set(0, 0, 8, 24, 12, 2014); //08:00:00 24.12.2014 //sec, min, hour, day, month, year
+  // rtc.set(0, 0, 8, 24, 12, 2014); //08:00:00 24.12.2014 //sec, min, hour, day, month, year
+
+  //stop/pause RTC
+  // rtc.stop();
+
+  //start RTC
   rtc.start();
 }
 
