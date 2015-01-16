@@ -47,7 +47,7 @@ void DS1307::start(void)
 
   //set second and clear CH bit
   Wire.beginTransmission(I2C_ADDR);
-  Wire.write(byte(0x00));	
+  Wire.write(byte(0x00));
   Wire.write(sec & 0x7F);
   Wire.endTransmission();
 
@@ -69,7 +69,7 @@ void DS1307::stop(void)
 
   //set second and CH bit
   Wire.beginTransmission(I2C_ADDR);
-  Wire.write(byte(0x00));	
+  Wire.write(byte(0x00));
   Wire.write(sec | 0x80); //hold
   Wire.endTransmission();
 
@@ -119,6 +119,11 @@ void DS1307::set(uint8_t sec, uint8_t min, uint8_t hour, uint8_t day, uint8_t mo
 {
   uint8_t ch, d;
 
+  if(year >= 2000)
+  {
+    year -= 2000;
+  }
+
   //get CH bit
   Wire.beginTransmission(I2C_ADDR);
   Wire.write(byte(0x00));
@@ -145,7 +150,7 @@ void DS1307::set(uint8_t sec, uint8_t min, uint8_t hour, uint8_t day, uint8_t mo
   Wire.write(bin2bcd(0));
   Wire.write(bin2bcd(day));
   Wire.write(bin2bcd(month));
-  Wire.write(bin2bcd(year - 2000));
+  Wire.write(bin2bcd(year));
   Wire.endTransmission();
 
   return;

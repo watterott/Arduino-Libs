@@ -1,5 +1,9 @@
 /*
   DS1307 RTC (Real-Time-Clock) Example
+
+  Uno       A4 (SDA), A5 (SCL)
+  Mega      20 (SDA), 21 (SCL)
+  Leonardo   2 (SDA),  3 (SCL)
  */
 
 #include <Wire.h>
