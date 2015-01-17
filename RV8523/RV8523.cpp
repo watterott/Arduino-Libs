@@ -37,17 +37,32 @@ void RV8523::start(void)
 {
   uint8_t val;
 
+  //control 1
   Wire.beginTransmission(I2C_ADDR);
-  Wire.write(byte(0x00));
+  Wire.write(byte(0x00)); //control 1
+  Wire.endTransmission();
+  Wire.requestFrom(I2C_ADDR, 1);
+  val = Wire.read();
+  if(val & (1<<5))
+  {
+    Wire.beginTransmission(I2C_ADDR);
+    Wire.write(byte(0x00)); //control 1
+    Wire.write(val & ~(1<<5)); //clear STOP (bit 5)
+    Wire.endTransmission();
+  }
+
+  //control 3
+  Wire.beginTransmission(I2C_ADDR);
+  Wire.write(byte(0x02)); //control 3
   Wire.endTransmission();
   Wire.requestFrom(I2C_ADDR, 1);
   val = Wire.read();
 
-  if(val & (1<<5))
+  if(val & 0xE0)
   {
     Wire.beginTransmission(I2C_ADDR);
-    Wire.write(byte(0x00));
-    Wire.write(val & ~(1<<5)); //clear STOP (bit 5)
+    Wire.write(byte(0x02)); //control 3
+    Wire.write(val & ~0xE0); //battery switchover in standard mode
     Wire.endTransmission();
   }
 
@@ -60,15 +75,14 @@ void RV8523::stop(void)
   uint8_t val;
 
   Wire.beginTransmission(I2C_ADDR);
-  Wire.write(byte(0x00));
+  Wire.write(byte(0x00)); //control 1
   Wire.endTransmission();
   Wire.requestFrom(I2C_ADDR, 1);
   val = Wire.read();
-
   if(!(val & (1<<5)))
   {
     Wire.beginTransmission(I2C_ADDR);
-    Wire.write(byte(0x00));
+    Wire.write(byte(0x00)); //control 1
     Wire.write(val | (1<<5)); //set STOP (bit 5)
     Wire.endTransmission();
   }
