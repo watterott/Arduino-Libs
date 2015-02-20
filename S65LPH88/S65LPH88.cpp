@@ -237,7 +237,7 @@ void S65LPH88::drawStop(void)
 
 
 #if defined(__AVR__)
-//const prog_uint8_t initdataLPH88[] = 
+//const PROGMEM uint8_t initdataLPH88[] = 
 const uint8_t initdataLPH88[] PROGMEM = 
 #else
 const uint8_t initdataLPH88[] = 
@@ -282,7 +282,7 @@ void S65LPH88::reset(uint_least8_t clock_div)
 {
   uint_least8_t c, d, e, i;
 #if defined(__AVR__)
-  const prog_uint8_t *ptr;
+  const PROGMEM uint8_t *ptr;
 #else
   uint8_t *ptr;
 #endif

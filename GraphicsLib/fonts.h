@@ -72,7 +72,7 @@
 #endif
 
 #if defined(__AVR__)
-extern const prog_uint8_t font_PGM[];
+extern const PROGMEM uint8_t font_PGM[];
 #else
 extern const uint8_t font_PGM[];
 #endif

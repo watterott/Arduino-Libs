@@ -546,7 +546,7 @@ int_least16_t GraphicsLib::drawChar(int_least16_t x, int_least16_t y, char c, ui
 #endif
   uint_least8_t i, j, width, height;
 #if defined(__AVR__)
-  const prog_uint8_t *ptr;
+  const PROGMEM uint8_t *ptr;
 #else
   uint8_t *ptr;
 #endif

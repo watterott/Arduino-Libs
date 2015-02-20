@@ -254,7 +254,7 @@ void S65L2F50::drawStop(void)
 
 
 #if defined(__AVR__)
-//const prog_uint8_t initdataL2F50[] = 
+//const PROGMEM uint8_t initdataL2F50[] = 
 const uint8_t initdataL2F50[] PROGMEM = 
 #else
 const uint8_t initdataL2F50[] = 
@@ -298,7 +298,7 @@ void S65L2F50::reset(uint_least8_t clock_div)
 {
   uint_least8_t c, d, i;
 #if defined(__AVR__)
-  const prog_uint8_t *ptr;
+  const PROGMEM uint8_t *ptr;
 #else
   uint8_t *ptr;
 #endif

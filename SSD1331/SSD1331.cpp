@@ -297,7 +297,7 @@ void SSD1331::drawStop(void)
 
 
 #if defined(__AVR__)
-//const prog_uint8_t initdata1331[] = 
+//const PROGMEM uint8_t initdata1331[] = 
 const uint8_t initdata1331[] PROGMEM = 
 #else
 const uint8_t initdata1331[] = 
@@ -334,7 +334,7 @@ void SSD1331::reset(uint_least8_t clock_div)
 {
   uint_least8_t c, i;
 #if defined(__AVR__)
-  const prog_uint8_t *ptr;
+  const PROGMEM uint8_t *ptr;
 #else
   uint8_t *ptr;
 #endif

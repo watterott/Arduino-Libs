@@ -6,7 +6,7 @@
 
 #ifdef FONT_6X8
 #if defined(__AVR__)
-const prog_uint8_t font_PGM[] = 
+const PROGMEM uint8_t font_PGM[] = 
 #else
 const uint8_t font_PGM[] = 
 #endif

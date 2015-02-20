@@ -285,7 +285,7 @@ void S65LS020::drawStop(void)
 
 
 #if defined(__AVR__)
-//const prog_uint8_t initdataLS020[] = 
+//const PROGMEM uint8_t initdataLS020[] = 
 const uint8_t initdataLS020[] PROGMEM = 
 #else
 const uint8_t initdataLS020[] = 
@@ -352,7 +352,7 @@ void S65LS020::reset(uint_least8_t clock_div)
 {
   uint_least8_t c, d, i;
 #if defined(__AVR__)
-  const prog_uint8_t *ptr;
+  const PROGMEM uint8_t *ptr;
 #else
   uint8_t *ptr;
 #endif

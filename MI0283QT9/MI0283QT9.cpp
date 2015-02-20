@@ -590,7 +590,7 @@ void MI0283QT9::touchStartCal(void)
 
 
 #if defined(__AVR__)
-//const prog_uint8_t initdataQT9[] = 
+//const PROGMEM uint8_t initdataQT9[] = 
 const uint8_t initdataQT9[] PROGMEM = 
 #else
 const uint8_t initdataQT9[] = 
@@ -660,7 +660,7 @@ void MI0283QT9::reset(uint_least8_t clock_div)
 {
   uint_least8_t c, i;
 #if defined(__AVR__)
-  const prog_uint8_t *ptr;
+  const PROGMEM uint8_t *ptr;
 #else
   uint8_t *ptr;
 #endif
