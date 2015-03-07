@@ -16,7 +16,12 @@ class RV8523
     void get(int *sec, int *min, int *hour, int *day, int *month, int *year);
     void set(uint8_t sec, uint8_t min, uint8_t hour, uint8_t day, uint8_t month, uint16_t year);
     void set(int sec, int min, int hour, int day, int month, int year);
-
+    void batterySwitchOver(uint8_t value);
+    void set12HourMode();
+    void set24HourMode();
+    void batterySwitchOverOn();
+    void batterySwitchOverOff();
+    
   private:
     uint8_t bin2bcd(uint8_t val);
     uint8_t bcd2bin(uint8_t val);
