@@ -1,0 +1,13 @@
+{
+  "name": "Watterott-RedFly",
+  "keywords": "wifi, wlan",
+  "description": "RedFly-Shield (WiFi/WLAN)",
+  "include": "Arduino/RedFly",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}
