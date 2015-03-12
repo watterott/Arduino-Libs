@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-S65L2F50",
+  "name": "S65L2F50",
   "keywords": "spi, display, graphics",
   "description": "S65 L2F50 Display (SPI)",
-  "include": "Arduino/S65L2F50",
+  "include": "S65L2F50",
   "repository":
   {
     "type": "git",

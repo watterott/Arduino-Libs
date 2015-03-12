@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-GraphicsLib",
+  "name": "GraphicsLib",
   "keywords": "graphics",
   "description": "General Grahipcs Library",
-  "include": "Arduino/GraphicsLib",
+  "include": "GraphicsLib",
   "repository":
   {
     "type": "git",

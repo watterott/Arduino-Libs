@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-digitalWriteFast",
+  "name": "digitalWriteFast",
   "keywords": "io, driver",
   "description": "Fast pin access for AVR",
-  "include": "Arduino/digitalWriteFast",
+  "include": "digitalWriteFast",
   "repository":
   {
     "type": "git",

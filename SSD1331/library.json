@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-SSD1331",
+  "name": "SSD1331",
   "keywords": "spi, display, graphics, oled",
   "description": "OLED-Display (SSD1331, SPI)",
-  "include": "Arduino/SSD1331",
+  "include": "SSD1331",
   "repository":
   {
     "type": "git",

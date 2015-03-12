@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-DisplaySPI",
+  "name": "DisplaySPI",
   "keywords": "spi, graphics, display, lcd, driver",
   "description": "MI0283QT-Adapter v2 + GLCD-Shield (SPI)",
-  "include": "Arduino/DisplaySPI",
+  "include": "DisplaySPI",
   "repository":
   {
     "type": "git",

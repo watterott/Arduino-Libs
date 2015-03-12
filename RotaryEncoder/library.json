@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-RotaryEncoder",
+  "name": "RotaryEncoder",
   "keywords": "input, signal, driver",
   "description": "Rotary Encoder",
-  "include": "Arduino/RotaryEncoder",
+  "include": "RotaryEncoder",
   "repository":
   {
     "type": "git",

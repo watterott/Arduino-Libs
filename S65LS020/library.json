@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-S65LS020",
+  "name": "S65LS020",
   "keywords": "spi, display, graphics",
   "description": "S65 LS020 Display (SPI)",
-  "include": "Arduino/S65LS020",
+  "include": "S65LS020",
   "repository":
   {
     "type": "git",

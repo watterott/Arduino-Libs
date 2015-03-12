@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-DS1307",
+  "name": "DS1307",
   "keywords": "rtc, time, clock, i2c",
   "description": "DS1307 RTC (Real-Time-Clock)",
-  "include": "Arduino/DS1307",
+  "include": "DS1307",
   "repository":
   {
     "type": "git",

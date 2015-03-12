@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-MI0283QT9",
+  "name": "MI0283QT9",
   "keywords": "driver, graphics, display",
   "description": "MI0283QT-9 / -9A / -11 Display (ILI9341, SPI)",
-  "include": "Arduino/MI0283QT9",
+  "include": "MI0283QT9",
   "repository":
   {
     "type": "git",

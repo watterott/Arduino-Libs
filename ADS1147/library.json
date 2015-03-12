@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-ADS1147",
+  "name": "ADS1147",
   "keywords": "spi, driver, adc, analog, input, converter, signal",
   "description": "ADS1147 ADC (Analog-Digital-Converter)",
-  "include": "Arduino/ADS1147",
+  "include": "ADS1147",
   "repository":
   {
     "type": "git",

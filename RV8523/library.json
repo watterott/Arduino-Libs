@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-RV8523",
+  "name": "RV8523",
   "keywords": "i2c, driver, rtc, time, clock",
   "description": "RV-8523 RTC (Real-Time-Clock)",
-  "include": "Arduino/RV8523",
+  "include": "RV8523",
   "repository":
   {
     "type": "git",

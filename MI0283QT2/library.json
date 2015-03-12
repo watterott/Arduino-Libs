@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-MI0283QT2",
+  "name": "MI0283QT2",
   "keywords": "driver, graphics, display",
   "description": "MI0283QT-2 Display (HX8347D, SPI)",
-  "include": "Arduino/MI0283QT2",
+  "include": "MI0283QT2",
   "repository":
   {
     "type": "git",

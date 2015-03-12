@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-S65LPH88",
+  "name": "S65LPH88",
   "keywords": "spi, display, graphics",
   "description": "S65 LPH88 Display (SPI)",
-  "include": "Arduino/S65LPH88",
+  "include": "S65LPH88",
   "repository":
   {
     "type": "git",

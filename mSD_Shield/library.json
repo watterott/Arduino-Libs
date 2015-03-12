@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-mSD_Shield",
+  "name": "mSD_Shield",
   "keywords": "display, microsd, rtc",
   "description": "mSD-Shield (Display, microSD, RTC)",
-  "include": "Arduino/mSD_Shield",
+  "include": "mSD_Shield",
   "repository":
   {
     "type": "git",

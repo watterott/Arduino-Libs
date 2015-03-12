@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-RedFly",
+  "name": "RedFly",
   "keywords": "wifi, wlan",
   "description": "RedFly-Shield (WiFi/WLAN)",
-  "include": "Arduino/RedFly",
+  "include": "RedFly",
   "repository":
   {
     "type": "git",

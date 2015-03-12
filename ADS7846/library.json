@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-ADS7846",
+  "name": "ADS7846",
   "keywords": "spi, driver, touch",
   "description": "ADS7846/TSC2046 Touch-Controller",
-  "include": "Arduino/ADS7846",
+  "include": "ADS7846",
   "repository":
   {
     "type": "git",

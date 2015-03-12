@@ -1,8 +1,8 @@
 {
-  "name": "Watterott-DisplayI2C",
+  "name": "DisplayI2C",
   "keywords": "i2c, graphics, display, lcd, driver",
   "description": "MI0283QT-Adapter v2 + GLCD-Shield (I2C)",
-  "include": "Arduino/DisplayI2C",
+  "include": "DisplayI2C",
   "repository":
   {
     "type": "git",
