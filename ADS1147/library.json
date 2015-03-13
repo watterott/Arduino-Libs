@@ -1,6 +1,6 @@
 {
   "name": "ADS1147",
-  "keywords": "spi, driver, adc, analog, input, converter, signal",
+  "keywords": "spi, adc, analog, input, converter, signal",
   "description": "ADS1147 ADC (Analog-Digital-Converter)",
   "include": "ADS1147",
   "repository":

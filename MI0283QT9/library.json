@@ -1,6 +1,6 @@
 {
   "name": "MI0283QT9",
-  "keywords": "driver, graphics, display",
+  "keywords": "spi, graphics, display, lcd",
   "description": "MI0283QT-9 / -9A / -11 Display (ILI9341, SPI)",
   "include": "MI0283QT9",
   "repository":

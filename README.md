@@ -46,4 +46,3 @@ Each package has its own copyright and license agreement, and it is your respons
 * [light_ws2812](https://github.com/cpldcpu/light_ws2812)
 * [MCP2515](https://github.com/franksmicro/Arduino/tree/master/libraries/MCP2515)
 * [TinyWire](https://github.com/sudar/TinyWire)
-

@@ -1,6 +1,6 @@
 {
   "name": "digitalWriteFast",
-  "keywords": "io, driver",
+  "keywords": "io, pin",
   "description": "Fast pin access for AVR",
   "include": "digitalWriteFast",
   "repository":

@@ -1,6 +1,6 @@
 {
   "name": "S65LS020",
-  "keywords": "spi, display, graphics",
+  "keywords": "spi, graphics, display, lcd",
   "description": "S65 LS020 Display (SPI)",
   "include": "S65LS020",
   "repository":

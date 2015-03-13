@@ -1,6 +1,6 @@
 {
   "name": "DS1307",
-  "keywords": "rtc, time, clock, i2c",
+  "keywords": "i2c, rtc, time, clock",
   "description": "DS1307 RTC (Real-Time-Clock)",
   "include": "DS1307",
   "repository":

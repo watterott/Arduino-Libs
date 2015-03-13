@@ -1,6 +1,6 @@
 {
   "name": "S65L2F50",
-  "keywords": "spi, display, graphics",
+  "keywords": "spi, graphics, display, lcd",
   "description": "S65 L2F50 Display (SPI)",
   "include": "S65L2F50",
   "repository":

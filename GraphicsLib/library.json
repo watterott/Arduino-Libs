@@ -1,6 +1,6 @@
 {
   "name": "GraphicsLib",
-  "keywords": "graphics",
+  "keywords": "graphics, display, lcd",
   "description": "General Grahipcs Library",
   "include": "GraphicsLib",
   "repository":

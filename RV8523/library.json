@@ -1,6 +1,6 @@
 {
   "name": "RV8523",
-  "keywords": "i2c, driver, rtc, time, clock",
+  "keywords": "i2c, rtc, time, clock",
   "description": "RV-8523 RTC (Real-Time-Clock)",
   "include": "RV8523",
   "repository":

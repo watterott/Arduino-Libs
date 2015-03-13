@@ -1,6 +1,6 @@
 {
   "name": "RotaryEncoder",
-  "keywords": "input, signal, driver",
+  "keywords": "input, encoder, signal",
   "description": "Rotary Encoder",
   "include": "RotaryEncoder",
   "repository":

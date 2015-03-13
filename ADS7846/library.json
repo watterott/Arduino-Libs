@@ -1,6 +1,6 @@
 {
   "name": "ADS7846",
-  "keywords": "spi, driver, touch",
+  "keywords": "spi, touch",
   "description": "ADS7846/TSC2046 Touch-Controller",
   "include": "ADS7846",
   "repository":

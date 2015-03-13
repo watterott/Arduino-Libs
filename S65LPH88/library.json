@@ -1,6 +1,6 @@
 {
   "name": "S65LPH88",
-  "keywords": "spi, display, graphics",
+  "keywords": "spi, graphics, display, lcd",
   "description": "S65 LPH88 Display (SPI)",
   "include": "S65LPH88",
   "repository":
