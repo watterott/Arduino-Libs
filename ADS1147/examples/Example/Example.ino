@@ -1,5 +1,5 @@
 /*
-  ADS1147 ADC Test
+  ADS1147 ADC Example
 
   CS  - D10
   SDI - D11/MOSI

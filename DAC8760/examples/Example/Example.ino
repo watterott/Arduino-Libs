@@ -1,5 +1,5 @@
 /*
-  DAC8760 DAC Test
+  DAC8760 DAC Example
 
   CLR   - connected to GND
   LATCH - D10
