@@ -1,0 +1,24 @@
+{
+  "name": "SSD1331",
+  "keywords": "spi, display, graphics, oled",
+  "description": "OLED-Display (SSD1331, SPI)",
+  "include": "SSD1331",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "dependencies":
+  [
+    {
+      "name": "digitalWriteFast",
+      "frameworks": "arduino"
+    },
+    {
+      "name": "GraphicsLib",
+      "frameworks": "arduino"
+    }
+  ],
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}

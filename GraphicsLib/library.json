@@ -1,0 +1,13 @@
+{
+  "name": "GraphicsLib",
+  "keywords": "graphics",
+  "description": "General Grahipcs Library",
+  "include": "GraphicsLib",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}

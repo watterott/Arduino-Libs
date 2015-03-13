@@ -1,0 +1,32 @@
+{
+  "name": "ADS7846",
+  "keywords": "spi, driver, touch",
+  "description": "ADS7846/TSC2046 Touch-Controller",
+  "include": "ADS7846",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "dependencies":
+  [
+    {
+      "name": "digitalWriteFast",
+      "frameworks": "arduino"
+    },
+    {
+      "name": "GraphicsLib",
+      "frameworks": "arduino"
+    },
+    {
+      "name": "MI0283QT2",
+      "frameworks": "arduino"
+    },
+    {
+      "name": "MI0283QT9",
+      "frameworks": "arduino"
+    }
+  ],
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "S65LS020",
+  "keywords": "spi, display, graphics",
+  "description": "S65 LS020 Display (SPI)",
+  "include": "S65LS020",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "dependencies":
+  [
+    {
+      "name": "digitalWriteFast",
+      "frameworks": "arduino"
+    },
+    {
+      "name": "GraphicsLib",
+      "frameworks": "arduino"
+    }
+  ],
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}

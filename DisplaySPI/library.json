@@ -1,0 +1,28 @@
+{
+  "name": "DisplaySPI",
+  "keywords": "spi, graphics, display, lcd, driver",
+  "description": "MI0283QT-Adapter v2 + GLCD-Shield (SPI)",
+  "include": "DisplaySPI",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "dependencies":
+  [
+    {
+      "name": "DisplayI2C",
+      "frameworks": "arduino"
+    },
+    {
+      "name": "digitalWriteFast",
+      "frameworks": "arduino"
+    },
+    {
+      "name": "GraphicsLib",
+      "frameworks": "arduino"
+    }
+  ],
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}
