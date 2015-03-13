@@ -11,19 +11,19 @@
   "dependencies":
   [
     {
-      "name": "Watterott-digitalWriteFast",
+      "name": "digitalWriteFast",
       "frameworks": "arduino"
     },
     {
-      "name": "Watterott-GraphicsLib",
+      "name": "GraphicsLib",
       "frameworks": "arduino"
     },
     {
-      "name": "Watterott-MI0283QT2",
+      "name": "MI0283QT2",
       "frameworks": "arduino"
     },
     {
-      "name": "Watterott-MI0283QT9",
+      "name": "MI0283QT9",
       "frameworks": "arduino"
     }
   ],

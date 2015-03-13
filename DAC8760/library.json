@@ -10,7 +10,7 @@
   },
   "dependencies":
   {
-    "name": "Watterott-digitalWriteFast",
+    "name": "digitalWriteFast",
     "frameworks": "arduino"
   },
   "frameworks": "arduino",

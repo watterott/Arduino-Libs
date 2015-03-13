@@ -11,11 +11,11 @@
   "dependencies":
   [
     {
-      "name": "Watterott-DisplaySPI",
+      "name": "DisplaySPI",
       "frameworks": "arduino"
     },
     {
-      "name": "Watterott-GraphicsLib",
+      "name": "GraphicsLib",
       "frameworks": "arduino"
     }
   ],

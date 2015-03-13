@@ -11,15 +11,15 @@
   "dependencies":
   [
     {
-      "name": "Watterott-DisplayI2C",
+      "name": "DisplayI2C",
       "frameworks": "arduino"
     },
     {
-      "name": "Watterott-digitalWriteFast",
+      "name": "digitalWriteFast",
       "frameworks": "arduino"
     },
     {
-      "name": "Watterott-GraphicsLib",
+      "name": "GraphicsLib",
       "frameworks": "arduino"
     }
   ],
