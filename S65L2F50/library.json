@@ -1,0 +1,24 @@
+{
+  "name": "S65L2F50",
+  "keywords": "spi, display, graphics",
+  "description": "S65 L2F50 Display (SPI)",
+  "include": "S65L2F50",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "dependencies":
+  [
+    {
+      "name": "digitalWriteFast",
+      "frameworks": "arduino"
+    },
+    {
+      "name": "GraphicsLib",
+      "frameworks": "arduino"
+    }
+  ],
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}
