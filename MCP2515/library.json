@@ -1,0 +1,13 @@
+{
+  "name": "MCP2515",
+  "keywords": "spi, driver, can-bus, canbus",
+  "description": "MCP2515 CAN-Controller",
+  "include": "MCP2515",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}
