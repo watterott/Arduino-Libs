@@ -1,6 +1,6 @@
 {
   "name": "MCP2515",
-  "keywords": "spi, driver, can-bus, canbus",
+  "keywords": "spi, can-bus, canbus",
   "description": "MCP2515 CAN-Controller",
   "include": "MCP2515",
   "repository":

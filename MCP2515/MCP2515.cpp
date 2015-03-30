@@ -10,7 +10,6 @@
   12       MISO
   13       SCK
   10       CS 
-
 */
 
 #if ARDUINO >= 100
