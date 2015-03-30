@@ -284,7 +284,7 @@ void S65LPH88::reset(uint_least8_t clock_div)
 #if defined(__AVR__)
   const PROGMEM uint8_t *ptr;
 #else
-  uint8_t *ptr;
+  const uint8_t *ptr;
 #endif
 
   //SPI speed-down
