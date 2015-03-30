@@ -19,6 +19,8 @@
 #include "RotaryEncoder.h"
 
 
+#define STEPS                (4) //1, 2 or 4 steps
+
 #define RE_SW_PIN            (5)
 #define RE_PHA_PIN           (6)
 #define RE_PHB_PIN           (7)
@@ -121,10 +123,22 @@ int_least8_t RotaryEncoder::step(void)
 
   cli();
   val      = re_delta;
+#if STEPS == 1
+  re_delta = 0;      //1step:0 / 2step:val&1 / 4step:val&3
+#elif STEPS == 2
+  re_delta = val&1;  //1step:0 / 2step:val&1 / 4step:val&3
+#elif STEPS == 4
   re_delta = val&3;  //1step:0 / 2step:val&1 / 4step:val&3
+#endif
   sei();
 
+#if STEPS == 1
+  val = val>>0;      //1step:val / 2step:val>>1 / 4step:val>>2
+#elif STEPS == 2
+  val = val>>1;      //1step:val / 2step:val>>1 / 4step:val>>2
+#elif STEPS == 4
   val = val>>2;      //1step:val / 2step:val>>1 / 4step:val>>2
+#endif
 
   if(val < 0)
   {
