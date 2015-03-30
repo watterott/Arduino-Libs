@@ -773,7 +773,7 @@ int_least16_t DisplaySPI::drawChar(int_least16_t x, int_least16_t y, unsigned ch
 }
 
 
-int_least16_t DisplaySPI::drawText(int_least16_t x, int_least16_t y, char *s, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
+int_least16_t DisplaySPI::drawText(int_least16_t x, int_least16_t y, const char *s, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
 {
   uint_least16_t len;
   int_least16_t pos=x;
