@@ -548,7 +548,7 @@ int_least16_t GraphicsLib::drawChar(int_least16_t x, int_least16_t y, char c, ui
 #if defined(__AVR__)
   const PROGMEM uint8_t *ptr;
 #else
-  uint8_t *ptr;
+  const uint8_t *ptr;
 #endif
 
 #if FONT_WIDTH <= 8
