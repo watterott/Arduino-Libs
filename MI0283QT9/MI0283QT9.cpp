@@ -4,13 +4,9 @@
  */
 
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/io.h>
 # include <avr/pgmspace.h>
-#else
-# define pgm_read_byte(addr)  (*(const uint8_t *)(addr))
-# define pgm_read_word(addr)  (*(const uint16_t *)(addr))
-# define pgm_read_dword(addr) (*(const uint32_t *)(addr))
 #endif
 #if ARDUINO >= 100
 # include "Arduino.h"
@@ -23,94 +19,33 @@
 #include "MI0283QT9.h"
 
 
-//#define SOFTWARE_SPI //use software SPI on pins 11,12,13
-
-//#define USE_8BIT_SPI //use 8bit SPI for the display
+//#define LCD_8BIT_SPI //use 8bit SPI for the display
 
 #define ADS7846 //enable ADS7846 support
 
-#define MIN_PRESSURE    (5) //minimum pressure 1...254
+#define MIN_PRESSURE    5 //minimum pressure 1...254
 
-#ifndef LCD_WIDTH
-# define LCD_WIDTH      (320)
-# define LCD_HEIGHT     (240)
+//#define SOFTWARE_SPI //use software SPI on pins MOSI:11, MISO:12, SCK:13
+
+#if defined(SOFTWARE_SPI)
+# define LED_PIN        9 //PB1
+# define RST_PIN        8
+# define CS_PIN         7 //SPI_SW_SS_PIN
+# define RS_PIN         5
+# define ADSCS_PIN      6
+# define MOSI_PIN       SPI_SW_MOSI_PIN
+# define MISO_PIN       SPI_SW_MISO_PIN
+# define SCK_PIN        SPI_SW_SCK_PIN
+#else
+# define LED_PIN        9 //PB1
+# define RST_PIN        8
+# define CS_PIN         7 //SPI_HW_SS_PIN
+# define RS_PIN         5
+# define ADSCS_PIN      6
+# define MOSI_PIN       SPI_HW_MOSI_PIN
+# define MISO_PIN       SPI_HW_MISO_PIN
+# define SCK_PIN        SPI_HW_SCK_PIN
 #endif
-
-#ifndef CAL_POINT_X1
-# define CAL_POINT_X1   (20)
-# define CAL_POINT_Y1   (20)
-# define CAL_POINT1     {CAL_POINT_X1,CAL_POINT_Y1}
-# define CAL_POINT_X2   LCD_WIDTH-20 //300
-# define CAL_POINT_Y2   LCD_HEIGHT/2 //120
-# define CAL_POINT2     {CAL_POINT_X2,CAL_POINT_Y2}
-# define CAL_POINT_X3   LCD_WIDTH/2   //160
-# define CAL_POINT_Y3   LCD_HEIGHT-20 //220
-# define CAL_POINT3     {CAL_POINT_X3,CAL_POINT_Y3}
-#endif
-
-
-#if (defined(__AVR_ATmega1280__) || \
-     defined(__AVR_ATmega1281__) || \
-     defined(__AVR_ATmega2560__) || \
-     defined(__AVR_ATmega2561__))      //--- Arduino Mega ---
-
-# define LED_PIN        (9) //PH6
-# define RST_PIN        (8)
-# define CS_PIN         (7)
-# define RS_PIN         (5)
-# define ADSCS_PIN      (6)
-# if defined(SOFTWARE_SPI)
-#  define MOSI_PIN      (11)
-#  define MISO_PIN      (12)
-#  define CLK_PIN       (13)
-# else
-#  define MOSI_PIN      (51)
-#  define MISO_PIN      (50)
-#  define CLK_PIN       (52)
-# endif
-
-#elif (defined(__AVR_ATmega644__) || \
-       defined(__AVR_ATmega644P__))    //--- Arduino 644 (www.mafu-foto.de) ---
-
-# define LED_PIN        (3) //PB3
-# define RST_PIN        (12)
-# define CS_PIN         (13)
-# define RS_PIN         (15)
-# define ADSCS_PIN      (14)
-# define MOSI_PIN       (5)
-# define MISO_PIN       (6)
-# define CLK_PIN        (7)
-
-#elif defined(__AVR_ATmega32U4__)      //--- Arduino Leonardo ---
-
-# define LED_PIN        (9) //PB5
-# define RST_PIN        (8)
-# define CS_PIN         (7)
-# define RS_PIN         (5)
-# define ADSCS_PIN      (6)
-# if defined(SOFTWARE_SPI)
-#  define MOSI_PIN      (11)
-#  define MISO_PIN      (12)
-#  define CLK_PIN       (13)
-# else
-#  define MOSI_PIN      (16) //PB2
-#  define MISO_PIN      (14) //PB3
-#  define CLK_PIN       (15) //PB1
-# endif
-
-#else                                  //--- Arduino Uno ---
-
-# define LED_PIN        (9) //PB1
-# define RST_PIN        (8)
-# define CS_PIN         (7)
-# define RS_PIN         (5)
-# define ADSCS_PIN      (6)
-# define MOSI_PIN       (11)
-# define MISO_PIN       (12)
-# define CLK_PIN        (13)
-
-#endif
-
 
 #define LED_ENABLE()    digitalWriteFast(LED_PIN, HIGH)
 #define LED_DISABLE()   digitalWriteFast(LED_PIN, LOW)
@@ -129,12 +64,29 @@
 
 #define MISO_READ()     digitalReadFast(MISO_PIN)
 
-#define CLK_HIGH()      digitalWriteFast(CLK_PIN, HIGH)
-#define CLK_LOW()       digitalWriteFast(CLK_PIN, LOW)
+#define SCK_HIGH()      digitalWriteFast(SCK_PIN, HIGH)
+#define SCK_LOW()       digitalWriteFast(SCK_PIN, LOW)
 
 #define ADSCS_DISABLE() digitalWriteFast(ADSCS_PIN, HIGH)
 #define ADSCS_ENABLE()  digitalWriteFast(ADSCS_PIN, LOW)
 
+
+#ifndef LCD_WIDTH
+# define LCD_WIDTH      320
+# define LCD_HEIGHT     240
+#endif
+
+#ifndef CAL_POINT_X1
+# define CAL_POINT_X1   20
+# define CAL_POINT_Y1   20
+# define CAL_POINT1     {CAL_POINT_X1,CAL_POINT_Y1}
+# define CAL_POINT_X2   LCD_WIDTH-20 //300
+# define CAL_POINT_Y2   LCD_HEIGHT/2 //120
+# define CAL_POINT2     {CAL_POINT_X2,CAL_POINT_Y2}
+# define CAL_POINT_X3   LCD_WIDTH/2   //160
+# define CAL_POINT_Y3   LCD_HEIGHT-20 //220
+# define CAL_POINT3     {CAL_POINT_X3,CAL_POINT_Y3}
+#endif
 
 //LCD commands
 #define LCD_CMD_NOP                    0x00
@@ -220,11 +172,11 @@ void MI0283QT9::begin(uint_least8_t clock_div)
 #endif
   pinMode(LED_PIN, OUTPUT);
   pinMode(CS_PIN, OUTPUT);
-#if defined(USE_8BIT_SPI)
+#if defined(LCD_8BIT_SPI)
   pinMode(RS_PIN, OUTPUT);
   RS_HIGH();
 #endif
-  pinMode(CLK_PIN, OUTPUT);
+  pinMode(SCK_PIN, OUTPUT);
   pinMode(MOSI_PIN, OUTPUT);
   pinMode(MISO_PIN, INPUT);
   LED_DISABLE();
@@ -374,35 +326,35 @@ void MI0283QT9::drawStart(void)
 
 void MI0283QT9::draw(uint_least16_t color)
 {
-#if defined(USE_8BIT_SPI)
+#if defined(LCD_8BIT_SPI)
 //  RS_HIGH(); //data
 # else
   //9th bit
   MOSI_HIGH(); //data
-  CLK_LOW();
-# if defined(__AVR__) && !defined(SOFTWARE_SPI)
+  SCK_LOW();
+# if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   SPCR &= ~(1<<SPE); //disable SPI
-  CLK_HIGH();
+  SCK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
 # else
-  CLK_HIGH();
+  SCK_HIGH();
 # endif
 #endif
 
   wr_spi(color>>8);
 
-#if defined(USE_8BIT_SPI)
+#if defined(LCD_8BIT_SPI)
 //  RS_HIGH(); //data
 # else
   //9th bit
   MOSI_HIGH(); //data
-  CLK_LOW();
-# if defined(__AVR__) && !defined(SOFTWARE_SPI)
+  SCK_LOW();
+# if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   SPCR &= ~(1<<SPE); //disable SPI
-  CLK_HIGH();
+  SCK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
 # else
-  CLK_HIGH();
+  SCK_HIGH();
 # endif
 #endif
 
@@ -427,7 +379,7 @@ uint_least8_t MI0283QT9::touchRead(void)
   uint_least16_t x, y;
 
   //SPI speed-down
-#if !defined(SOFTWARE_SPI) && defined(__AVR__)
+#if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   uint_least8_t spcr, spsr;
   spcr = SPCR;
   spsr = SPSR;
@@ -511,7 +463,7 @@ uint_least8_t MI0283QT9::touchRead(void)
   }
 
   //restore SPI settings
-#if !defined(SOFTWARE_SPI) && defined(__AVR__)
+#if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   SPCR = spcr;
   SPSR = spsr;
 #endif
@@ -536,7 +488,7 @@ void MI0283QT9::touchStartCal(void)
   o = getOrientation();
   setOrientation(0);
   fillScreen(RGB(255,255,255));
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   drawTextPGM((lcd_width/2)-50, (lcd_height/2)-10, PSTR("Calibration"), RGB(0,0,0), RGB(255,255,255), 1);
 #else
   drawText((lcd_width/2)-50, (lcd_height/2)-10, "Calibration", RGB(0,0,0), RGB(255,255,255), 1);
@@ -564,7 +516,7 @@ void MI0283QT9::touchStartCal(void)
       fillScreen(RGB(255,255,255));
       if(i < 3)
       {
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
         drawTextPGM((lcd_width/2)-50, (lcd_height/2)-10, PSTR("Calibration"), RGB(0,0,0), RGB(255,255,255), 1);
 #else
         drawText((lcd_width/2)-50, (lcd_height/2)-10, "Calibration", RGB(0,0,0), RGB(255,255,255), 1);
@@ -589,12 +541,7 @@ void MI0283QT9::touchStartCal(void)
 //-------------------- Private --------------------
 
 
-#if defined(__AVR__)
-//const PROGMEM uint8_t initdataQT9[] = 
 const uint8_t initdataQT9[] PROGMEM = 
-#else
-const uint8_t initdataQT9[] = 
-#endif
 {
   //0x40| 1, LCD_CMD_RESET,
   //0xC0|60, //60ms
@@ -659,11 +606,7 @@ const uint8_t initdataQT9[] =
 void MI0283QT9::reset(uint_least8_t clock_div)
 {
   uint_least8_t c, i;
-#if defined(__AVR__)
   const PROGMEM uint8_t *ptr;
-#else
-  const uint8_t *ptr;
-#endif
 
   //SPI speed-down
 #if !defined(SOFTWARE_SPI)
@@ -727,18 +670,18 @@ void MI0283QT9::wr_cmd(uint_least8_t cmd)
 {
   CS_ENABLE();
 
-#if defined(USE_8BIT_SPI)
+#if defined(LCD_8BIT_SPI)
   RS_LOW(); //cmd
 # else
   //9th bit
   MOSI_LOW(); //cmd
-  CLK_LOW();
-# if defined(__AVR__) && !defined(SOFTWARE_SPI)
+  SCK_LOW();
+# if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   SPCR &= ~(1<<SPE); //disable SPI
-  CLK_HIGH();
+  SCK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
 # else
-  CLK_HIGH();
+  SCK_HIGH();
 # endif
 #endif
 
@@ -746,7 +689,7 @@ void MI0283QT9::wr_cmd(uint_least8_t cmd)
 
   CS_DISABLE();
 
-#if defined(USE_8BIT_SPI)
+#if defined(LCD_8BIT_SPI)
   RS_HIGH(); //data
 #endif
 
@@ -758,35 +701,35 @@ void MI0283QT9::wr_data16(uint_least16_t data)
 {
   CS_ENABLE();
 
-#if defined(USE_8BIT_SPI)
+#if defined(LCD_8BIT_SPI)
 //  RS_HIGH(); //data
 # else
   //9th bit
   MOSI_HIGH(); //data
-  CLK_LOW();
-# if defined(__AVR__) && !defined(SOFTWARE_SPI)
+  SCK_LOW();
+# if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   SPCR &= ~(1<<SPE); //disable SPI
-  CLK_HIGH();
+  SCK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
 # else
-  CLK_HIGH();
+  SCK_HIGH();
 # endif
 #endif
 
   wr_spi(data>>8);
 
-#if defined(USE_8BIT_SPI)
+#if defined(LCD_8BIT_SPI)
 //  RS_HIGH(); //data
 # else
   //9th bit
   MOSI_HIGH(); //data
-  CLK_LOW();
-# if defined(__AVR__) && !defined(SOFTWARE_SPI)
+  SCK_LOW();
+# if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   SPCR &= ~(1<<SPE); //disable SPI
-  CLK_HIGH();
+  SCK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
 # else
-  CLK_HIGH();
+  SCK_HIGH();
 # endif
 #endif
 
@@ -802,18 +745,18 @@ void MI0283QT9::wr_data(uint_least8_t data)
 {
   CS_ENABLE();
 
-#if defined(USE_8BIT_SPI)
+#if defined(LCD_8BIT_SPI)
   RS_HIGH(); //data
 #else
   //9th bit
   MOSI_HIGH(); //data
-  CLK_LOW();
-# if defined(__AVR__) && !defined(SOFTWARE_SPI)
+  SCK_LOW();
+# if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   SPCR &= ~(1<<SPE); //disable SPI
-  CLK_HIGH();
+  SCK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
 # else
-  CLK_HIGH();
+  SCK_HIGH();
 # endif
 #endif
 
@@ -832,7 +775,7 @@ uint_least8_t MI0283QT9::rd_spi(void)
   MOSI_LOW();
   for(uint_least8_t bit=8; bit!=0; bit--)
   {
-    CLK_HIGH();
+    SCK_HIGH();
     data <<= 1;
     if(MISO_READ())
     {
@@ -842,7 +785,7 @@ uint_least8_t MI0283QT9::rd_spi(void)
     {
       //data |= 0;
     }
-    CLK_LOW();
+    SCK_LOW();
   }
   return data;
 #else
@@ -856,7 +799,7 @@ void MI0283QT9::wr_spi(uint_least8_t data)
 #if defined(SOFTWARE_SPI)
   for(uint_least8_t mask=0x80; mask!=0; mask>>=1)
   {
-    CLK_LOW();
+    SCK_LOW();
     if(mask & data)
     {
       MOSI_HIGH();
@@ -865,9 +808,9 @@ void MI0283QT9::wr_spi(uint_least8_t data)
     {
       MOSI_LOW();
     }
-    CLK_HIGH();
+    SCK_HIGH();
   }
-  CLK_LOW();
+  SCK_LOW();
 #else
   SPI.transfer(data);
 #endif

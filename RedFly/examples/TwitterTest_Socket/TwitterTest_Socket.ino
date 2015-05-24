@@ -9,6 +9,7 @@
   http://arduino-tweet.appspot.com
  */
 
+#include <digitalWriteFast.h>
 #include <RedFly.h>
 
 

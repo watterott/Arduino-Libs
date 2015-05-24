@@ -3,9 +3,28 @@
 
 
 #include <inttypes.h>
-#include "GraphicsLib.h"
-#include "MI0283QT2.h"
-#include "MI0283QT9.h"
+//#include "GraphicsLib.h"
+//#include "MI0283QT2.h"
+//#include "MI0283QT9.h"
+
+
+typedef struct
+{
+  uint_least32_t x;
+  uint_least32_t y;
+} CAL_POINT; //calibration points for touchpanel
+
+
+typedef struct
+{
+  uint_least32_t a;
+  uint_least32_t b;
+  uint_least32_t c;
+  uint_least32_t d;
+  uint_least32_t e;
+  uint_least32_t f;
+  uint_least32_t div;
+} CAL_MATRIX; //calibration matrix for touchpanel
 
 
 class ADS7846
@@ -26,8 +45,8 @@ class ADS7846
     uint_least8_t setCalibration(CAL_POINT *lcd, CAL_POINT *tp);
     uint_least8_t writeCalibration(uint16_t eeprom_addr);
     uint_least8_t readCalibration(uint16_t eeprom_addr);
-    uint_least8_t doCalibration(MI0283QT2 *lcd, uint16_t eeprom_addr, uint_least8_t check_eeprom);
-    uint_least8_t doCalibration(MI0283QT9 *lcd, uint16_t eeprom_addr, uint_least8_t check_eeprom);
+    //uint_least8_t doCalibration(MI0283QT2 *lcd, uint16_t eeprom_addr, uint_least8_t check_eeprom); //example touch panel calibration routine
+    //uint_least8_t doCalibration(MI0283QT9 *lcd, uint16_t eeprom_addr, uint_least8_t check_eeprom); //example touch panel calibration routine
     void calibrate(void);
     uint_least16_t getX(void);
     uint_least16_t getY(void);

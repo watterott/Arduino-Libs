@@ -1,0 +1,14 @@
+{
+  "name": "TinyWire",
+  "keywords": "i2c, twowire",
+  "description": "I2C library for ATtiny",
+  "include": "TinyWire",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}
+

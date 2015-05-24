@@ -24,7 +24,13 @@ void setup()
   //init RTC
   Serial.println("Init RTC...");
 
-  //only set the date+time one time
+  //set 12 hour mode
+  // rtc.set12HourMode();
+
+  //set 24 hour mode
+  // rtc.set24HourMode();
+
+  //set the date+time (only one time)
   // rtc.set(0, 0, 8, 24, 12, 2014); //08:00:00 24.12.2014 //sec, min, hour, day, month, year
 
   //stop/pause RTC
@@ -32,6 +38,12 @@ void setup()
 
   //start RTC
   rtc.start();
+
+  //When the power source is removed, the RTC will keep the time.
+  rtc.batterySwitchOverOn(); //battery switch over on
+
+  //When the power source is removed, the RTC will not keep the time.
+  // rtc.batterySwitchOverOff(); //battery switch over off
 }
 
 

@@ -5,6 +5,7 @@
   https://xively.com/feeds/81548
  */
 
+#include <digitalWriteFast.h>
 #include <RedFly.h>
 #include <RedFlyClient.h>
 

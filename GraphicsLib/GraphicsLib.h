@@ -3,7 +3,7 @@
 
 
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/pgmspace.h>
 #endif
 #include "Print.h"
@@ -11,10 +11,6 @@
 
 #ifndef RGB
 #define RGB(r,g,b) (((r&0xF8)<<8)|((g&0xFC)<<3)|((b&0xF8)>>3)) //RGB565: 5 red | 6 green | 5 blue
-#endif
-
-#ifndef SWAP
-#define SWAP(x,y) do{ (x)=(x)^(y); (y)=(x)^(y); (x)=(x)^(y); }while(0)
 #endif
 
 #ifndef DEC
@@ -95,7 +91,7 @@ class GraphicsLib : public Print
     virtual int_least16_t drawChar(int_least16_t x, int_least16_t y, unsigned char c, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
     int_least16_t drawText(int_least16_t x, int_least16_t y, const char *s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
     int_least16_t drawText(int_least16_t x, int_least16_t y, String &s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
     int_least16_t drawTextPGM(int_least16_t x, int_least16_t y, PGM_P s, uint_least16_t color, uint_least16_t bg, uint_least8_t size);
 #endif
     int_least16_t drawInteger(int_least16_t x, int_least16_t y, char val, uint_least8_t base, uint_least16_t color, uint_least16_t bg, uint_least8_t size);

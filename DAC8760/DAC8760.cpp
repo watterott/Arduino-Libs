@@ -4,7 +4,7 @@
  */
 
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/io.h>
 #endif
 #if ARDUINO >= 100
@@ -17,55 +17,19 @@
 #include "DAC8760.h"
 
 
-// #define SOFTWARE_SPI
+//#define SOFTWARE_SPI //use software SPI on pins MOSI:11, MISO:12, SCK:13
 
-
-#if (defined(__AVR_ATmega1280__) || \
-     defined(__AVR_ATmega1281__) || \
-     defined(__AVR_ATmega2560__) || \
-     defined(__AVR_ATmega2561__))      //--- Arduino Mega ---
-
-# define LATCH_PIN      (10) //10 or A3
-# if defined(SOFTWARE_SPI)
-#  define MOSI_PIN      (11)
-#  define MISO_PIN      (12)
-#  define CLK_PIN       (13)
-# else
-#  define MOSI_PIN      (51)
-#  define MISO_PIN      (50)
-#  define CLK_PIN       (52)
-# endif
-
-#elif (defined(__AVR_ATmega644__) || \
-       defined(__AVR_ATmega644P__))    //--- Arduino 644 ---
-
-# define LATCH_PIN      (10) //10 or A3
-# define MOSI_PIN       (5)
-# define MISO_PIN       (6)
-# define CLK_PIN        (7)
-
-#elif defined(__AVR_ATmega32U4__)      //--- Arduino Leonardo ---
-
-# define LATCH_PIN      (10) //10 or A3
-# if defined(SOFTWARE_SPI)
-#  define MOSI_PIN      (11)
-#  define MISO_PIN      (12)
-#  define CLK_PIN       (13)
-# else
-#  define MOSI_PIN      (16) //PB2
-#  define MISO_PIN      (14) //PB3
-#  define CLK_PIN       (15) //PB1
-# endif
-
-#else                                  //--- Arduino Uno ---
-
-# define LATCH_PIN      (10) //10 or A3
-# define MOSI_PIN       (11)
-# define MISO_PIN       (12)
-# define CLK_PIN        (13)
-
+#if defined(SOFTWARE_SPI)
+# define LATCH_PIN      10 //SPI_SW_SS_PIN
+# define MOSI_PIN       SPI_SW_MOSI_PIN
+# define MISO_PIN       SPI_SW_MISO_PIN
+# define SCK_PIN        SPI_SW_SCK_PIN
+#else
+# define LATCH_PIN      10 //SPI_HW_SS_PIN
+# define MOSI_PIN       SPI_HW_MOSI_PIN
+# define MISO_PIN       SPI_HW_MISO_PIN
+# define SCK_PIN        SPI_HW_SCK_PIN
 #endif
-
 
 #define LATCH_HIGH()    digitalWriteFast(LATCH_PIN, HIGH)
 #define LATCH_LOW()     digitalWriteFast(LATCH_PIN, LOW)
@@ -75,8 +39,8 @@
 
 #define MISO_READ()     digitalReadFast(MISO_PIN)
 
-#define CLK_HIGH()      digitalWriteFast(CLK_PIN, HIGH)
-#define CLK_LOW()       digitalWriteFast(CLK_PIN, LOW)
+#define SCK_HIGH()      digitalWriteFast(SCK_PIN, HIGH)
+#define SCK_LOW()       digitalWriteFast(SCK_PIN, LOW)
 
 
 //Address Byte
@@ -91,15 +55,15 @@
 #define ADDR_WDT        0x95 //Watchdog timer reset
 
 //CTRL Bits
-#define CTRL_CLRSEL     (15) //VOUT clear value: 0 = VOUT is 0V, 1 = VOUT is midscale in unipolar output and negative-full-scale in bipolar output
-#define CTRL_OVR        (14) //Setting the bit increases the voltage output range by 10%.
-#define CTRL_REXT       (13) //External current setting resistor enable.
-#define CTRL_OUTEN      (12) //0 = output is disabled, 1 = output is determined by RANGE bits
-#define CTRL_SRCLK       (8) //Slew rate clock control. Ignored when bit SREN = 0
-#define CTRL_SRSTEP      (5) //Slew rate step size control. Ignored when bit SREN = 0
-#define CTRL_SREN        (4) //Slew Rate Enable.
-#define CTRL_DCEN        (3) //Daisy-chain enable.
-#define CTRL_RANGE       (0) //Output range bits.
+#define CTRL_CLRSEL     15 //VOUT clear value: 0 = VOUT is 0V, 1 = VOUT is midscale in unipolar output and negative-full-scale in bipolar output
+#define CTRL_OVR        14 //Setting the bit increases the voltage output range by 10%.
+#define CTRL_REXT       13 //External current setting resistor enable.
+#define CTRL_OUTEN      12 //0 = output is disabled, 1 = output is determined by RANGE bits
+#define CTRL_SRCLK       8 //Slew rate clock control. Ignored when bit SREN = 0
+#define CTRL_SRSTEP      5 //Slew rate step size control. Ignored when bit SREN = 0
+#define CTRL_SREN        4 //Slew Rate Enable.
+#define CTRL_DCEN        3 //Daisy-chain enable.
+#define CTRL_RANGE       0 //Output range bits.
 
 
 //-------------------- Constructor --------------------
@@ -121,7 +85,7 @@ void DAC8760::begin(void)
   //init pins
   pinMode(LATCH_PIN, OUTPUT);
   LATCH_LOW();
-  pinMode(CLK_PIN, OUTPUT);
+  pinMode(SCK_PIN, OUTPUT);
   pinMode(MOSI_PIN, OUTPUT);
   pinMode(MISO_PIN, INPUT);
   //digitalWrite(MISO_PIN, HIGH); //pull-up
@@ -190,7 +154,7 @@ void DAC8760::wr_spi(uint_least8_t data)
 #if defined(SOFTWARE_SPI)
   for(uint_least8_t mask=0x80; mask!=0; mask>>=1)
   {
-    CLK_LOW();
+    SCK_LOW();
     if(mask & data)
     {
       MOSI_HIGH();
@@ -199,9 +163,9 @@ void DAC8760::wr_spi(uint_least8_t data)
     {
       MOSI_LOW();
     }
-    CLK_HIGH
+    SCK_HIGH();
   }
-  CLK_LOW();
+  SCK_LOW();
 #else
   SPI.transfer(data);
 #endif

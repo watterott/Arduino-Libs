@@ -1,0 +1,13 @@
+{
+  "name": "LightWS2812",
+  "keywords": "led, driver, ws2812",
+  "description": "Library for WS2811/WS2812/WS2812B based LEDs",
+  "include": "light_WS2812",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}

@@ -9,24 +9,10 @@
     "url": "https://github.com/watterott/Arduino-Libs.git"
   },
   "dependencies":
-  [
-    {
-      "name": "digitalWriteFast",
-      "frameworks": "arduino"
-    },
-    {
-      "name": "GraphicsLib",
-      "frameworks": "arduino"
-    },
-    {
-      "name": "MI0283QT2",
-      "frameworks": "arduino"
-    },
-    {
-      "name": "MI0283QT9",
-      "frameworks": "arduino"
-    }
-  ],
+  {
+    "name": "digitalWriteFast",
+    "frameworks": "arduino"
+  },
   "frameworks": "arduino",
   "platforms": "atmelavr"
 }

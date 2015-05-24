@@ -7,6 +7,7 @@
   Use the Serial Monitor for configuration (9600 Baud).
  */
 
+#include <digitalWriteFast.h>
 #include <RedFly.h>
 #include <RedFlyClient.h>
 #include <RedFlyServer.h>

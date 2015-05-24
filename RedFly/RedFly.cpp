@@ -4,7 +4,7 @@
  */
 
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/io.h>
 # include <avr/pgmspace.h>
 # include <util/delay.h>
@@ -17,6 +17,7 @@
 #else
 # include "WProgram.h"
 #endif
+#include "digitalWriteFast.h"
 #include "RedFlyCommands.h"
 #include "RedFly.h"
 #include "RedFlyClient.h"
@@ -24,35 +25,37 @@
 #include "RedFlyNBNS.h"
 
 
-#define RX_PIN          (0)
-#define TX_PIN          (1)
-#define RST_PIN         (2)
-#define CS_PIN          (3)
+#define RX_PIN          UART_RX_PIN //0
+#define TX_PIN          UART_TX_PIN //1
+#define RST_PIN         2
+#define CS_PIN          3
 
-#define RST_DISABLE()   digitalWrite(RST_PIN, HIGH)
-#define RST_ENABLE()    digitalWrite(RST_PIN, LOW)
+#define RST_DISABLE()   digitalWriteFast(RST_PIN, HIGH)
+#define RST_ENABLE()    digitalWriteFast(RST_PIN, LOW)
 
-#define CS_DISABLE()    digitalWrite(CS_PIN, HIGH)
-#define CS_ENABLE()     digitalWrite(CS_PIN, LOW)
+#define CS_DISABLE()    digitalWriteFast(CS_PIN, HIGH)
+#define CS_ENABLE()     digitalWriteFast(CS_PIN, LOW)
 
-#if defined(__AVR__) && defined(UBRRH) && defined(UBRRL)
-# define _UCSRA_  UCSRA
-# define _RXC_    RXC
-# define _UCSRC_  UCSRC
-# define _USBS_   USBS
-# define _SERIAL_ Serial
-#elif defined(__AVR__) && !defined(UBRR0H) && !defined(UBRR0L)
-# define _UCSRA_ UCSR1A
-# define _RXC_   RXC1
-# define _UCSRC_ UCSR1C
-# define _USBS_  USBS1
-# define _SERIAL_ Serial1
-#elif defined(__AVR__)
-# define _UCSRA_ UCSR0A
-# define _RXC_   RXC0
-# define _UCSRC_ UCSR0C
-# define _USBS_  USBS0
-# define _SERIAL_ Serial
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+# if defined(UBRRH) && defined(UBRRL)
+#  define _UCSRA_  UCSRA
+#  define _RXC_    RXC
+#  define _UCSRC_  UCSRC
+#  define _USBS_   USBS
+#  define _SERIAL_ Serial
+# elif defined(UBRR0H) && !defined(UBRR0L)
+#  define _UCSRA_  UCSR1A
+#  define _RXC_    RXC1
+#  define _UCSRC_  UCSR1C
+#  define _USBS_   USBS1
+#  define _SERIAL_ Serial1
+# else
+#  define _UCSRA_  UCSR0A
+#  define _RXC_    RXC0
+#  define _UCSRC_  UCSR0C
+#  define _USBS_   USBS0
+#  define _SERIAL_ Serial
+# endif
 #else
 # define _SERIAL_ Serial
 # define _USART_  USART0
@@ -1378,7 +1381,7 @@ void REDFLY::flush(void)
   _SERIAL_.flush();
 
   //clear rx buffer
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   for(ms=millis(); ((_UCSRA_&(1<<_RXC_)) || available()) && ((millis()-ms) < 50);) //50ms
 #else
   for(ms=millis(); available() && ((millis()-ms) < 50);) //50ms
@@ -1449,7 +1452,7 @@ void REDFLY::setbaudrate(uint32_t br) //set serial baudrate and config (8n2)
   _SERIAL_.begin(br);
 
   //8 N 2
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   _UCSRC_ |= (1<<_USBS_);
 #else
   _USART_->US_MR |= US_MR_NBSTOP_2_BIT;
@@ -1480,7 +1483,7 @@ void REDFLY::delay_10ms(uint8_t ms) //delay of 10ms * x
 {
   for(; ms!=0; ms--)
   {
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
     _delay_ms(10);
 #else
     delay(10);

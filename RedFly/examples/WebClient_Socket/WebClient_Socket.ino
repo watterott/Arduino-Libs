@@ -4,6 +4,7 @@
   This sketch connects to a website using a RedFly-Shield. 
  */
 
+#include <digitalWriteFast.h>
 #include <RedFly.h>
 
 

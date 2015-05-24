@@ -4,6 +4,7 @@
   This sketch scans for WLANs using a RedFly-Shield. 
  */
 
+#include <digitalWriteFast.h>
 #include <RedFly.h>
 
 

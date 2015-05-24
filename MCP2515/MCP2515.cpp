@@ -1,15 +1,14 @@
 /*
-  MCP2515.cpp - CAN library
+  MCP2515 CAN Lib for Arduino
   Written by Frank Kienast in November, 2010
   Modified by hooovahh in September, 2012 to fix bugs in extended addressing
 	and allow single variable for both regular and extended addresses.
   
-  Connections to MCP2515:
-  Arduino  MCP2515
-  11       MOSI
-  12       MISO
-  13       SCK
-  10       CS 
+  Arduino Uno - MCP2515
+      10      -  CS/SS
+      11      -  MOSI
+      12      -  MISO
+      13      -  SCK
 */
 
 #if ARDUINO >= 100

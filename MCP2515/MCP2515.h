@@ -1,24 +1,14 @@
-/*
-  MCP2515.h - CAN library
-  Written by Frank Kienast in November, 2010
-  
-  Connections to MCP2515:
-  Arduino  MCP2515
-  11       MOSI
-  12       MISO
-  13       SCK
-  10       CS 
-
-*/
-
 #ifndef MCP2515_h
 #define MCP2515_h
 
-#if ARDUINO >= 100
-# include "Arduino.h"
-#else
-# include "WProgram.h"
-#endif
+
+//Data rate selection constants
+#define CAN_BAUD_10K  1
+#define CAN_BAUD_50K  2
+#define CAN_BAUD_100K 3
+#define CAN_BAUD_125K 4
+#define CAN_BAUD_250K 5
+#define CAN_BAUD_500K 6
 
 
 typedef struct
@@ -49,15 +39,6 @@ class MCP2515
     static void writeRegBit(byte regno, byte bitno, byte val);
     static byte readReg(byte regno);
 };
-
-
-//Data rate selection constants
-#define CAN_BAUD_10K 1
-#define CAN_BAUD_50K 2
-#define CAN_BAUD_100K 3
-#define CAN_BAUD_125K 4
-#define CAN_BAUD_250K 5
-#define CAN_BAUD_500K 6
 
 
 #endif //MCP2515_h

@@ -4,6 +4,7 @@
   This sketch connects to a NTP server and gets the current time.
  */
 
+#include <digitalWriteFast.h>
 #include <RedFly.h>
 
 

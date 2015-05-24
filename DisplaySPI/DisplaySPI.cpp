@@ -4,7 +4,7 @@
  */
 
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/io.h>
 # include <avr/pgmspace.h>
 #endif
@@ -21,43 +21,12 @@
 #include "cmd.h"
 
 
-#define I2C_ADDR 0x20
+#define I2C_ADDR        0x20
 
-
-#if (defined(__AVR_ATmega1280__) || \
-     defined(__AVR_ATmega1281__) || \
-     defined(__AVR_ATmega2560__) || \
-     defined(__AVR_ATmega2561__))      //--- Arduino Mega ---
-
-# define CS_PIN         (7)
-# define MOSI_PIN      (51)
-# define MISO_PIN      (50)
-# define CLK_PIN       (52)
-
-#elif (defined(__AVR_ATmega644__) || \
-       defined(__AVR_ATmega644P__))    //--- Arduino 644 (www.mafu-foto.de) ---
-
-# define CS_PIN         (13)
-# define MOSI_PIN       (5)
-# define MISO_PIN       (6)
-# define CLK_PIN        (7)
-
-#elif defined(__AVR_ATmega32U4__)      //--- Arduino Leonardo ---
-
-# define CS_PIN         (7)
-# define MOSI_PIN       (16) //PB2
-# define MISO_PIN       (14) //PB3
-# define CLK_PIN        (15) //PB1
-
-#else                                  //--- Arduino Uno ---
-
-# define CS_PIN         (7)
-# define MOSI_PIN       (11)
-# define MISO_PIN       (12)
-# define CLK_PIN        (13)
-
-#endif
-
+# define CS_PIN         (7) //SPI_HW_SS_PIN
+# define MOSI_PIN       SPI_HW_MOSI_PIN
+# define MISO_PIN       SPI_HW_MISO_PIN
+# define SCK_PIN        SPI_HW_SCK_PIN
 
 #define CS_DISABLE()    digitalWriteFast(CS_PIN, HIGH)
 #define CS_ENABLE()     digitalWriteFast(CS_PIN, LOW)
@@ -67,8 +36,8 @@
 
 #define MISO_READ()     digitalReadFast(MISO_PIN)
 
-#define CLK_HIGH()      digitalWriteFast(CLK_PIN, HIGH)
-#define CLK_LOW()       digitalWriteFast(CLK_PIN, LOW)
+#define SCK_HIGH()      digitalWriteFast(SCK_PIN, HIGH)
+#define SCK_LOW()       digitalWriteFast(SCK_PIN, LOW)
 
 
 //-------------------- Constructor --------------------
@@ -93,7 +62,7 @@ void DisplaySPI::begin(uint_least8_t clock_div, uint_least8_t rst_pin)
   }
   pinMode(CS_PIN, OUTPUT);
   digitalWrite(CS_PIN, HIGH);
-  pinMode(CLK_PIN, OUTPUT);
+  pinMode(SCK_PIN, OUTPUT);
   pinMode(MOSI_PIN, OUTPUT);
   pinMode(MISO_PIN, INPUT);
 
@@ -854,7 +823,7 @@ int_least16_t DisplaySPI::drawText(int_least16_t x, int_least16_t y, String &s, 
 }
 
 
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 int_least16_t DisplaySPI::drawTextPGM(int_least16_t x, int_least16_t y, PGM_P s, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
 {
   uint_least16_t len;

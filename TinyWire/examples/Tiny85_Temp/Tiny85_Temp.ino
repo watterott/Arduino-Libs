@@ -13,7 +13,7 @@
  * Using sleep mode, they draw .2 @5V @ idle - see http://brownsofa.org/blog/archives/261
  */
 
-#include <TinyWireMaster.h>             // I2C Master lib for ATTinys which use USI
+#include <TinyWireM.h>             // I2C Master lib for ATTinys which use USI
 
 #define DS1621_ADDR   0x48              // 7 bit I2C address for DS1621 temperature sensor
 #define LED1_PIN         4              // ATtiny Pin 3

@@ -4,6 +4,7 @@
   Test sketch for UDP client/server API.
  */
 
+#include <digitalWriteFast.h>
 #include <RedFly.h>
 #include <RedFlyClient.h>
 #include <RedFlyServer.h>

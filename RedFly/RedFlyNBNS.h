@@ -3,7 +3,7 @@
 
 
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/pgmspace.h>
 #endif
 #include "RedFlyServer.h"
@@ -17,7 +17,7 @@ class RedFlyNBNS : RedFlyServer
     ~RedFlyNBNS(void);
 
     void setName(char *name);
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
     void setNamePGM(PGM_P name);
 #endif
     uint8_t service(void);

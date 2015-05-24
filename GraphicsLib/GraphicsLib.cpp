@@ -4,18 +4,15 @@
  */
 
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/pgmspace.h>
-#else
-# define pgm_read_byte(addr)  (*(const uint8_t *)(addr))
-# define pgm_read_word(addr)  (*(const uint16_t *)(addr))
-# define pgm_read_dword(addr) (*(const uint32_t *)(addr))
 #endif
 #if ARDUINO >= 100
 # include "Arduino.h"
 #else
 # include "WProgram.h"
 #endif
+#include "digitalWriteFast.h"
 #include "fonts.h"
 #include "GraphicsLib.h"
 
@@ -545,11 +542,7 @@ int_least16_t GraphicsLib::drawChar(int_least16_t x, int_least16_t y, char c, ui
   uint_least32_t data, mask;
 #endif
   uint_least8_t i, j, width, height;
-#if defined(__AVR__)
   const PROGMEM uint8_t *ptr;
-#else
-  const uint8_t *ptr;
-#endif
 
 #if FONT_WIDTH <= 8
   pos = (c-FONT_START)*(8*FONT_HEIGHT/8);
@@ -689,7 +682,7 @@ int_least16_t GraphicsLib::drawText(int_least16_t x, int_least16_t y, String &s,
 }
 
 
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 int_least16_t GraphicsLib::drawTextPGM(int_least16_t x, int_least16_t y, PGM_P s, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
 {
   char c;

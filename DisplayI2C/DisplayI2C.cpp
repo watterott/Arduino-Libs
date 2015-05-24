@@ -4,7 +4,7 @@
  */
 
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/io.h>
 # include <avr/pgmspace.h>
 #endif
@@ -14,35 +14,17 @@
 # include "WProgram.h"
 #endif
 #include "Wire.h"
+#include "digitalWriteFast.h"
 #include "GraphicsLib.h"
 #include "DisplayI2C.h"
 #include "cmd.h"
 
 
-#define I2C_ADDR 0x20
+#define I2C_ADDR        0x20
 
-
-#if (defined(__AVR_ATmega1280__) || \
-     defined(__AVR_ATmega1281__) || \
-     defined(__AVR_ATmega2560__) || \
-     defined(__AVR_ATmega2561__))      //--- Arduino Mega ---
-
-# define CS_PIN         (7)
-
-#elif (defined(__AVR_ATmega644__) || \
-       defined(__AVR_ATmega644P__))    //--- Arduino 644 (www.mafu-foto.de) ---
-
-# define CS_PIN         (13)
-
-#elif defined(__AVR_ATmega32U4__)      //--- Arduino Leonardo ---
-
-# define CS_PIN         (7)
-
-#else                                  //--- Arduino Uno ---
-
-# define CS_PIN         (7)
-
-#endif
+#define CS_PIN          7
+#define SDA_PIN         I2C_SDA_PIN
+#define SCL_PIN         I2C_SCL_PIN
 
 
 //-------------------- Constructor --------------------

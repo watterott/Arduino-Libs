@@ -4,7 +4,7 @@
  */
 
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/io.h>
 # include <avr/eeprom.h>
 #endif
@@ -15,92 +15,29 @@
 #endif
 #include "SPI.h"
 #include "digitalWriteFast.h"
-#include "GraphicsLib.h"
-#include "MI0283QT2.h"
-#include "MI0283QT9.h"
+//#include "GraphicsLib.h"
+//#include "MI0283QT2.h"
+//#include "MI0283QT9.h"
 #include "ADS7846.h"
 
 
-#define MIN_PRESSURE    (5) //minimum pressure 1...254
+//#define SOFTWARE_SPI //use software SPI on pins MOSI:11, MISO:12, SCK:13
 
-#ifndef LCD_WIDTH
-# define LCD_WIDTH      (320)
-# define LCD_HEIGHT     (240)
+#if defined(SOFTWARE_SPI)
+//# define BUSY_PIN       5
+//# define IRQ_PIN        3
+# define CS_PIN         6 //SPI_SW_SS_PIN
+# define MOSI_PIN       SPI_SW_MOSI_PIN
+# define MISO_PIN       SPI_SW_MISO_PIN
+# define SCK_PIN        SPI_SW_SCK_PIN
+#else
+//# define BUSY_PIN       5
+//# define IRQ_PIN        3
+# define CS_PIN         (6) //SPI_HW_SS_PIN
+# define MOSI_PIN       SPI_HW_MOSI_PIN
+# define MISO_PIN       SPI_HW_MISO_PIN
+# define SCK_PIN        SPI_HW_SCK_PIN
 #endif
-#ifndef CAL_POINT_X1
-# define CAL_POINT_X1   (20)
-# define CAL_POINT_Y1   (20)
-# define CAL_POINT1     {CAL_POINT_X1,CAL_POINT_Y1}
-# define CAL_POINT_X2   LCD_WIDTH-20 //300
-# define CAL_POINT_Y2   LCD_HEIGHT/2 //120
-# define CAL_POINT2     {CAL_POINT_X2,CAL_POINT_Y2}
-# define CAL_POINT_X3   LCD_WIDTH/2   //160
-# define CAL_POINT_Y3   LCD_HEIGHT-20 //220
-# define CAL_POINT3     {CAL_POINT_X3,CAL_POINT_Y3}
-#endif
-
-#define CMD_START       (0x80)
-#define CMD_12BIT       (0x00)
-#define CMD_8BIT        (0x08)
-#define CMD_DIFF        (0x00)
-#define CMD_SINGLE      (0x04)
-#define CMD_X_POS       (0x10)
-#define CMD_Z1_POS      (0x30)
-#define CMD_Z2_POS      (0x40)
-#define CMD_Y_POS       (0x50)
-#define CMD_PWD         (0x00)
-#define CMD_ALWAYSON    (0x03)
-
-//#define SOFTWARE_SPI
-
-#if (defined(__AVR_ATmega1280__) || \
-     defined(__AVR_ATmega1281__) || \
-     defined(__AVR_ATmega2560__) || \
-     defined(__AVR_ATmega2561__))      //--- Arduino Mega ---
-
-//# define BUSY_PIN       (5)
-//# define IRQ_PIN        (3)
-# define CS_PIN         (6)
-# if defined(SOFTWARE_SPI)
-#  define MOSI_PIN      (11)
-#  define MISO_PIN      (12)
-#  define CLK_PIN       (13)
-# else
-#  define MOSI_PIN      (51)
-#  define MISO_PIN      (50)
-#  define CLK_PIN       (52)
-# endif
-
-#elif (defined(__AVR_ATmega644__) || \
-       defined(__AVR_ATmega644P__))    //--- Arduino 644 ---
-
-//# define BUSY_PIN       (15)
-//# define IRQ_PIN        (11)
-# define CS_PIN         (14)
-# define MOSI_PIN       (5)
-# define MISO_PIN       (6)
-# define CLK_PIN        (7)
-
-#elif defined(__AVR_ATmega32U4__)      //--- Arduino Leonardo ---
-
-//# define BUSY_PIN       (5)
-//# define IRQ_PIN        (3)
-# define CS_PIN         (6)
-# define MOSI_PIN       (16) //PB2
-# define MISO_PIN       (14) //PB3
-# define CLK_PIN        (15) //PB1
-
-#else                                  //--- Arduino Uno ---
-
-//# define BUSY_PIN       (5)
-//# define IRQ_PIN        (3)
-# define CS_PIN         (6)
-# define MOSI_PIN       (11)
-# define MISO_PIN       (12)
-# define CLK_PIN        (13)
-
-#endif
-
 
 #define CS_DISABLE()    digitalWriteFast(CS_PIN, HIGH)
 #define CS_ENABLE()     digitalWriteFast(CS_PIN, LOW)
@@ -110,12 +47,44 @@
 
 #define MISO_READ()     digitalReadFast(MISO_PIN)
 
-#define CLK_HIGH()      digitalWriteFast(CLK_PIN, HIGH)
-#define CLK_LOW()       digitalWriteFast(CLK_PIN, LOW)
+#define SCK_HIGH()      digitalWriteFast(SCK_PIN, HIGH)
+#define SCK_LOW()       digitalWriteFast(SCK_PIN, LOW)
 
 //#define BUSY_READ()     digitalReadFast(BUSY_PIN)
 
 //#define IRQ_READ()      digitalReadFast(IRQ_PIN)
+
+
+#define MIN_PRESSURE    5 //minimum pressure 1...254
+
+#ifndef LCD_WIDTH
+# define LCD_WIDTH      320
+# define LCD_HEIGHT     240
+#endif
+
+#ifndef CAL_POINT_X1
+# define CAL_POINT_X1   20
+# define CAL_POINT_Y1   20
+# define CAL_POINT1     {CAL_POINT_X1,CAL_POINT_Y1}
+# define CAL_POINT_X2   LCD_WIDTH-20 //300
+# define CAL_POINT_Y2   LCD_HEIGHT/2 //120
+# define CAL_POINT2     {CAL_POINT_X2,CAL_POINT_Y2}
+# define CAL_POINT_X3   LCD_WIDTH/2   //160
+# define CAL_POINT_Y3   LCD_HEIGHT-20 //220
+# define CAL_POINT3     {CAL_POINT_X3,CAL_POINT_Y3}
+#endif
+
+#define CMD_START       0x80
+#define CMD_12BIT       0x00
+#define CMD_8BIT        0x08
+#define CMD_DIFF        0x00
+#define CMD_SINGLE      0x04
+#define CMD_X_POS       0x10
+#define CMD_Z1_POS      0x30
+#define CMD_Z2_POS      0x40
+#define CMD_Y_POS       0x50
+#define CMD_PWD         0x00
+#define CMD_ALWAYSON    0x03
 
 
 //-------------------- Constructor --------------------
@@ -135,7 +104,7 @@ void ADS7846::begin(void)
   //init pins
   pinMode(CS_PIN, OUTPUT);
   CS_DISABLE();
-  pinMode(CLK_PIN, OUTPUT);
+  pinMode(SCK_PIN, OUTPUT);
   pinMode(MOSI_PIN, OUTPUT);
   pinMode(MISO_PIN, INPUT);
 #ifdef IRQ_PIN
@@ -262,7 +231,7 @@ uint_least8_t ADS7846::readCalibration(uint16_t eeprom_addr)
 }
 
 
-uint_least8_t ADS7846::doCalibration(MI0283QT2 *lcd, uint16_t eeprom_addr, uint_least8_t check_eeprom) //touch panel calibration routine
+/*uint_least8_t ADS7846::doCalibration(MI0283QT2 *lcd, uint16_t eeprom_addr, uint_least8_t check_eeprom) //example touch panel calibration routine
 {
   uint_least8_t i;
   CAL_POINT lcd_points[3] = {CAL_POINT1, CAL_POINT2, CAL_POINT3}; //calibration point postions
@@ -276,7 +245,7 @@ uint_least8_t ADS7846::doCalibration(MI0283QT2 *lcd, uint16_t eeprom_addr, uint_
 
   //clear screen and wait for touch release
   lcd->fillScreen(RGB(255,255,255));
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   lcd->drawTextPGM((lcd->getWidth()/2)-50, (lcd->getHeight()/2)-10, PSTR("Calibration"), RGB(0,0,0), RGB(255,255,255), 1);
 #else
   lcd->drawText((lcd->getWidth()/2)-50, (lcd->getHeight()/2)-10, "Calibration", RGB(0,0,0), RGB(255,255,255), 1);
@@ -305,7 +274,7 @@ uint_least8_t ADS7846::doCalibration(MI0283QT2 *lcd, uint16_t eeprom_addr, uint_
       //wait and redraw screen
       delay(100);
       lcd->fillScreen(RGB(255,255,255));
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
       lcd->drawTextPGM((lcd->getWidth()/2)-50, (lcd->getHeight()/2)-10, PSTR("Calibration"), RGB(0,0,0), RGB(255,255,255), 1);
 #else
       lcd->drawText((lcd->getWidth()/2)-50, (lcd->getHeight()/2)-10, "Calibration", RGB(0,0,0), RGB(255,255,255), 1);
@@ -323,10 +292,10 @@ uint_least8_t ADS7846::doCalibration(MI0283QT2 *lcd, uint16_t eeprom_addr, uint_
   while(getPressure() > MIN_PRESSURE){ service(); };
 
   return 1;
-}
+}*/
 
 
-uint_least8_t ADS7846::doCalibration(MI0283QT9 *lcd, uint16_t eeprom_addr, uint_least8_t check_eeprom) //touch panel calibration routine
+/*uint_least8_t ADS7846::doCalibration(MI0283QT9 *lcd, uint16_t eeprom_addr, uint_least8_t check_eeprom) //example touch panel calibration routine
 {
   uint_least8_t i;
   CAL_POINT lcd_points[3] = {CAL_POINT1, CAL_POINT2, CAL_POINT3}; //calibration point postions
@@ -340,7 +309,7 @@ uint_least8_t ADS7846::doCalibration(MI0283QT9 *lcd, uint16_t eeprom_addr, uint_
 
   //clear screen and wait for touch release
   lcd->fillScreen(RGB(255,255,255));
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   lcd->drawTextPGM((lcd->getWidth()/2)-50, (lcd->getHeight()/2)-10, PSTR("Calibration"), RGB(0,0,0), RGB(255,255,255), 1);
 #else
   lcd->drawText((lcd->getWidth()/2)-50, (lcd->getHeight()/2)-10, "Calibration", RGB(0,0,0), RGB(255,255,255), 1);
@@ -369,7 +338,7 @@ uint_least8_t ADS7846::doCalibration(MI0283QT9 *lcd, uint16_t eeprom_addr, uint_
       //wait and redraw screen
       delay(100);
       lcd->fillScreen(RGB(255,255,255));
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
       lcd->drawTextPGM((lcd->getWidth()/2)-50, (lcd->getHeight()/2)-10, PSTR("Calibration"), RGB(0,0,0), RGB(255,255,255), 1);
 #else
       lcd->drawText((lcd->getWidth()/2)-50, (lcd->getHeight()/2)-10, "Calibration", RGB(0,0,0), RGB(255,255,255), 1);
@@ -387,7 +356,7 @@ uint_least8_t ADS7846::doCalibration(MI0283QT9 *lcd, uint16_t eeprom_addr, uint_
   while(getPressure() > MIN_PRESSURE){ service(); };
 
   return 1;
-}
+}*/
 
 
 void ADS7846::calibrate(void)
@@ -489,7 +458,7 @@ void ADS7846::rd_data(void)
   uint_least16_t x, y;
 
   //SPI speed-down
-#if !defined(SOFTWARE_SPI) && defined(__AVR__)
+#if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   uint_least8_t spcr, spsr;
   spcr = SPCR;
   spsr = SPSR;
@@ -571,7 +540,7 @@ void ADS7846::rd_data(void)
   }
 
   //restore SPI settings
-#if !defined(SOFTWARE_SPI) && defined(__AVR__)
+#if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
   SPCR = spcr;
   SPSR = spsr;
 #endif
@@ -587,7 +556,7 @@ uint_least8_t ADS7846::rd_spi(void)
   MOSI_LOW();
   for(uint_least8_t bit=8; bit!=0; bit--)
   {
-    CLK_HIGH();
+    SCK_HIGH();
     data <<= 1;
     if(MISO_READ())
     {
@@ -597,7 +566,7 @@ uint_least8_t ADS7846::rd_spi(void)
     {
       //data |= 0;
     }
-    CLK_LOW();
+    SCK_LOW();
   }
   return data;
 #else
@@ -611,7 +580,7 @@ void ADS7846::wr_spi(uint_least8_t data)
 #if defined(SOFTWARE_SPI)
   for(uint_least8_t mask=0x80; mask!=0; mask>>=1)
   {
-    CLK_LOW();
+    SCK_LOW();
     if(mask & data)
     {
       MOSI_HIGH();
@@ -620,9 +589,9 @@ void ADS7846::wr_spi(uint_least8_t data)
     {
       MOSI_LOW();
     }
-    CLK_HIGH();
+    SCK_HIGH();
   }
-  CLK_LOW();
+  SCK_LOW();
 #else
   SPI.transfer(data);
 #endif

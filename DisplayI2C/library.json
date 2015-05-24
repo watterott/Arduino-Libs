@@ -11,6 +11,10 @@
   "dependencies":
   [
     {
+      "name": "digitalWriteFast",
+      "frameworks": "arduino"
+    },
+    {
       "name": "GraphicsLib",
       "frameworks": "arduino"
     }

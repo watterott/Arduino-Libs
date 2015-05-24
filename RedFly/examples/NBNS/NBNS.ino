@@ -5,6 +5,7 @@
   For testing, open in your browser http://redfly/
  */
 
+#include <digitalWriteFast.h>
 #include <RedFly.h>
 #include <RedFlyServer.h>
 #include <RedFlyNBNS.h>

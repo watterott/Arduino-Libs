@@ -5,6 +5,7 @@
   All received data will be resend to the client.
  */
 
+#include <digitalWriteFast.h>
 #include <RedFly.h>
 
 

@@ -24,7 +24,7 @@ void setup()
   while(!Serial); //wait for serial port to connect - needed for Leonardo only
 
   //init DAC
-  Serial.println("Init ADC...");
+  Serial.println("Init...");
   adc.begin(20, 4, 1000); //20 SPS, Gain 4, 1000 uA
 
   i = adc.read(0x01); //read 0+1

@@ -102,7 +102,7 @@ void RedFlyNBNS::setName(char *name)
 }
 
 
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 void RedFlyNBNS::setNamePGM(PGM_P name)
 {
   strcpy_P(devname, name);
@@ -112,12 +112,6 @@ void RedFlyNBNS::setNamePGM(PGM_P name)
 #endif
 
 
-#define SWAP16(x) ((((x)&0x00FF)<<8)| \
-                   (((x)&0xFF00)>>8))
-#define SWAP32(x) ((((x)&0xFF000000UL)>>24)| \
-                   (((x)&0x00FF0000UL)>> 8)| \
-                   (((x)&0x0000FF00UL)<< 8)| \
-                   (((x)&0x000000FFUL)<<24))
 uint8_t RedFlyNBNS::service(void)
 {
   uint16_t len;

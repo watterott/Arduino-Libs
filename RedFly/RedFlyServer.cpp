@@ -1,5 +1,5 @@
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/pgmspace.h>
 #endif
 #if ARDUINO >= 100
@@ -11,7 +11,7 @@
 #include "RedFlyServer.h"
 
 
-#define MAX_ERRORS (10)
+#define MAX_ERRORS 10
 
 
 //-------------------- Constructor/Destructor --------------------

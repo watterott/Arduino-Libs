@@ -5,8 +5,8 @@
 #include <inttypes.h>
 
 
-#define SW_PRESSED           (1)
-#define SW_PRESSEDLONG       (2)
+#define SW_PRESSED      1
+#define SW_PRESSEDLONG  2
 
 
 class RotaryEncoder

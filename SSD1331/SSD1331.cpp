@@ -4,13 +4,9 @@
  */
 
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/io.h>
 # include <avr/pgmspace.h>
-#else
-# define pgm_read_byte(addr)  (*(const uint8_t *)(addr))
-# define pgm_read_word(addr)  (*(const uint16_t *)(addr))
-# define pgm_read_dword(addr) (*(const uint32_t *)(addr))
 #endif
 #if ARDUINO >= 100
 # include "Arduino.h"
@@ -23,61 +19,23 @@
 #include "SSD1331.h"
 
 
-//#define SOFTWARE_SPI //use software SPI on pins 11,12,13
+//#define SOFTWARE_SPI //use software SPI on pins MOSI:11, MISO:12, SCK:13
 
-#ifndef LCD_WIDTH
-# define LCD_WIDTH      (96)
-# define LCD_HEIGHT     (64)
+#if defined(SOFTWARE_SPI)
+# define RST_PIN        8
+# define CS_PIN         7
+# define RS_PIN         5
+# define MOSI_PIN       SPI_SW_MOSI_PIN
+# define MISO_PIN       SPI_SW_MISO_PIN
+# define SCK_PIN        SPI_SW_SCK_PIN
+#else
+# define RST_PIN        8
+# define CS_PIN         7
+# define RS_PIN         5
+# define MOSI_PIN       SPI_HW_MOSI_PIN
+# define MISO_PIN       SPI_HW_MISO_PIN
+# define SCK_PIN        SPI_HW_SCK_PIN
 #endif
-
-#if (defined(__AVR_ATmega1280__) || \
-     defined(__AVR_ATmega1281__) || \
-     defined(__AVR_ATmega2560__) || \
-     defined(__AVR_ATmega2561__))      //--- Arduino Mega ---
-
-# define RST_PIN        (8)
-# define CS_PIN         (7)
-# define RS_PIN         (5)
-# if defined(SOFTWARE_SPI)
-#  define MOSI_PIN      (11)
-#  define CLK_PIN       (13)
-# else
-#  define MOSI_PIN      (51)
-#  define CLK_PIN       (52)
-# endif
-
-#elif (defined(__AVR_ATmega644__) || \
-       defined(__AVR_ATmega644P__))    //--- Arduino 644 (www.mafu-foto.de) ---
-
-# define RST_PIN        (12)
-# define CS_PIN         (13)
-# define RS_PIN         (15)
-# define MOSI_PIN       (5)
-# define CLK_PIN        (7)
-
-#elif defined(__AVR_ATmega32U4__)      //--- Arduino Leonardo ---
-
-# define RST_PIN        (8)
-# define CS_PIN         (7)
-# define RS_PIN         (5)
-# if defined(SOFTWARE_SPI)
-#  define MOSI_PIN      (11)
-#  define CLK_PIN       (13)
-# else
-#  define MOSI_PIN      (16) //PB2
-#  define CLK_PIN       (15) //PB1
-# endif
-
-#else                                  //--- Arduino Uno ---
-
-# define RST_PIN        (8) //8, Adafruit: 9
-# define CS_PIN         (7) //7, Adafruit: 10
-# define RS_PIN         (5) //5, Adafruit: 8
-# define MOSI_PIN       (11)
-# define CLK_PIN        (13)
-
-#endif
-
 
 #define RST_DISABLE()   digitalWriteFast(RST_PIN, HIGH)
 #define RST_ENABLE()    digitalWriteFast(RST_PIN, LOW)
@@ -91,9 +49,14 @@
 #define MOSI_HIGH()     digitalWriteFast(MOSI_PIN, HIGH)
 #define MOSI_LOW()      digitalWriteFast(MOSI_PIN, LOW)
 
-#define CLK_HIGH()      digitalWriteFast(CLK_PIN, HIGH)
-#define CLK_LOW()       digitalWriteFast(CLK_PIN, LOW)
+#define SCK_HIGH()      digitalWriteFast(SCK_PIN, HIGH)
+#define SCK_LOW()       digitalWriteFast(SCK_PIN, LOW)
 
+
+#ifndef LCD_WIDTH
+# define LCD_WIDTH      (96)
+# define LCD_HEIGHT     (64)
+#endif
 
 //LCD commands
 #define LCD_CMD_DRAWLINE               0x21
@@ -156,7 +119,7 @@ void SSD1331::begin(uint_least8_t clock_div)
   CS_DISABLE();
   pinMode(RS_PIN, OUTPUT);
   RS_HIGH();
-  pinMode(CLK_PIN, OUTPUT);
+  pinMode(SCK_PIN, OUTPUT);
   pinMode(MOSI_PIN, OUTPUT);
 
   SPI.setDataMode(SPI_MODE3);
@@ -296,12 +259,7 @@ void SSD1331::drawStop(void)
 //-------------------- Private --------------------
 
 
-#if defined(__AVR__)
-//const PROGMEM uint8_t initdata1331[] = 
 const uint8_t initdata1331[] PROGMEM = 
-#else
-const uint8_t initdata1331[] = 
-#endif
 {
   0x40| 1, LCD_CMD_DISPLAY_OFF,
   0x40| 2, LCD_CMD_REMAP, 0x72, //0x72=RGB, 0x76=BGR
@@ -333,11 +291,7 @@ const uint8_t initdata1331[] =
 void SSD1331::reset(uint_least8_t clock_div)
 {
   uint_least8_t c, i;
-#if defined(__AVR__)
   const PROGMEM uint8_t *ptr;
-#else
-  const uint8_t *ptr;
-#endif
 
   //SPI speed-down
 #if !defined(SOFTWARE_SPI)
@@ -422,7 +376,7 @@ void SSD1331::wr_spi(uint_least8_t data)
 #if defined(SOFTWARE_SPI)
   for(uint_least8_t mask=0x80; mask!=0; mask>>=1)
   {
-    CLK_LOW();
+    SCK_LOW();
     if(mask & data)
     {
       MOSI_HIGH();
@@ -431,9 +385,9 @@ void SSD1331::wr_spi(uint_least8_t data)
     {
       MOSI_LOW();
     }
-    CLK_HIGH();
+    SCK_HIGH();
   }
-  CLK_LOW();
+  SCK_LOW();
 #else
   SPI.transfer(data);
 #endif

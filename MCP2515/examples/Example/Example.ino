@@ -1,10 +1,12 @@
 /*
-  Example sketch for CANdiy-Shield
+  Example sketch for MCP2515 (CANdiy-Shield)
  */
 
 #include <SPI.h>
 #include <MCP2515.h>
 
+
+#define MODE 0 //0=rx, 1=tx
 
 int led2  =  7;
 int led3  =  8;
@@ -50,7 +52,7 @@ void setup()
 
 void loop()
 {
-
+#if MODE == 0
   //receiver
   int i = can.receiveCANMessage(&msg, 1000);
   if(i && (msg.data[2] == 123))
@@ -63,8 +65,8 @@ void loop()
     delay(100);
     Serial.println("data received");
   }
-  
-/*
+
+#else //MODE == 1
   //transmitter
   msg.adrsValue = 0x7df;
   msg.isExtendedAdrs = false;
@@ -87,7 +89,7 @@ void loop()
   digitalWrite(led3, HIGH);
   Serial.println("data transmitted");
   delay(2000);
-*/
+#endif
 
   digitalWrite(led13, HIGH);
   delay(100);

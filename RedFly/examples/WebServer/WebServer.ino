@@ -6,6 +6,7 @@
   (Replace the IP with the one from your RedFly-Shield.)
  */
 
+#include <digitalWriteFast.h>
 #include <RedFly.h>
 #include <RedFlyServer.h>
 

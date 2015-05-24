@@ -1,10 +1,6 @@
 /*
   RV8523 RTC Lib for Arduino
   by Watterott electronic (www.watterott.com)
-  
-  Update: 2015-03-07 - Mario Lukas - added battery switch over support
-                                   - added 12/24 hour switching support
-
  */
 
 #include <inttypes.h>
@@ -42,7 +38,7 @@ void RV8523::start(void)
   uint8_t val;
 
   Wire.beginTransmission(I2C_ADDR);
-  Wire.write(byte(0x00));
+  Wire.write(byte(0x00)); //control 1
   Wire.endTransmission();
   Wire.requestFrom(I2C_ADDR, 1);
   val = Wire.read();
@@ -50,7 +46,7 @@ void RV8523::start(void)
   if(val & (1<<5))
   {
     Wire.beginTransmission(I2C_ADDR);
-    Wire.write(byte(0x00));
+    Wire.write(byte(0x00)); //control 1
     Wire.write(val & ~(1<<5)); //clear STOP (bit 5)
     Wire.endTransmission();
   }
@@ -64,7 +60,7 @@ void RV8523::stop(void)
   uint8_t val;
 
   Wire.beginTransmission(I2C_ADDR);
-  Wire.write(byte(0x00));
+  Wire.write(byte(0x00)); //control 1
   Wire.endTransmission();
   Wire.requestFrom(I2C_ADDR, 1);
   val = Wire.read();
@@ -72,7 +68,7 @@ void RV8523::stop(void)
   if(!(val & (1<<5)))
   {
     Wire.beginTransmission(I2C_ADDR);
-    Wire.write(byte(0x00));
+    Wire.write(byte(0x00)); //control 1
     Wire.write(val | (1<<5)); //set STOP (bit 5)
     Wire.endTransmission();
   }
@@ -81,14 +77,12 @@ void RV8523::stop(void)
 }
 
 
-/**
-* set 12 Hour Mode
-*/
-void RV8523::set12HourMode(){
+void RV8523::set12HourMode() //set 12 hour mode
+{
   uint8_t val;
 
   Wire.beginTransmission(I2C_ADDR);
-  Wire.write(byte(0x00));
+  Wire.write(byte(0x00)); //control 1
   Wire.endTransmission();
   Wire.requestFrom(I2C_ADDR, 1);
   val = Wire.read();
@@ -96,8 +90,8 @@ void RV8523::set12HourMode(){
   if(!(val & (1<<3)))
   {
     Wire.beginTransmission(I2C_ADDR);
-    Wire.write(byte(0x00));
-    Wire.write(val | (1<<3)); //set 12 Hour Mode (bit 3)
+    Wire.write(byte(0x00)); //control 1
+    Wire.write(val | (1<<3)); //set 12 hour mode (bit 3)
     Wire.endTransmission();
   }
 
@@ -105,23 +99,21 @@ void RV8523::set12HourMode(){
 }
 
 
-/**
-* set 24 Hour Mode
-*/
-void RV8523::set24HourMode(){
+void RV8523::set24HourMode() //set 24 hour mode
+{
   uint8_t val;
 
   Wire.beginTransmission(I2C_ADDR);
-  Wire.write(byte(0x00));
+  Wire.write(byte(0x00)); //control 1
   Wire.endTransmission();
   Wire.requestFrom(I2C_ADDR, 1);
   val = Wire.read();
 
-  if((val & (1<<3)))
+  if(val & (1<<3))
   {
     Wire.beginTransmission(I2C_ADDR);
-    Wire.write(byte(0x00));
-    Wire.write(val & ~(1<<3)); //set 24 Hour Mode (bit 3) to 0
+    Wire.write(byte(0x00)); //control 1
+    Wire.write(val & ~(1<<3)); //set 12 hour mode (bit 3)
     Wire.endTransmission();
   }
 
@@ -129,24 +121,20 @@ void RV8523::set24HourMode(){
 }
 
 
-/**
-* activate battery switch over mode
-*/
-void RV8523::batterySwitchOverOn()
+void RV8523::batterySwitchOverOn() //activate battery switch over mode
 {   
   uint8_t val;
 
   Wire.beginTransmission(I2C_ADDR);
-  Wire.write(byte(0x02));
+  Wire.write(byte(0x02)); //control 3
   Wire.endTransmission();
   Wire.requestFrom(I2C_ADDR, 1);
   val = Wire.read();
-
-  if((val & (1<<6)))
+  if(val & 0xE0)
   {
     Wire.beginTransmission(I2C_ADDR);
-    Wire.write(byte(0x02));
-    Wire.write(val & ~(1<<6)); 
+    Wire.write(byte(0x02)); //control 3
+    Wire.write(val & ~0xE0); //battery switchover in standard mode
     Wire.endTransmission();
   }
 
@@ -154,24 +142,21 @@ void RV8523::batterySwitchOverOn()
 }
 
 
-/**
-* deactivate battery switch over mode
-*/
-void RV8523::batterySwitchOverOff()
+void RV8523::batterySwitchOverOff() //deactivate battery switch over mode
 {   
   uint8_t val;
 
   Wire.beginTransmission(I2C_ADDR);
-  Wire.write(byte(0x00));
+  Wire.write(byte(0x02)); //control 3
   Wire.endTransmission();
   Wire.requestFrom(I2C_ADDR, 1);
   val = Wire.read();
 
-  if(!(val | (1<<6)))
+  if(!(val & 0xE0))
   {
     Wire.beginTransmission(I2C_ADDR);
-    Wire.write(byte(0x00));
-    Wire.write(val | (1<<6)); 
+    Wire.write(byte(0x02)); //control 3
+    Wire.write(val | 0xE0);  //battery switchover disabled
     Wire.endTransmission();
   }
 

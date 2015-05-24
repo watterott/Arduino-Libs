@@ -4,13 +4,9 @@
  */
 
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/io.h>
 # include <avr/pgmspace.h>
-#else
-# define pgm_read_byte(addr)  (*(const uint8_t *)(addr))
-# define pgm_read_word(addr)  (*(const uint16_t *)(addr))
-# define pgm_read_dword(addr) (*(const uint32_t *)(addr))
 #endif
 #if ARDUINO >= 100
 # include "Arduino.h"
@@ -23,50 +19,21 @@
 #include "S65LPH88.h"
 
 
-//#define SOFTWARE_SPI //use software SPI on pins 11,12,13
+//#define SOFTWARE_SPI //use software SPI on pins MOSI:11, MISO:12, SCK:13
 
-#ifndef LCD_WIDTH
-# define LCD_WIDTH      (176)
-# define LCD_HEIGHT     (132)
+#if defined(SOFTWARE_SPI)
+# define RST_PIN        17 //A3=17
+# define CS_PIN         16 //A2=16
+# define MOSI_PIN       SPI_SW_MOSI_PIN
+# define MISO_PIN       SPI_SW_MISO_PIN
+# define SCK_PIN        SPI_SW_SCK_PIN
+#else
+# define RST_PIN        17 //A3=17
+# define CS_PIN         16 //A2=16
+# define MOSI_PIN       SPI_HW_MOSI_PIN
+# define MISO_PIN       SPI_HW_MISO_PIN
+# define SCK_PIN        SPI_HW_SCK_PIN
 #endif
-
-
-#if (defined(__AVR_ATmega1280__) || \
-     defined(__AVR_ATmega1281__) || \
-     defined(__AVR_ATmega2560__) || \
-     defined(__AVR_ATmega2561__))      //--- Arduino Mega ---
-
-# define RST_PIN        (57) //A3=57
-# define CS_PIN         (56) //A2=56
-# if defined(SOFTWARE_SPI)
-#  define MOSI_PIN      (11)
-#  define CLK_PIN       (13)
-# else
-#  define MOSI_PIN      (51)
-#  define CLK_PIN       (52)
-# endif
-
-#elif defined(__AVR_ATmega32U4__)      //--- Arduino Leonardo ---
-
-# define RST_PIN        (17) //A3=17
-# define CS_PIN         (16) //A2=16
-# if defined(SOFTWARE_SPI)
-#  define MOSI_PIN      (11)
-#  define CLK_PIN       (13)
-# else
-#  define MOSI_PIN      (16) //PB2
-#  define CLK_PIN       (15) //PB1
-# endif
-
-#else                                  //--- Arduino Uno ---
-
-# define RST_PIN        (17) //A3=17
-# define CS_PIN         (16) //A2=16
-# define MOSI_PIN       (11)
-# define CLK_PIN        (13)
-
-#endif
-
 
 #define RST_DISABLE()   digitalWriteFast(RST_PIN, HIGH)
 #define RST_ENABLE()    digitalWriteFast(RST_PIN, LOW)
@@ -77,8 +44,14 @@
 #define MOSI_HIGH()     digitalWriteFast(MOSI_PIN, HIGH)
 #define MOSI_LOW()      digitalWriteFast(MOSI_PIN, LOW)
 
-#define CLK_HIGH()      digitalWriteFast(CLK_PIN, HIGH)
-#define CLK_LOW()       digitalWriteFast(CLK_PIN, LOW)
+#define SCK_HIGH()      digitalWriteFast(SCK_PIN, HIGH)
+#define SCK_LOW()       digitalWriteFast(SCK_PIN, LOW)
+
+
+#ifndef LCD_WIDTH
+# define LCD_WIDTH      (176)
+# define LCD_HEIGHT     (132)
+#endif
 
 
 //-------------------- Constructor --------------------
@@ -101,7 +74,7 @@ void S65LPH88::begin(uint_least8_t clock_div)
   RST_ENABLE();
 #endif
   pinMode(CS_PIN, OUTPUT);
-  pinMode(CLK_PIN, OUTPUT);
+  pinMode(SCK_PIN, OUTPUT);
   pinMode(MOSI_PIN, OUTPUT);
   CS_DISABLE();
 
@@ -236,12 +209,7 @@ void S65LPH88::drawStop(void)
 //-------------------- Private --------------------
 
 
-#if defined(__AVR__)
-//const PROGMEM uint8_t initdataLPH88[] = 
 const uint8_t initdataLPH88[] PROGMEM = 
-#else
-const uint8_t initdataLPH88[] = 
-#endif
 {
   //display off
   0x40| 3, 0x07, 0x00, 0x00,
@@ -281,11 +249,7 @@ const uint8_t initdataLPH88[] =
 void S65LPH88::reset(uint_least8_t clock_div)
 {
   uint_least8_t c, d, e, i;
-#if defined(__AVR__)
   const PROGMEM uint8_t *ptr;
-#else
-  const uint8_t *ptr;
-#endif
 
   //SPI speed-down
 #if !defined(SOFTWARE_SPI)
@@ -371,7 +335,7 @@ void S65LPH88::wr_spi(uint_least8_t data)
 #if defined(SOFTWARE_SPI)
   for(uint_least8_t mask=0x80; mask!=0; mask>>=1)
   {
-    CLK_LOW();
+    SCK_LOW();
     if(mask & data)
     {
       MOSI_HIGH();
@@ -380,9 +344,9 @@ void S65LPH88::wr_spi(uint_least8_t data)
     {
       MOSI_LOW();
     }
-    CLK_HIGH();
+    SCK_HIGH();
   }
-  CLK_LOW();
+  SCK_LOW();
 #else
   SPI.transfer(data);
 #endif

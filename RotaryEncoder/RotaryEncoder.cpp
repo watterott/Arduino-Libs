@@ -7,7 +7,7 @@
  */
 
 #include <inttypes.h>
-#if defined(__AVR__)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/io.h>
 #endif
 #if ARDUINO >= 100
@@ -19,15 +19,15 @@
 #include "RotaryEncoder.h"
 
 
-#define STEPS                (4) //1, 2 or 4 steps
+#define STEPS           4 //1, 2 or 4 steps
 
-#define RE_SW_PIN            (5)
-#define RE_PHA_PIN           (6)
-#define RE_PHB_PIN           (7)
+#define RE_SW_PIN       5
+#define RE_PHA_PIN      6
+#define RE_PHB_PIN      7
 
-#define RE_SW_READ()         digitalReadFast(RE_SW_PIN)
-#define RE_PHA_READ()        digitalReadFast(RE_PHA_PIN)
-#define RE_PHB_READ()        digitalReadFast(RE_PHB_PIN)
+#define RE_SW_READ()    digitalReadFast(RE_SW_PIN)
+#define RE_PHA_READ()   digitalReadFast(RE_PHA_PIN)
+#define RE_PHB_READ()   digitalReadFast(RE_PHB_PIN)
 
 
 //-------------------- Constructor --------------------

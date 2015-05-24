@@ -1,7 +1,7 @@
 {
   "name": "digitalWriteFast",
   "keywords": "io, pin",
-  "description": "Fast pin access for AVR",
+  "description": "Fast pin access for AVR microcontrollers",
   "include": "digitalWriteFast",
   "repository":
   {
