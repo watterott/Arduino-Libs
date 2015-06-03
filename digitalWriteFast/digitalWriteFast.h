@@ -135,6 +135,7 @@
 
 // --- Arduino Mega ---
 #elif (defined(ARDUINO_AVR_MEGA) || \
+       defined(ARDUINO_AVR_MEGA1280) || \
        defined(ARDUINO_AVR_MEGA2560) || \
        defined(__AVR_ATmega1280__) || \
        defined(__AVR_ATmega1281__) || \
@@ -284,6 +285,15 @@
 (((P) >= 0 && (P) <= 7) ? &PIND : (((P) >= 8 && (P) <= 13) ? &PINB : &PINC))
 #define __digitalPinToBit(P) \
 (((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 13) ? (P) - 8 : (P) - 14))
+
+
+// --- Other ---
+#else
+
+#define SPI_HW_SS_PIN   SS
+#define SPI_HW_MOSI_PIN MOSI
+#define SPI_HW_MISO_PIN MISO
+#define SPI_HW_SCK_PIN  SCK
 
 
 #endif
