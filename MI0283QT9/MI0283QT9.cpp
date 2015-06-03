@@ -187,6 +187,7 @@ void MI0283QT9::begin(uint_least8_t clock_div)
 #endif
 
 #if !defined(SOFTWARE_SPI)
+  lcd_clock_div = clock_div;
   SPI.setDataMode(SPI_MODE0);
   SPI.setBitOrder(MSBFIRST);
   SPI.setClockDivider(clock_div);
@@ -379,11 +380,19 @@ uint_least8_t MI0283QT9::touchRead(void)
   uint_least16_t x, y;
 
   //SPI speed-down
-#if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+#if !defined(SOFTWARE_SPI)
+# if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
   uint_least8_t spcr, spsr;
   spcr = SPCR;
   spsr = SPSR;
-# if F_CPU >= 16000000UL
+# endif
+# if F_CPU >= 128000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV64);
+# elif F_CPU >= 64000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV32);
+# elif F_CPU >= 32000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV16);
+# elif F_CPU >= 16000000UL
   SPI.setClockDivider(SPI_CLOCK_DIV8);
 # elif F_CPU >= 8000000UL
   SPI.setClockDivider(SPI_CLOCK_DIV4);
@@ -463,9 +472,13 @@ uint_least8_t MI0283QT9::touchRead(void)
   }
 
   //restore SPI settings
-#if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+#if !defined(SOFTWARE_SPI)
+# if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
   SPCR = spcr;
   SPSR = spsr;
+# else
+  SPI.setClockDivider(lcd_clock_div);
+# endif
 #endif
 
   if(lcd_z != 0)
@@ -610,7 +623,11 @@ void MI0283QT9::reset(uint_least8_t clock_div)
 
   //SPI speed-down
 #if !defined(SOFTWARE_SPI)
+# if F_CPU >= 32000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV16);
+# else
   SPI.setClockDivider(SPI_CLOCK_DIV8);
+# endif
 #endif
 
   //reset
