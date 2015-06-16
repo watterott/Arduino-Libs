@@ -88,12 +88,32 @@ void S65LS020::begin(uint_least8_t clock_div)
 #if !defined(SOFTWARE_SPI)
   SPI.setDataMode(SPI_MODE0);
   SPI.setBitOrder(MSBFIRST);
-  SPI.setClockDivider(clock_div);
+  //SPI.setClockDivider(clock_div);
   SPI.begin();
 #endif
 
+  //SPI speed-down
+#if !defined(SOFTWARE_SPI)
+# if F_CPU >= 128000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV64);
+# elif F_CPU >= 64000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV32);
+# elif F_CPU >= 32000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV16);
+# elif F_CPU >= 16000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV8);
+# else //elif F_CPU >= 8000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV4);
+# endif
+#endif
+
   //reset display
-  reset(clock_div);
+  reset();
+
+  //SPI speed-up
+#if !defined(SOFTWARE_SPI)
+  SPI.setClockDivider(clock_div);
+#endif
 
   return;
 }
@@ -315,15 +335,10 @@ const uint8_t initdataLS020[] PROGMEM =
 };
 
 
-void S65LS020::reset(uint_least8_t clock_div)
+void S65LS020::reset(void)
 {
   uint_least8_t c, d, i;
   const PROGMEM uint8_t *ptr;
-
-  //SPI speed-down
-#if !defined(SOFTWARE_SPI)
-  SPI.setClockDivider(SPI_CLOCK_DIV8);
-#endif
 
   //reset
   CS_DISABLE();
@@ -371,11 +386,6 @@ void S65LS020::reset(uint_least8_t clock_div)
         break;
     }
   }
-
-  //restore SPI settings
-#if !defined(SOFTWARE_SPI)
-  SPI.setClockDivider(clock_div);
-#endif
 
   //clear display buffer
   fillScreen(0);

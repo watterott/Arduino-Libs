@@ -27,7 +27,7 @@ class MI0283QT9 : public GraphicsLib
   private:
     uint_least8_t lcd_clock_div;
 
-    void reset(uint_least8_t clock_div);
+    void reset(void);
     void wr_cmd(uint_least8_t cmd);
     void wr_data16(uint_least16_t data);
     void wr_data(uint_least8_t data);

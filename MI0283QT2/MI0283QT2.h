@@ -26,7 +26,7 @@ class MI0283QT2 : public GraphicsLib
   private:
     uint_least8_t lcd_clock_div;
 
-    void reset(uint_least8_t clock_div);
+    void reset(void);
     void wr_cmd(uint_least8_t cmd, uint_least8_t param);
     uint_least8_t rd_spi(void);
     void wr_spi(uint_least8_t data);

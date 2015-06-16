@@ -122,13 +122,35 @@ void SSD1331::begin(uint_least8_t clock_div)
   pinMode(SCK_PIN, OUTPUT);
   pinMode(MOSI_PIN, OUTPUT);
 
+#if !defined(SOFTWARE_SPI)
   SPI.setDataMode(SPI_MODE3);
   SPI.setBitOrder(MSBFIRST);
-  SPI.setClockDivider(clock_div);
+  //SPI.setClockDivider(clock_div);
   SPI.begin();
+#endif
+
+  //SPI speed-down
+#if !defined(SOFTWARE_SPI)
+# if F_CPU >= 128000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV64);
+# elif F_CPU >= 64000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV32);
+# elif F_CPU >= 32000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV16);
+# elif F_CPU >= 16000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV8);
+# else //elif F_CPU >= 8000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV4);
+# endif
+#endif
 
   //reset display
-  reset(clock_div);
+  reset();
+
+  //SPI speed-up
+#if !defined(SOFTWARE_SPI)
+  SPI.setClockDivider(clock_div);
+#endif
 
   return;
 }
@@ -288,15 +310,10 @@ const uint8_t initdata1331[] PROGMEM =
 };
 
 
-void SSD1331::reset(uint_least8_t clock_div)
+void SSD1331::reset(void)
 {
   uint_least8_t c, i;
   const PROGMEM uint8_t *ptr;
-
-  //SPI speed-down
-#if !defined(SOFTWARE_SPI)
-  SPI.setClockDivider(SPI_CLOCK_DIV8);
-#endif
 
   //reset
   CS_DISABLE();
@@ -335,11 +352,6 @@ void SSD1331::reset(uint_least8_t clock_div)
   //clear display buffer
   fillScreen(0);
 
-  //restore SPI settings
-#if !defined(SOFTWARE_SPI)
-  SPI.setClockDivider(clock_div);
-#endif
-
   return;
 }
 
@@ -348,9 +360,7 @@ void SSD1331::wr_cmd(uint_least8_t cmd)
 {
   RS_LOW(); //cmd
   CS_ENABLE();
-
   wr_spi(cmd);
-
   CS_DISABLE();
   RS_HIGH(); //data
 
@@ -362,9 +372,7 @@ void SSD1331::wr_data(uint_least8_t data)
 {
   //RS_HIGH(); //data
   CS_ENABLE();
-
   wr_spi(data);
-
   CS_DISABLE();
 
   return;

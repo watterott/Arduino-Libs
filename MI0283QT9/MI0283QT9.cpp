@@ -190,12 +190,32 @@ void MI0283QT9::begin(uint_least8_t clock_div)
   lcd_clock_div = clock_div;
   SPI.setDataMode(SPI_MODE0);
   SPI.setBitOrder(MSBFIRST);
-  SPI.setClockDivider(clock_div);
+  //SPI.setClockDivider(clock_div);
   SPI.begin();
 #endif
 
+  //SPI speed-down
+#if !defined(SOFTWARE_SPI)
+# if F_CPU >= 128000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV64);
+# elif F_CPU >= 64000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV32);
+# elif F_CPU >= 32000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV16);
+# elif F_CPU >= 16000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV8);
+# else //elif F_CPU >= 8000000UL
+  SPI.setClockDivider(SPI_CLOCK_DIV4);
+# endif
+#endif
+
   //reset display
-  reset(clock_div);
+  reset();
+
+  //SPI speed-up
+#if !defined(SOFTWARE_SPI)
+  SPI.setClockDivider(clock_div);
+#endif
 
   //enable backlight
   led(50);
@@ -616,19 +636,10 @@ const uint8_t initdataQT9[] PROGMEM =
 };
 
 
-void MI0283QT9::reset(uint_least8_t clock_div)
+void MI0283QT9::reset(void)
 {
   uint_least8_t c, i;
   const PROGMEM uint8_t *ptr;
-
-  //SPI speed-down
-#if !defined(SOFTWARE_SPI)
-# if F_CPU >= 32000000UL
-  SPI.setClockDivider(SPI_CLOCK_DIV16);
-# else
-  SPI.setClockDivider(SPI_CLOCK_DIV8);
-# endif
-#endif
 
   //reset
   CS_DISABLE();
@@ -673,11 +684,6 @@ void MI0283QT9::reset(uint_least8_t clock_div)
 
   //clear display buffer
   fillScreen(0);
-
-  //restore SPI settings
-#if !defined(SOFTWARE_SPI)
-  SPI.setClockDivider(clock_div);
-#endif
 
   return;
 }

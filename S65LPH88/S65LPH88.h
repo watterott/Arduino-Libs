@@ -22,7 +22,7 @@ class S65LPH88 : public GraphicsLib
     void drawStop(void);
 
   private:
-    void reset(uint_least8_t clock_div);
+    void reset(void);
     void wr_cmd(uint_least8_t cmd, uint_least16_t param);
     void wr_reg(uint_least8_t reg);
     void wr_spi(uint_least8_t data);
