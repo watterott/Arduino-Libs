@@ -121,7 +121,7 @@ void RV8523::set24HourMode() //set 24 hour mode
 }
 
 
-void RV8523::batterySwitchOverOn() //activate battery switch over mode
+void RV8523::batterySwitchOver(int on) //activate/deactivate battery switch over mode
 {   
   uint8_t val;
 
@@ -134,35 +134,19 @@ void RV8523::batterySwitchOverOn() //activate battery switch over mode
   {
     Wire.beginTransmission(I2C_ADDR);
     Wire.write(byte(0x02)); //control 3
-    Wire.write(val & ~0xE0); //battery switchover in standard mode
+    if(on)
+    {
+      Wire.write(val & ~0xE0); //battery switchover in standard mode
+    }
+    else
+    {
+      Wire.write(val | 0xE0);  //battery switchover disabled
+    }
     Wire.endTransmission();
   }
 
   return;
 }
-
-
-void RV8523::batterySwitchOverOff() //deactivate battery switch over mode
-{   
-  uint8_t val;
-
-  Wire.beginTransmission(I2C_ADDR);
-  Wire.write(byte(0x02)); //control 3
-  Wire.endTransmission();
-  Wire.requestFrom(I2C_ADDR, 1);
-  val = Wire.read();
-
-  if(!(val & 0xE0))
-  {
-    Wire.beginTransmission(I2C_ADDR);
-    Wire.write(byte(0x02)); //control 3
-    Wire.write(val | 0xE0);  //battery switchover disabled
-    Wire.endTransmission();
-  }
-
-  return;
-}
-
 
 
 void RV8523::get(uint8_t *sec, uint8_t *min, uint8_t *hour, uint8_t *day, uint8_t *month, uint16_t *year)

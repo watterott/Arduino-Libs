@@ -19,8 +19,7 @@ class RV8523
     void batterySwitchOver(uint8_t value);
     void set12HourMode();
     void set24HourMode();
-    void batterySwitchOverOn();
-    void batterySwitchOverOff();
+    void batterySwitchOver(int on);
     
   private:
     uint8_t bin2bcd(uint8_t val);

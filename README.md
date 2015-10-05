@@ -1,4 +1,4 @@
-# Arduino Libraries
+# Arduino/Genuino Libraries
 ```
 ADS1147          - ADS1147 ADC (Analog-Digital-Converter)
 ADS7846          - ADS7846/TSC2046 Touch-Controller

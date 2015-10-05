@@ -40,10 +40,10 @@ void setup()
   rtc.start();
 
   //When the power source is removed, the RTC will keep the time.
-  rtc.batterySwitchOverOn(); //battery switch over on
+  rtc.batterySwitchOver(1); //battery switch over on
 
   //When the power source is removed, the RTC will not keep the time.
-  // rtc.batterySwitchOverOff(); //battery switch over off
+  // rtc.batterySwitchOver(0); //battery switch over off
 }
 
 
