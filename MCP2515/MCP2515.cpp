@@ -3,7 +3,8 @@
   Written by Frank Kienast in November, 2010
   Modified by hooovahh in September, 2012 to fix bugs in extended addressing
 	and allow single variable for both regular and extended addresses.
-  
+  https://github.com/franksmicro/Arduino/tree/master/libraries/MCP2515
+
   Arduino Uno - MCP2515
       10      -  CS/SS
       11      -  MOSI
