@@ -45,9 +45,6 @@
 #define ArdOSC_h
 
 
-
-
-
 #include "OSCCommon/OSCcommon.h"
 #include "OSCCommon/OSCMessage.h"
 

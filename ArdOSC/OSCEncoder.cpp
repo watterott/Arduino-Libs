@@ -60,8 +60,7 @@ int16_t OSCEncoder::encode( OSCMessage::OSCMessage *_newMes ,uint8_t *_binData )
 		}
         packStartPtr += _newMes->getArgAlignmentSize(i);
 	}
-    
-    
+
 	return 1;
     
 }

@@ -29,7 +29,7 @@ private:
     
     AdrFunc adrFunc[kMaxPatternMatch];
     
-	char *addr[kMaxPatternMatch];
+    char *addr[kMaxPatternMatch];
 
     uint8_t patternNum;
     
@@ -38,7 +38,7 @@ public:
     Pattern();
     ~Pattern();
                 
-	void addOscAddress(char *_adr , AdrFunc _func );
+    void addOscAddress(char *_adr , AdrFunc _func );
     void execFunc(uint8_t _index,OSCMessage *_mes);
     
     void paternComp(OSCMessage *_mes);

@@ -16,19 +16,15 @@
 #ifndef OSCEncoder_h
 #define OSCEncoder_h
 
-
-
 #include "OSCMessage.h"
 
 class OSCEncoder{
 	
 private:
 	
-    int16_t encode( OSCMessage::OSCMessage *mes ,uint8_t *_binData );
-	
-    
+    int16_t encode( OSCMessage::OSCMessage *mes, uint8_t *_binData );
+
 public:
-	
 
     friend class OSCClient;
 };

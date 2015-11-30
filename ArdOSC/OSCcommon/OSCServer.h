@@ -12,8 +12,8 @@
  
  */
 
-#ifndef ArdOSC_OSCServer2_h
-#define ArdOSC_OSCServer2_h
+#ifndef ArdOSC_OSCServer_h
+#define ArdOSC_OSCServer_h
 
 
 #include "OSCcommon.h"

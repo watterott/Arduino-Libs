@@ -36,13 +36,12 @@ public:
     OSCArg(char _tag);
     OSCArg(char _tag, void *_data, uint16_t _size, bool _packSizeCulc);
     
-	~OSCArg(void);
+    ~OSCArg(void);
 	
     void flush(void);
-    
 
-	friend class OSCDecoder;
-	friend class OSCEncoder;
+    friend class OSCDecoder;
+    friend class OSCEncoder;
     friend class OSCMessage;
     
 };

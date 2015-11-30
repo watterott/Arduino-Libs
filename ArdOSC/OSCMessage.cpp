@@ -44,7 +44,6 @@ OSCMessage::~OSCMessage(void)
 	flush();
 }
 
-
 void OSCMessage::flush(void){
 	
     if ( _oscAdrSize == 0 ) return;
@@ -72,7 +71,6 @@ void OSCMessage::setAddress(uint8_t *_ipAddr , uint16_t _portNum){
 	_port = _portNum;
 }
 
-
 void OSCMessage::setIpAddress(uint8_t *_ipAddr){
     memcpy( _ip , _ipAddr , 4 ); 
 }
@@ -81,7 +79,6 @@ uint8_t* OSCMessage::getIpAddress(void){
     return _ip;  
 }
 
-
 void OSCMessage::setPortNumber(uint16_t _portNum){
     _port = _portNum; 
 }
@@ -89,8 +86,6 @@ void OSCMessage::setPortNumber(uint16_t _portNum){
 uint16_t OSCMessage::getPortNumber(){
     return _port; 
 }
-
-
 
 int16_t OSCMessage::setOSCAddress(const char *_address){
 
@@ -112,7 +107,6 @@ int16_t OSCMessage::setOSCAddress(const char *_address){
     
 }
 
-
 uint16_t OSCMessage::getMessageSize(void){
     return  _oscAdrAlignmentSize + _typeTagAlignmentSize + _argsAlignmentSize; 
 }
@@ -121,7 +115,7 @@ uint16_t OSCMessage::getArgAlignmentSize(uint8_t _index){
     return _args[_index]->_alignmentSize;
 }
 
-char   *OSCMessage::getOSCAddress(void){
+char *OSCMessage::getOSCAddress(void){
     return _oscAddress; 
 }
 
@@ -129,7 +123,7 @@ int16_t OSCMessage::getArgsNum(void){
     return _argsNum; 
 }
 
-char    OSCMessage::getArgTypeTag(int16_t _index)   {
+char OSCMessage::getArgTypeTag(int16_t _index)   {
     
     if(_index>_argsNum) return -1;
     
@@ -137,18 +131,12 @@ char    OSCMessage::getArgTypeTag(int16_t _index)   {
     
 }
 
-
 void OSCMessage::swap(uint8_t *data1, uint8_t *data2){
     data1[0] = data2[3];
     data1[1] = data2[2];
     data1[2] = data2[1];
     data1[3] = data2[0];
 }
-
-
-
-
-
 
 int16_t OSCMessage::beginMessage(const char *_address){
     flush();
@@ -169,9 +157,6 @@ int16_t OSCMessage::setArgData(char _type , void *_value , uint8_t _byte,bool _e
     
     return alignSize;
 }
-
-
-
 
 int16_t OSCMessage::addArgInt32(int32_t _value){
     
@@ -202,7 +187,6 @@ int32_t OSCMessage::getArgInt32(int16_t _index){
 
 
 #ifdef _USE_FLOAT_
-
 int16_t OSCMessage::addArgFloat(float _value){
     
     if( _argsNum > kMaxAugument ) return -1;
@@ -251,6 +235,7 @@ int16_t  OSCMessage::getArgString(int16_t _index , char *_rcvstr){
     return 1;
 
 }
+
 int16_t  OSCMessage::getArgStringSize(int16_t _index){
     
     if ( _index > _argsNum ) return -1;

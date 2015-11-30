@@ -34,30 +34,24 @@
 #define kTagFalse   'F'
 
 
-
-
-
-
 class OSCMessage{
 	
 private:
     
-	uint8_t		_ip[4];	
-	uint16_t	_port;
-	
-	char	   *_oscAddress;	
-	uint16_t	_oscAdrSize;
-	uint16_t	_oscAdrAlignmentSize;
+    uint8_t		_ip[4];
+    uint16_t	_port;
+
+    char	   *_oscAddress;
+    uint16_t	_oscAdrSize;
+    uint16_t	_oscAdrAlignmentSize;
     
-    
-	uint16_t	_typeTagAlignmentSize;
+    uint16_t	_typeTagAlignmentSize;
     uint16_t	_argsAlignmentSize;
 	
-	uint16_t	_argsNum;
+    uint16_t	_argsNum;
 
     OSCArg *    _args[kMaxAugument];
 
- 
     uint16_t getMessageSize(void);
     uint16_t getArgAlignmentSize(uint8_t _index);
   
@@ -67,32 +61,30 @@ private:
 
 public:
 
-	OSCMessage(void);
-	OSCMessage(const char *_oscAddr);
+    OSCMessage(void);
+    OSCMessage(const char *_oscAddr);
     
-	~OSCMessage(void);
-    
+    ~OSCMessage(void);
 
-	void flush(void);
+    void flush(void);
 	
-	void setAddress(uint8_t *_ip , uint16_t _port);
+    void setAddress(uint8_t *_ip , uint16_t _port);
 	
-	void setIpAddress( uint8_t *_ip );		
+    void setIpAddress( uint8_t *_ip );
     uint8_t* getIpAddress(void);
     
-	void     setPortNumber(uint16_t _port);
-	uint16_t getPortNumber(void);
+    void     setPortNumber(uint16_t _port);
+    uint16_t getPortNumber(void);
 	
-	int16_t setOSCAddress(const char *_addr);
-	char *  getOSCAddress(void);
-
+    int16_t setOSCAddress(const char *_addr);
+    char *  getOSCAddress(void);
 
     int16_t beginMessage( const char *_addr);
 
     int16_t getArgsNum(void);
     char    getArgTypeTag(int16_t _index);
     
-	int16_t addArgInt32(int32_t _value);
+    int16_t addArgInt32(int32_t _value);
     int32_t getArgInt32(int16_t _index);
 
 #ifdef _USE_FLOAT_
@@ -107,12 +99,10 @@ public:
 
 #endif
 
-    
-	
-	friend class OSCServer;
-	friend class OSCClient;
-	friend class OSCDecoder;
-	friend class OSCEncoder;
+    friend class OSCServer;
+    friend class OSCClient;
+    friend class OSCDecoder;
+    friend class OSCEncoder;
     friend class Pattern;
 
 	

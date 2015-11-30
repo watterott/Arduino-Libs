@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 OSCArg::OSCArg(void){
     _typeTag = 0;
     _argData = 0;
@@ -30,7 +31,6 @@ OSCArg::OSCArg(char _tag){
     _dataSize = 0;
     _alignmentSize = 0;
 }
-
 
 OSCArg::OSCArg( char _tag , void *_data , uint16_t _size , bool _packSizeCulc ) {
     
@@ -65,6 +65,3 @@ void OSCArg::flush(void){
     _alignmentSize = 0;
     _typeTag = 0;
 }
-
-
-

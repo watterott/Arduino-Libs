@@ -17,9 +17,7 @@
 #include "OSCcommon/OSCServer.h"
 #include "OSCcommon/OSCcommon.h"
 #include "OSCCommon/OSCMessage.h"
-
 #include "OSCCommon/Pattern.h"
-
 
 
 Pattern::Pattern(){
@@ -29,7 +27,7 @@ Pattern::Pattern(){
 Pattern::~Pattern(){    
 }
 
-void Pattern::addOscAddress(char *_adr ,  AdrFunc _func){
+void Pattern::addOscAddress(char *_adr, AdrFunc _func){
     adrFunc[patternNum] = _func;
     addr[patternNum] = _adr;
     patternNum++;
@@ -43,6 +41,5 @@ void Pattern::paternComp(OSCMessage *_mes){
     
     for (uint8_t i=0 ; i<patternNum ; i++) {
         if ( strcmp( addr[i] , _mes->_oscAddress ) == 0 ) execFunc( i , _mes );
-
     }
 }

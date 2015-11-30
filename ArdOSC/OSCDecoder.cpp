@@ -27,9 +27,6 @@ int16_t OSCDecoder::decode( OSCMessage::OSCMessage *_newMes , const uint8_t *_bi
 	
 	_newMes->beginMessage( (char*)packStartPtr );			
 	packStartPtr += _newMes->_oscAdrAlignmentSize;
-	
-    
-    
 
     char *tmpTag = (char*)(packStartPtr+1);
     uint8_t argsNum = strlen(tmpTag);
@@ -63,4 +60,3 @@ int16_t OSCDecoder::decode( OSCMessage::OSCMessage *_newMes , const uint8_t *_bi
 	return 1;
     
 }
-
