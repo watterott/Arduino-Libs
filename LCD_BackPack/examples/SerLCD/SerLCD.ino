@@ -7,14 +7,16 @@
 #include <digitalWriteFast.h>
 #include <LiquidCrystal.h>
 #include <EEPROM.h>
+#include <Wire.h>
 
 
-#define VERSION  "0.02" //v0.02
+#define VERSION   "0.03" //v0.03
+#define I2C_ADDR  8      //I2C address (comment to disable I2C)
+#define RX_BUFFER 64     //receive buffer: 8, 16, 32, 64, 128, 256
 
 //#define FIXED_BAUDRATE 9600 //uncomment for a fixed baudrate
-//#define FIXED_WIDTH 16 //uncomment for a fixed lcd width
-//#define FIXED_LINES 2 //uncomment for a fixed lcd lines
-
+//#define FIXED_WIDTH    16   //uncomment for a fixed lcd width
+//#define FIXED_LINES    2    //uncomment for a fixed lcd lines
 
 #define LCD_EN   2  //enable
 #define LCD_RS   A2 //command/data
@@ -36,6 +38,9 @@ uint8_t eeprom_magic=0xAA, splash_screen=1, baudrate=2;
 uint8_t lcd_width=16, lcd_lines=2, cursor_pos=0, line_pos=0;
 uint8_t contrast=10, bl_on=1, bl_red=50, bl_green=0, bl_blue=0, bl_rgb=1;
 char splash_line[2][21];
+uint8_t rx_buf[RX_BUFFER]; //receive buffer
+volatile uint8_t rx_head=0; //fifo head
+volatile uint8_t rx_tail=0; //fifo tail
 
 
 ISR(TIMER2_OVF_vect)
@@ -123,6 +128,69 @@ ISR(TIMER2_OVF_vect)
       }
     }
   }
+}
+
+#ifdef I2C_ADDR
+void i2c_event(int bytes)
+{
+  uint8_t c;
+
+  while(Wire.available())
+  {
+    c = (uint8_t)Wire.read();
+    rx_buf[rx_head] = c;
+    rx_head++;
+    rx_head &= (RX_BUFFER-1);
+  }
+}
+#endif
+
+uint8_t data_available(void)
+{
+  uint8_t c;
+
+  while(Serial.available()) //new serial data available?
+  {
+    c = (uint8_t)Serial.read();
+    cli();
+    rx_buf[rx_head] = c;
+    rx_head++;
+    rx_head &= (RX_BUFFER-1);
+    sei();
+  }
+
+  if(rx_tail == rx_head) //no data available
+  {
+    return 0;
+  }
+
+  return 1;
+}
+
+
+uint8_t data_read(void)
+{
+  uint8_t c;
+
+  //wait for incomming data
+  while((rx_tail == rx_head) || Serial.available())
+  {
+    if(Serial.available()) //new serial data available?
+    {
+      c = (uint8_t)Serial.read();
+      cli();
+      rx_buf[rx_head] = c;
+      rx_head++;
+      rx_head &= (RX_BUFFER-1);
+      sei();
+    }
+  }
+
+  c = rx_buf[rx_tail];
+  rx_tail++;
+  rx_tail &= (RX_BUFFER-1);
+
+  return c;
 }
 
 
@@ -253,6 +321,12 @@ void setup()
   //init serial port
   Serial.begin(9600);
 
+  //init I2C port
+#ifdef I2C_ADDR
+  Wire.begin(I2C_ADDR);
+  Wire.onReceive(i2c_event);
+#endif
+
   //load settings
   read_settings();
 
@@ -296,9 +370,9 @@ void setup()
   lcd.clear();
 
 #ifndef FIXED_BAUDRATE
-  if(Serial.available()) //serial data available?
+  if(data_available()) //serial data available?
   {
-    if(Serial.read() == 0x12) //0x12 = 18
+    if(data_read() == 0x12) //0x12 = 18
     {
       set_baudrate(2); //2 -> 9600 baud
       lcd.print("Reset to 9600");
@@ -316,17 +390,16 @@ void loop()
 {
   uint8_t c, *ptr;
 
-  if(Serial.available() == 0) //new serial data available?
+  if(data_available() == 0) //new serial data available?
   {
     return;
   }
 
-  c = Serial.read();
+  c = data_read();
 
   if(c == 0xFE) //0xFE = 254 special lcd command
   {
-    while(Serial.available() == 0);
-    c = Serial.read();
+    c = data_read();
 
     if((c>>4) != 3) //if not 0b.0000.0011, then send it to lcd
     {
@@ -350,8 +423,7 @@ void loop()
   }
   else if(c == 0x7C) //0x7C = 124 super special lcd command
   {
-    while(Serial.available() == 0);
-    c = Serial.read();
+    c = data_read();
 
     if(c == 0x01) //backlight 100%
     {
@@ -453,8 +525,7 @@ void loop()
 #endif
     else if(c == 0x15) //contrast 0-100
     {
-      while(Serial.available() == 0);
-      c = Serial.read();
+      c = data_read();
       if(c > 97) { c = 32;  }
       else       { c = c/3; }
       if(c != contrast)
@@ -484,26 +555,21 @@ void loop()
     {
       if(bl_rgb == 0)
       {
-        while(Serial.available() == 0);
-        c = Serial.read();
+        c = data_read();
         bl_red = (c>100)?100:c;
         EEPROM.write(eeprom_addr+7, bl_red);
       }
       else
       {
-        while(Serial.available() == 0);
-        c = Serial.read();
+        c = data_read();
         bl_red = (c>100)?100:c;
         EEPROM.write(eeprom_addr+7, bl_red);
-        while(Serial.available() == 0);
-        c = Serial.read();
+        c = data_read();
         bl_green = (c>100)?100:c;
         EEPROM.write(eeprom_addr+8, bl_green);
-        while(Serial.available() == 0);
-        c = Serial.read();
+        c = data_read();
         bl_blue = (c>100)?100:c;
         EEPROM.write(eeprom_addr+9, bl_blue);
-        while(Serial.available() == 0);
       }
       if((bl_on == 0) && (bl_red || bl_green || bl_blue))
       {
