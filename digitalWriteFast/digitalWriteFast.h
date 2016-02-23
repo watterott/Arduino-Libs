@@ -264,6 +264,7 @@
        defined(ARDUINO_ARCH_AVR) || \
        defined(__AVR_ATmega328__) || \
        defined(__AVR_ATmega328P__) || \
+       defined(__AVR_ATmega328PB__) || \
        defined(__AVR__))
 
 #define UART_RX_PIN     (0) //PD0
@@ -277,6 +278,16 @@
 #define SPI_HW_MISO_PIN (12) //PB3
 #define SPI_HW_SCK_PIN  (13) //PB1
 
+#if defined(__AVR_ATmega328PB__)
+#define __digitalPinToPortReg(P) \
+(((P) >= 0 && (P) <= 7) ? &PORTD : (((P) >= 8 && (P) <= 13) ? &PORTB : (((P) >= 14 && (P) <= 19) ? &PORTC : &PORTE)))
+#define __digitalPinToDDRReg(P) \
+(((P) >= 0 && (P) <= 7) ? &DDRD : (((P) >= 8 && (P) <= 13) ? &DDRB : (((P) >= 14 && (P) <= 19) ? &DDRC : &DDRE)))
+#define __digitalPinToPINReg(P) \
+(((P) >= 0 && (P) <= 7) ? &PIND : (((P) >= 8 && (P) <= 13) ? &PINB : (((P) >= 14 && (P) <= 19) ? &PINC : &PINE)))
+#define __digitalPinToBit(P) \
+(((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 13) ? (P) - 8 : (((P) >= 14 && (P) <= 19) ? (P) - 14 : (((P) >= 20 && (P) <= 21) ? (P) - 18 : (P) - 22))))
+#else
 #define __digitalPinToPortReg(P) \
 (((P) >= 0 && (P) <= 7) ? &PORTD : (((P) >= 8 && (P) <= 13) ? &PORTB : &PORTC))
 #define __digitalPinToDDRReg(P) \
@@ -285,6 +296,7 @@
 (((P) >= 0 && (P) <= 7) ? &PIND : (((P) >= 8 && (P) <= 13) ? &PINB : &PINC))
 #define __digitalPinToBit(P) \
 (((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 13) ? (P) - 8 : (P) - 14))
+#endif
 
 
 // --- Other ---
