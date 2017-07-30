@@ -1,0 +1,24 @@
+{
+  "name": "MI0283QT2",
+  "keywords": "spi, graphics, display, lcd",
+  "description": "MI0283QT-2 Display (HX8347D, SPI)",
+  "include": "MI0283QT2",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "dependencies":
+  [
+    {
+      "name": "digitalWriteFast",
+      "frameworks": "arduino"
+    },
+    {
+      "name": "GraphicsLib",
+      "frameworks": "arduino"
+    }
+  ],
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}

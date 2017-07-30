@@ -1,0 +1,18 @@
+{
+  "name": "DAC8760",
+  "keywords": "spi, dac, analog, output, converter, signal",
+  "description": "DAC8760 DAC (Digital-Analog-Converter)",
+  "include": "DAC8760",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "dependencies":
+  {
+    "name": "digitalWriteFast",
+    "frameworks": "arduino"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}

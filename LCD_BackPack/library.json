@@ -1,0 +1,13 @@
+{
+  "name": "LCD_BackPack",
+  "keywords": "display, hd44780",
+  "description": "LCD-BackPack (for HD44780 compatible displays)",
+  "include": "LCD_BackPack",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}

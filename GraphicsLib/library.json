@@ -1,0 +1,18 @@
+{
+  "name": "GraphicsLib",
+  "keywords": "graphics, display, lcd",
+  "description": "General Grahipcs Library",
+  "include": "GraphicsLib",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/watterott/Arduino-Libs.git"
+  },
+  "dependencies":
+  {
+    "name": "digitalWriteFast",
+    "frameworks": "arduino"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}
