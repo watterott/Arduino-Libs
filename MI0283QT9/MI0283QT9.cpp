@@ -1,5 +1,5 @@
 /*
-  MI0283QT-9/-11 (ILI9341) Display Lib for Arduino
+  MI0283QT-9/-11/-13 (ILI9341) Display Lib for Arduino
   by Watterott electronic (www.watterott.com)
  */
 
