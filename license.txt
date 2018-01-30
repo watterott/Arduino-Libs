@@ -27,3 +27,14 @@ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
 IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
+
+
+
+
+Third party libraries/software
+------------------------------
+Each package has its own copyright and license agreement, and it is your responsibility to comply with the terms of those agreements.
+* ArdOSC - https://github.com/recotana/ArdOSC
+* light_ws2812 - https://github.com/cpldcpu/light_ws2812
+* MCP2515 - https://github.com/franksmicro/Arduino/tree/master/libraries/MCP2515
+* TinyWire - https://github.com/sudar/TinyWire
