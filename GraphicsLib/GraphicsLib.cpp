@@ -533,6 +533,7 @@ void GraphicsLib::fillEllipse(int_least16_t x0, int_least16_t y0, int_least16_t 
 
 int_least16_t GraphicsLib::drawChar(int_least16_t x, int_least16_t y, char c, uint_least16_t color, uint_least16_t bg, uint_least8_t size)
 {
+#ifndef FONT_EMBEDDED
   int_least16_t ret, pos;
 #if FONT_WIDTH <= 8
   uint_least8_t data, mask;
@@ -643,6 +644,10 @@ int_least16_t GraphicsLib::drawChar(int_least16_t x, int_least16_t y, char c, ui
   }
 
   return ret;
+
+#else
+  return x;
+#endif //FONT_EMBEDDED
 }
 
 
@@ -808,6 +813,7 @@ size_t GraphicsLib::write(uint8_t c)
 void GraphicsLib::write(uint8_t c)
 #endif
 {
+#ifndef FONT_EMBEDDED
   if(c == '\n')
   {
     text_x  = start_x;
@@ -829,6 +835,7 @@ void GraphicsLib::write(uint8_t c)
       }
     }
   }
+#endif
 
 #if ARDUINO >= 100
   return 1;

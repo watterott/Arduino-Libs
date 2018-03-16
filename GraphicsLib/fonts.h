@@ -68,7 +68,8 @@
 # define FONT_WIDTH  (16)
 # define FONT_HEIGHT (26)
 #else
-# warning No font defined
+//# warning No font defined
+# define FONT_EMBEDDED //8x8 built-in font of MI0283QT-Adapter v2
 #endif
 
 #if defined(__AVR__)
