@@ -813,7 +813,6 @@ size_t GraphicsLib::write(uint8_t c)
 void GraphicsLib::write(uint8_t c)
 #endif
 {
-#ifndef FONT_EMBEDDED
   if(c == '\n')
   {
     text_x  = start_x;
@@ -835,8 +834,6 @@ void GraphicsLib::write(uint8_t c)
       }
     }
   }
-#endif
-
 #if ARDUINO >= 100
   return 1;
 #else
