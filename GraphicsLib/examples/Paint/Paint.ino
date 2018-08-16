@@ -69,6 +69,7 @@ void setup()
   //SPI Displays
   // lcd.begin(); //spi-clk=Fcpu/4
   // lcd.begin(SPI_CLOCK_DIV2); //spi-clk=Fcpu/2
+  // lcd.begin(SPI_CLOCK_DIV16); //spi-clk=Fcpu/16
   // lcd.begin(SPI_CLOCK_DIV4, 8); //spi-clk=Fcpu/4, rst-pin=8
   //UART Displays
   // lcd.begin(5, 6, 7); //rx-pin=5, tx-pin=6, cs-pin=7
