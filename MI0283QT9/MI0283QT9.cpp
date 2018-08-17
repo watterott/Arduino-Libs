@@ -13,6 +13,9 @@
 #else
 # include "WProgram.h"
 #endif
+#if (defined(__ARM__) || defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_SAMD))
+# include "wiring_private.h"
+#endif
 #include "SPI.h"
 #include "digitalWriteFast.h"
 #include "GraphicsLib.h"
@@ -348,36 +351,88 @@ void MI0283QT9::drawStart(void)
 void MI0283QT9::draw(uint_least16_t color)
 {
 #if defined(LCD_8BIT_SPI)
-//  RS_HIGH(); //data
+  //RS_HIGH(); //data, set in wr_cmd()
 # else
   //9th bit
+# if defined(SOFTWARE_SPI)
   MOSI_HIGH(); //data
   SCK_LOW();
-# if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+  SCK_HIGH();
+# else
+#  if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+  MOSI_HIGH(); //data
+  SCK_LOW();
   SPCR &= ~(1<<SPE); //disable SPI
   SCK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
-# else
+#  else
+  MOSI_HIGH(); //data
+  SCK_LOW();
+  pinMode(MOSI_PIN, OUTPUT); //disable SPI on MOSI
+  pinMode(SCK_PIN, OUTPUT); //disable SPI on SCK
   SCK_HIGH();
-# endif
-#endif
+  //enable SPI
+#   if defined(ARDUINO_ARCH_SAM)
+	PIO_Configure(
+			g_APinDescription[MOSI_PIN].pPort,
+			g_APinDescription[MOSI_PIN].ulPinType,
+			g_APinDescription[MOSI_PIN].ulPin,
+			g_APinDescription[MOSI_PIN].ulPinConfiguration);
+	PIO_Configure(
+			g_APinDescription[SCK_PIN].pPort,
+			g_APinDescription[SCK_PIN].ulPinType,
+			g_APinDescription[SCK_PIN].ulPin,
+			g_APinDescription[SCK_PIN].ulPinConfiguration);
+#   else
+  pinPeripheral(MOSI_PIN, PIO_SERCOM);
+  pinPeripheral(SCK_PIN, PIO_SERCOM);
+#   endif //ARDUINO_ARCH_SAM
+#  endif //ARDUINO_ARCH_AVR
+# endif //SOFTWARE_SPI
+#endif //LCD_8BIT_SPI
 
   wr_spi(color>>8);
 
 #if defined(LCD_8BIT_SPI)
-//  RS_HIGH(); //data
+  //RS_HIGH(); //data, set in wr_cmd()
 # else
   //9th bit
+# if defined(SOFTWARE_SPI)
   MOSI_HIGH(); //data
   SCK_LOW();
-# if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+  SCK_HIGH();
+# else
+#  if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+  MOSI_HIGH(); //data
+  SCK_LOW();
   SPCR &= ~(1<<SPE); //disable SPI
   SCK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
-# else
+#  else
+  MOSI_HIGH(); //data
+  SCK_LOW();
+  pinMode(MOSI_PIN, OUTPUT); //disable SPI on MOSI
+  pinMode(SCK_PIN, OUTPUT); //disable SPI on SCK
   SCK_HIGH();
-# endif
-#endif
+  //enable SPI
+#   if defined(ARDUINO_ARCH_SAM)
+	PIO_Configure(
+			g_APinDescription[MOSI_PIN].pPort,
+			g_APinDescription[MOSI_PIN].ulPinType,
+			g_APinDescription[MOSI_PIN].ulPin,
+			g_APinDescription[MOSI_PIN].ulPinConfiguration);
+	PIO_Configure(
+			g_APinDescription[SCK_PIN].pPort,
+			g_APinDescription[SCK_PIN].ulPinType,
+			g_APinDescription[SCK_PIN].ulPin,
+			g_APinDescription[SCK_PIN].ulPinConfiguration);
+#   else
+  pinPeripheral(MOSI_PIN, PIO_SERCOM);
+  pinPeripheral(SCK_PIN, PIO_SERCOM);
+#   endif //ARDUINO_ARCH_SAM
+#  endif //ARDUINO_ARCH_AVR
+# endif //SOFTWARE_SPI
+#endif //LCD_8BIT_SPI
 
   wr_spi(color);
 
@@ -697,16 +752,42 @@ void MI0283QT9::wr_cmd(uint_least8_t cmd)
   RS_LOW(); //cmd
 # else
   //9th bit
+# if defined(SOFTWARE_SPI)
   MOSI_LOW(); //cmd
   SCK_LOW();
-# if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+  SCK_HIGH();
+# else
+#  if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+  MOSI_LOW(); //cmd
+  SCK_LOW();
   SPCR &= ~(1<<SPE); //disable SPI
   SCK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
-# else
+#  else
+  MOSI_LOW(); //cmd
+  SCK_LOW();
+  pinMode(MOSI_PIN, OUTPUT); //disable SPI on MOSI
+  pinMode(SCK_PIN, OUTPUT); //disable SPI on SCK
   SCK_HIGH();
-# endif
-#endif
+  //enable SPI
+#   if defined(ARDUINO_ARCH_SAM)
+	PIO_Configure(
+			g_APinDescription[MOSI_PIN].pPort,
+			g_APinDescription[MOSI_PIN].ulPinType,
+			g_APinDescription[MOSI_PIN].ulPin,
+			g_APinDescription[MOSI_PIN].ulPinConfiguration);
+	PIO_Configure(
+			g_APinDescription[SCK_PIN].pPort,
+			g_APinDescription[SCK_PIN].ulPinType,
+			g_APinDescription[SCK_PIN].ulPin,
+			g_APinDescription[SCK_PIN].ulPinConfiguration);
+#   else
+  pinPeripheral(MOSI_PIN, PIO_SERCOM);
+  pinPeripheral(SCK_PIN, PIO_SERCOM);
+#   endif //ARDUINO_ARCH_SAM
+#  endif //ARDUINO_ARCH_AVR
+# endif //SOFTWARE_SPI
+#endif //LCD_8BIT_SPI
 
   wr_spi(cmd);
 
@@ -725,36 +806,88 @@ void MI0283QT9::wr_data16(uint_least16_t data)
   CS_ENABLE();
 
 #if defined(LCD_8BIT_SPI)
-//  RS_HIGH(); //data
+  //RS_HIGH(); //data, set in wr_cmd()
 # else
   //9th bit
+# if defined(SOFTWARE_SPI)
   MOSI_HIGH(); //data
   SCK_LOW();
-# if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+  SCK_HIGH();
+# else
+#  if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+  MOSI_HIGH(); //data
+  SCK_LOW();
   SPCR &= ~(1<<SPE); //disable SPI
   SCK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
-# else
+#  else
+  MOSI_HIGH(); //data
+  SCK_LOW();
+  pinMode(MOSI_PIN, OUTPUT); //disable SPI on MOSI
+  pinMode(SCK_PIN, OUTPUT); //disable SPI on SCK
   SCK_HIGH();
-# endif
-#endif
+  //enable SPI
+#   if defined(ARDUINO_ARCH_SAM)
+	PIO_Configure(
+			g_APinDescription[MOSI_PIN].pPort,
+			g_APinDescription[MOSI_PIN].ulPinType,
+			g_APinDescription[MOSI_PIN].ulPin,
+			g_APinDescription[MOSI_PIN].ulPinConfiguration);
+	PIO_Configure(
+			g_APinDescription[SCK_PIN].pPort,
+			g_APinDescription[SCK_PIN].ulPinType,
+			g_APinDescription[SCK_PIN].ulPin,
+			g_APinDescription[SCK_PIN].ulPinConfiguration);
+#   else
+  pinPeripheral(MOSI_PIN, PIO_SERCOM);
+  pinPeripheral(SCK_PIN, PIO_SERCOM);
+#   endif //ARDUINO_ARCH_SAM
+#  endif //ARDUINO_ARCH_AVR
+# endif //SOFTWARE_SPI
+#endif //LCD_8BIT_SPI
 
   wr_spi(data>>8);
 
 #if defined(LCD_8BIT_SPI)
-//  RS_HIGH(); //data
+  //RS_HIGH(); //data, set in wr_cmd()
 # else
   //9th bit
+# if defined(SOFTWARE_SPI)
   MOSI_HIGH(); //data
   SCK_LOW();
-# if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+  SCK_HIGH();
+# else
+#  if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+  MOSI_HIGH(); //data
+  SCK_LOW();
   SPCR &= ~(1<<SPE); //disable SPI
   SCK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
-# else
+#  else
+  MOSI_HIGH(); //data
+  SCK_LOW();
+  pinMode(MOSI_PIN, OUTPUT); //disable SPI on MOSI
+  pinMode(SCK_PIN, OUTPUT); //disable SPI on SCK
   SCK_HIGH();
-# endif
-#endif
+  //enable SPI
+#   if defined(ARDUINO_ARCH_SAM)
+	PIO_Configure(
+			g_APinDescription[MOSI_PIN].pPort,
+			g_APinDescription[MOSI_PIN].ulPinType,
+			g_APinDescription[MOSI_PIN].ulPin,
+			g_APinDescription[MOSI_PIN].ulPinConfiguration);
+	PIO_Configure(
+			g_APinDescription[SCK_PIN].pPort,
+			g_APinDescription[SCK_PIN].ulPinType,
+			g_APinDescription[SCK_PIN].ulPin,
+			g_APinDescription[SCK_PIN].ulPinConfiguration);
+#   else
+  pinPeripheral(MOSI_PIN, PIO_SERCOM);
+  pinPeripheral(SCK_PIN, PIO_SERCOM);
+#   endif //ARDUINO_ARCH_SAM
+#  endif //ARDUINO_ARCH_AVR
+# endif //SOFTWARE_SPI
+#endif //LCD_8BIT_SPI
 
   wr_spi(data);
 
@@ -769,19 +902,45 @@ void MI0283QT9::wr_data(uint_least8_t data)
   CS_ENABLE();
 
 #if defined(LCD_8BIT_SPI)
-  RS_HIGH(); //data
+  //RS_HIGH(); //data, set in wr_cmd()
 #else
   //9th bit
+# if defined(SOFTWARE_SPI)
   MOSI_HIGH(); //data
   SCK_LOW();
-# if !defined(SOFTWARE_SPI) && (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+  SCK_HIGH();
+# else
+#  if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+  MOSI_HIGH(); //data
+  SCK_LOW();
   SPCR &= ~(1<<SPE); //disable SPI
   SCK_HIGH();
   SPCR |= (1<<SPE); //enable SPI
-# else
+#  else
+  MOSI_HIGH(); //data
+  SCK_LOW();
+  pinMode(MOSI_PIN, OUTPUT); //disable SPI on MOSI
+  pinMode(SCK_PIN, OUTPUT); //disable SPI on SCK
   SCK_HIGH();
-# endif
-#endif
+  //enable SPI
+#   if defined(ARDUINO_ARCH_SAM)
+	PIO_Configure(
+			g_APinDescription[MOSI_PIN].pPort,
+			g_APinDescription[MOSI_PIN].ulPinType,
+			g_APinDescription[MOSI_PIN].ulPin,
+			g_APinDescription[MOSI_PIN].ulPinConfiguration);
+	PIO_Configure(
+			g_APinDescription[SCK_PIN].pPort,
+			g_APinDescription[SCK_PIN].ulPinType,
+			g_APinDescription[SCK_PIN].ulPin,
+			g_APinDescription[SCK_PIN].ulPinConfiguration);
+#   else
+  pinPeripheral(MOSI_PIN, PIO_SERCOM);
+  pinPeripheral(SCK_PIN, PIO_SERCOM);
+#   endif //ARDUINO_ARCH_SAM
+#  endif //ARDUINO_ARCH_AVR
+# endif //SOFTWARE_SPI
+#endif //LCD_8BIT_SPI
 
   wr_spi(data);
 
