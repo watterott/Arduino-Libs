@@ -373,16 +373,14 @@ void MI0283QT9::draw(uint_least16_t color)
   SCK_HIGH();
   //enable SPI
 #   if defined(ARDUINO_ARCH_SAM)
-	PIO_Configure(
-			g_APinDescription[MOSI_PIN].pPort,
-			g_APinDescription[MOSI_PIN].ulPinType,
-			g_APinDescription[MOSI_PIN].ulPin,
-			g_APinDescription[MOSI_PIN].ulPinConfiguration);
-	PIO_Configure(
-			g_APinDescription[SCK_PIN].pPort,
-			g_APinDescription[SCK_PIN].ulPinType,
-			g_APinDescription[SCK_PIN].ulPin,
-			g_APinDescription[SCK_PIN].ulPinConfiguration);
+  PIO_Configure(g_APinDescription[MOSI_PIN].pPort,
+                g_APinDescription[MOSI_PIN].ulPinType,
+                g_APinDescription[MOSI_PIN].ulPin,
+                g_APinDescription[MOSI_PIN].ulPinConfiguration);
+  PIO_Configure(g_APinDescription[SCK_PIN].pPort,
+                g_APinDescription[SCK_PIN].ulPinType,
+                g_APinDescription[SCK_PIN].ulPin,
+                g_APinDescription[SCK_PIN].ulPinConfiguration);
 #   else
   pinPeripheral(MOSI_PIN, PIO_SERCOM);
   pinPeripheral(SCK_PIN, PIO_SERCOM);
@@ -416,16 +414,14 @@ void MI0283QT9::draw(uint_least16_t color)
   SCK_HIGH();
   //enable SPI
 #   if defined(ARDUINO_ARCH_SAM)
-	PIO_Configure(
-			g_APinDescription[MOSI_PIN].pPort,
-			g_APinDescription[MOSI_PIN].ulPinType,
-			g_APinDescription[MOSI_PIN].ulPin,
-			g_APinDescription[MOSI_PIN].ulPinConfiguration);
-	PIO_Configure(
-			g_APinDescription[SCK_PIN].pPort,
-			g_APinDescription[SCK_PIN].ulPinType,
-			g_APinDescription[SCK_PIN].ulPin,
-			g_APinDescription[SCK_PIN].ulPinConfiguration);
+  PIO_Configure(g_APinDescription[MOSI_PIN].pPort,
+                g_APinDescription[MOSI_PIN].ulPinType,
+                g_APinDescription[MOSI_PIN].ulPin,
+                g_APinDescription[MOSI_PIN].ulPinConfiguration);
+  PIO_Configure(g_APinDescription[SCK_PIN].pPort,
+                g_APinDescription[SCK_PIN].ulPinType,
+                g_APinDescription[SCK_PIN].ulPin,
+                g_APinDescription[SCK_PIN].ulPinConfiguration);
 #   else
   pinPeripheral(MOSI_PIN, PIO_SERCOM);
   pinPeripheral(SCK_PIN, PIO_SERCOM);
@@ -771,16 +767,14 @@ void MI0283QT9::wr_cmd(uint_least8_t cmd)
   SCK_HIGH();
   //enable SPI
 #   if defined(ARDUINO_ARCH_SAM)
-	PIO_Configure(
-			g_APinDescription[MOSI_PIN].pPort,
-			g_APinDescription[MOSI_PIN].ulPinType,
-			g_APinDescription[MOSI_PIN].ulPin,
-			g_APinDescription[MOSI_PIN].ulPinConfiguration);
-	PIO_Configure(
-			g_APinDescription[SCK_PIN].pPort,
-			g_APinDescription[SCK_PIN].ulPinType,
-			g_APinDescription[SCK_PIN].ulPin,
-			g_APinDescription[SCK_PIN].ulPinConfiguration);
+  PIO_Configure(g_APinDescription[MOSI_PIN].pPort,
+                g_APinDescription[MOSI_PIN].ulPinType,
+                g_APinDescription[MOSI_PIN].ulPin,
+                g_APinDescription[MOSI_PIN].ulPinConfiguration);
+  PIO_Configure(g_APinDescription[SCK_PIN].pPort,
+                g_APinDescription[SCK_PIN].ulPinType,
+                g_APinDescription[SCK_PIN].ulPin,
+                g_APinDescription[SCK_PIN].ulPinConfiguration);
 #   else
   pinPeripheral(MOSI_PIN, PIO_SERCOM);
   pinPeripheral(SCK_PIN, PIO_SERCOM);
@@ -828,16 +822,14 @@ void MI0283QT9::wr_data16(uint_least16_t data)
   SCK_HIGH();
   //enable SPI
 #   if defined(ARDUINO_ARCH_SAM)
-	PIO_Configure(
-			g_APinDescription[MOSI_PIN].pPort,
-			g_APinDescription[MOSI_PIN].ulPinType,
-			g_APinDescription[MOSI_PIN].ulPin,
-			g_APinDescription[MOSI_PIN].ulPinConfiguration);
-	PIO_Configure(
-			g_APinDescription[SCK_PIN].pPort,
-			g_APinDescription[SCK_PIN].ulPinType,
-			g_APinDescription[SCK_PIN].ulPin,
-			g_APinDescription[SCK_PIN].ulPinConfiguration);
+  PIO_Configure(g_APinDescription[MOSI_PIN].pPort,
+                g_APinDescription[MOSI_PIN].ulPinType,
+                g_APinDescription[MOSI_PIN].ulPin,
+                g_APinDescription[MOSI_PIN].ulPinConfiguration);
+  PIO_Configure(g_APinDescription[SCK_PIN].pPort,
+                g_APinDescription[SCK_PIN].ulPinType,
+                g_APinDescription[SCK_PIN].ulPin,
+                g_APinDescription[SCK_PIN].ulPinConfiguration);
 #   else
   pinPeripheral(MOSI_PIN, PIO_SERCOM);
   pinPeripheral(SCK_PIN, PIO_SERCOM);
@@ -871,16 +863,14 @@ void MI0283QT9::wr_data16(uint_least16_t data)
   SCK_HIGH();
   //enable SPI
 #   if defined(ARDUINO_ARCH_SAM)
-	PIO_Configure(
-			g_APinDescription[MOSI_PIN].pPort,
-			g_APinDescription[MOSI_PIN].ulPinType,
-			g_APinDescription[MOSI_PIN].ulPin,
-			g_APinDescription[MOSI_PIN].ulPinConfiguration);
-	PIO_Configure(
-			g_APinDescription[SCK_PIN].pPort,
-			g_APinDescription[SCK_PIN].ulPinType,
-			g_APinDescription[SCK_PIN].ulPin,
-			g_APinDescription[SCK_PIN].ulPinConfiguration);
+  PIO_Configure(g_APinDescription[MOSI_PIN].pPort,
+                g_APinDescription[MOSI_PIN].ulPinType,
+                g_APinDescription[MOSI_PIN].ulPin,
+                g_APinDescription[MOSI_PIN].ulPinConfiguration);
+  PIO_Configure(g_APinDescription[SCK_PIN].pPort,
+                g_APinDescription[SCK_PIN].ulPinType,
+                g_APinDescription[SCK_PIN].ulPin,
+                g_APinDescription[SCK_PIN].ulPinConfiguration);
 #   else
   pinPeripheral(MOSI_PIN, PIO_SERCOM);
   pinPeripheral(SCK_PIN, PIO_SERCOM);
@@ -924,16 +914,14 @@ void MI0283QT9::wr_data(uint_least8_t data)
   SCK_HIGH();
   //enable SPI
 #   if defined(ARDUINO_ARCH_SAM)
-	PIO_Configure(
-			g_APinDescription[MOSI_PIN].pPort,
-			g_APinDescription[MOSI_PIN].ulPinType,
-			g_APinDescription[MOSI_PIN].ulPin,
-			g_APinDescription[MOSI_PIN].ulPinConfiguration);
-	PIO_Configure(
-			g_APinDescription[SCK_PIN].pPort,
-			g_APinDescription[SCK_PIN].ulPinType,
-			g_APinDescription[SCK_PIN].ulPin,
-			g_APinDescription[SCK_PIN].ulPinConfiguration);
+  PIO_Configure(g_APinDescription[MOSI_PIN].pPort,
+                g_APinDescription[MOSI_PIN].ulPinType,
+                g_APinDescription[MOSI_PIN].ulPin,
+                g_APinDescription[MOSI_PIN].ulPinConfiguration);
+  PIO_Configure(g_APinDescription[SCK_PIN].pPort,
+                g_APinDescription[SCK_PIN].ulPinType,
+                g_APinDescription[SCK_PIN].ulPin,
+                g_APinDescription[SCK_PIN].ulPinConfiguration);
 #   else
   pinPeripheral(MOSI_PIN, PIO_SERCOM);
   pinPeripheral(SCK_PIN, PIO_SERCOM);
