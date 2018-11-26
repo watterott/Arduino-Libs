@@ -7,21 +7,31 @@
 
 #include <digitalWriteFast.h>
 
+#define PIN 10
 
 void setup()
 {
-  byte pin;
+  volatile byte pin;
 
-  //set pin mode for pin 10
-  pinModeFast(10, INPUT);
-  pinModeFast(10, OUTPUT);
+  //set pin mode for pin PIN
+  pinModeFast(PIN, INPUT);
+  pinModeFast(PIN, OUTPUT);
 
-  //set pin state for pin 10
-  digitalWriteFast(10, LOW);
-  digitalWriteFast(10, HIGH);
+  //set pin state for pin PIN
+  digitalWriteFast(PIN, LOW);
+  digitalWriteFast(PIN, HIGH);
 
-  //get pin state of pin 10
-  pin = digitalReadFast(10);
+  //get pin state of pin PIN
+  pin = digitalReadFast(PIN);  // save a proper high/low value
+
+  // demonstrate optimization of tests
+  if (digitalReadFast(PIN) == HIGH) {
+    digitalWriteFast(PIN, LOW);
+  }
+  if (digitalReadFast(PIN) == LOW) {
+    digitalWriteFast(PIN, HIGH);
+  }
+
 }
 
 
