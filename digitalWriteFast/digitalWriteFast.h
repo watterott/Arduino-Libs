@@ -346,7 +346,7 @@ if (__builtin_constant_p(P) && __builtin_constant_p(V)) { \
 #define digitalReadFast(P) ( (int) __digitalReadFast((P)) )
 #define __digitalReadFast(P ) \
   (__builtin_constant_p(P) ) ? ( \
-  ( BIT_READ(*__digitalPinToPINReg(P), __digitalPinToBit(P))) ) : \
+  ( BIT_READ(*__digitalPinToPINReg(P), __digitalPinToBit(P))) ? HIGH:LOW ) : \
   digitalRead((P))
 #else
 #define digitalReadFast digitalRead
