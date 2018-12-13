@@ -61,7 +61,10 @@ void DisplayUART::begin(uint_least8_t rx_pin, uint_least8_t tx_pin, uint_least8_
   pin_cs = cs_pin;
 
   //init serial lib
-  SerialLCD = SoftwareSerial(rx_pin, tx_pin);
+  if((RX_PIN != rx_pin) || (TX_PIN != tx_pin))
+  {
+    SerialLCD = SoftwareSerial(rx_pin, tx_pin);
+  }
   SerialLCD.begin(BAUDRATE);
 
   //sync to display
