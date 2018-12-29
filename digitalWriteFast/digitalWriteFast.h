@@ -40,7 +40,10 @@
 
 
 // workarounds for ARM microcontrollers
-#if (!defined(__AVR__) || defined(ARDUINO_ARCH_SAM))
+#if (!defined(__AVR__) || \
+     defined(ARDUINO_ARCH_SAM) || \
+     defined(ARDUINO_ARCH_SAMD))
+
 #ifndef PROGMEM
 # define PROGMEM
 #endif
@@ -103,8 +106,9 @@
 #define SPI_SW_SCK_PIN  (13) //SCK on Uno (for software SPI)
 
 
-// --- Arduino Due ---
-#if (defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__))
+// --- Arduino Due and SAM3X8E based boards ---
+#if (defined(ARDUINO_SAM_DUE) || \
+     defined(__SAM3X8E__))
 
 #define UART_RX_PIN     (0)
 #define UART_TX_PIN     (1)
@@ -118,8 +122,9 @@
 #define SPI_HW_SCK_PIN  (76) //76
 
 
-// --- Arduino Zero ---
-#elif (defined(ARDUINO_SAM_ZERO) || defined(__SAMD21G18A__))
+// --- Arduino Zero and SAMD21G18 based boards ---
+#elif (defined(ARDUINO_SAMD_ZERO) || \
+       defined(__SAMD21G18A__))
 
 #define UART_RX_PIN     (0)
 #define UART_TX_PIN     (1)
@@ -133,7 +138,7 @@
 #define SPI_HW_SCK_PIN  (20) //20
 
 
-// --- Arduino Mega ---
+// --- Arduino Mega and ATmega128x/256x based boards ---
 #elif (defined(ARDUINO_AVR_MEGA) || \
        defined(ARDUINO_AVR_MEGA1280) || \
        defined(ARDUINO_AVR_MEGA2560) || \
@@ -232,7 +237,7 @@
 (((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 15) ? (P) - 8 : (((P) >= 16 && (P) <= 23) ? (P) - 16 : (P) - 24)))
 
 
-// --- Arduino Leonardo ---
+// --- Arduino Leonardo and ATmega16U4/32U4 based boards ---
 #elif (defined(ARDUINO_AVR_LEONARDO) || \
        defined(__AVR_ATmega16U4__) || \
        defined(__AVR_ATmega32U4__))
@@ -258,10 +263,12 @@
 (((P) >= 8 && (P) <= 11) ? (P) - 4 : (((P) >= 18 && (P) <= 21) ? 25 - (P) : (((P) == 0) ? 2 : (((P) == 1) ? 3 : (((P) == 2) ? 1 : (((P) == 3) ? 0 : (((P) == 4) ? 4 : (((P) == 6) ? 7 : (((P) == 13) ? 7 : (((P) == 14) ? 3 : (((P) == 15) ? 1 : (((P) == 16) ? 2 : (((P) == 17) ? 0 : (((P) == 22) ? 1 : (((P) == 23) ? 0 : (((P) == 24) ? 4 : (((P) == 25) ? 7 : (((P) == 26) ? 4 : (((P) == 27) ? 5 : 6 )))))))))))))))))))
 
 
-// --- Arduino Uno and similar boards based on ATmega168/328 ---
+// --- Arduino Uno and ATmega168/328 based boards ---
 #elif (defined(ARDUINO_AVR_UNO) || \
        defined(ARDUINO_AVR_DUEMILANOVE) || \
        defined(__AVR_ATmega168__) || \
+       defined(__AVR_ATmega168A__) || \
+       defined(__AVR_ATmega168PA__) || \
        defined(__AVR_ATmega328__) || \
        defined(__AVR_ATmega328P__) || \
        defined(__AVR_ATmega328PB__))
