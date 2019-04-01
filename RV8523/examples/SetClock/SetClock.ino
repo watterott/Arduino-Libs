@@ -93,7 +93,7 @@ void setClock()
 }
 
 
-// Parse the time string and set the clock accordingly
+// parse the time string and set the clock accordingly
 void parseCmd(char *cmd, int cmdsize)
 {
   uint8_t i;
@@ -104,12 +104,12 @@ void parseCmd(char *cmd, int cmdsize)
   if (cmd[0] == 84 && cmdsize == 15)
   {
     rtc.set(
-      inp2toi(cmd, 5),
-      inp2toi(cmd, 3),
-      inp2toi(cmd, 1),
-      inp2toi(cmd, 7),
-      inp2toi(cmd, 9),
-      inp2toi(cmd, 11) * 100 + inp2toi(cmd, 13)
+      (int)inp2toi(cmd, 5),
+      (int)inp2toi(cmd, 3),
+      (int)inp2toi(cmd, 1),
+      (int)inp2toi(cmd, 7),
+      (int)inp2toi(cmd, 9),
+      (int)inp2toi(cmd, 11) * 100 + inp2toi(cmd, 13)
     ); //sec, min, hour, day, month, year
     Serial.println("OK");
   }
