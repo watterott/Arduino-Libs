@@ -339,7 +339,12 @@ if (__builtin_constant_p(P) && __builtin_constant_p(V)) { \
 #if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 #define pinModeFast(P, V) \
 if (__builtin_constant_p(P) && __builtin_constant_p(V)) { \
-  BIT_WRITE(*__digitalPinToDDRReg(P), __digitalPinToBit(P), (V)); \
+  if (V == INPUT_PULLUP) {\
+    BIT_WRITE(*__digitalPinToDDRReg(P), __digitalPinToBit(P), (INPUT)); \
+    BIT_WRITE(*__digitalPinToPortReg(P), __digitalPinToBit(P), (HIGH)); \
+  } else { \
+    BIT_WRITE(*__digitalPinToDDRReg(P), __digitalPinToBit(P), (V)); \
+  } \
 } else { \
   pinMode((P), (V)); \
 }
@@ -360,5 +365,12 @@ if (__builtin_constant_p(P) && __builtin_constant_p(V)) { \
 #define digitalReadFast digitalRead
 #endif
 #endif
+
+#ifndef digitalToggleFast
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+#define digitalToggleFast(P) BIT_SET(*__digitalPinToPINReg(P), __digitalPinToBit(P))
+#endif
+#endif
+
 
 #endif //__digitalWriteFast_h_
