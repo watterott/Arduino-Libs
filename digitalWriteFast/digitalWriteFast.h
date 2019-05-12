@@ -366,6 +366,7 @@ if (__builtin_constant_p(P) && __builtin_constant_p(V)) { \
 #endif
 #endif
 
+
 #ifndef digitalToggleFast
 #if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 #define digitalToggleFast(P) BIT_SET(*__digitalPinToPINReg(P), __digitalPinToBit(P))
