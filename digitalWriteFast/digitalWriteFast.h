@@ -304,6 +304,23 @@
 (((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 13) ? (P) - 8 : (P) - 14))
 #endif
 
+// --- ATtinyX5 ---
+#elif defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
+// we have only PORTB
+#define __digitalPinToPortReg(P) (&PORTB)
+#define __digitalPinToDDRReg(P)  (&DDRB)
+#define __digitalPinToPINReg(P)  (&PINB)
+#define __digitalPinToBit(P) \
+(((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 13) ? (P) - 8 : (P) - 14))
+
+// --- ATtinyX4 + ATtinyX7 ---
+//  ATtinyX4: PORTA for 0 to 7, PORTB for 8 to 11
+//  ATtinyX7: PORTA for 0 to 7, PORTB for 8 to 15
+#elif  defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
+#define __digitalPinToPortReg(P) (((P) >= 0 && (P) <= 7) ? &PORTA : &PORTB)
+#define __digitalPinToDDRReg(P)  (((P) >= 0 && (P) <= 7) ? &DDRA : &DDRB)
+#define __digitalPinToPINReg(P)  (((P) >= 0 && (P) <= 7) ? &PINA : &PINB)
+#define __digitalPinToBit(P)     (((P) >= 0 && (P) <= 7) ? (P) : (P) - 8 )
 
 // --- Other ---
 #else
