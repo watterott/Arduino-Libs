@@ -1,5 +1,6 @@
 {
   "name": "S65LS020",
+  "version": "1.0.0",
   "keywords": "spi, graphics, display, lcd",
   "description": "S65 LS020 Display (SPI)",
   "include": "S65LS020",
