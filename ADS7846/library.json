@@ -1,5 +1,6 @@
 {
   "name": "ADS7846",
+  "version": "1.0.0",
   "keywords": "spi, touch",
   "description": "ADS7846/TSC2046 Touch-Controller",
   "include": "ADS7846",

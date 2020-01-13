@@ -1,5 +1,6 @@
 {
   "name": "TinyWire",
+  "version": "1.0.0",
   "keywords": "i2c, twowire",
   "description": "I2C library for ATtiny",
   "include": "TinyWire",

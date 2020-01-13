@@ -1,5 +1,6 @@
 {
   "name": "DisplaySPI",
+  "version": "1.0.0",
   "keywords": "spi, graphics, display, lcd",
   "description": "MI0283QT-Adapter v2 + GLCD-Shield (SPI)",
   "include": "DisplaySPI",

@@ -1,5 +1,6 @@
 {
   "name": "DisplayUART",
+  "version": "1.0.0",
   "keywords": "uart, graphics, display, lcd",
   "description": "MI0283QT-Adapter v2 + GLCD-Shield (UART)",
   "include": "DisplayUART",

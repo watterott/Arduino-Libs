@@ -1,5 +1,6 @@
 {
   "name": "DAC8760",
+  "version": "1.0.0",
   "keywords": "spi, dac, analog, output, converter, signal",
   "description": "DAC8760 DAC (Digital-Analog-Converter)",
   "include": "DAC8760",

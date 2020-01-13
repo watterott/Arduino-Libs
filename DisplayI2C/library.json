@@ -1,5 +1,6 @@
 {
   "name": "DisplayI2C",
+  "version": "1.0.0",
   "keywords": "i2c, graphics, display, lcd",
   "description": "MI0283QT-Adapter v2 + GLCD-Shield (I2C)",
   "include": "DisplayI2C",

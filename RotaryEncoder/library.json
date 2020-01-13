@@ -1,5 +1,6 @@
 {
   "name": "RotaryEncoder",
+  "version": "1.0.0",
   "keywords": "input, encoder, signal",
   "description": "Rotary Encoder",
   "include": "RotaryEncoder",

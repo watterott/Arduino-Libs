@@ -1,5 +1,6 @@
 {
   "name": "digitalWriteFast",
+  "version": "1.0.0",
   "keywords": "io, pin",
   "description": "Fast pin access for AVR microcontrollers",
   "include": "digitalWriteFast",

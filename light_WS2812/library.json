@@ -1,7 +1,8 @@
 {
   "name": "LightWS2812",
-  "keywords": "led, driver",
-  "description": "Light weight library to control WS2811/WS2812/WS2812B based LEDS and LED Strings",
+  "version": "2.4.0",
+  "keywords": "neopixel,ws2811,ws2812,apa102",
+  "description": "Light weight library to control WS2811/WS2812 based LEDS and LED Strings",
   "include": "light_WS2812",
   "repository":
   {

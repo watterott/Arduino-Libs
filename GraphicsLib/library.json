@@ -1,5 +1,6 @@
 {
   "name": "GraphicsLib",
+  "version": "1.0.0",
   "keywords": "graphics, display, lcd",
   "description": "General Grahipcs Library",
   "include": "GraphicsLib",

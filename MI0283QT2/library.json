@@ -1,5 +1,6 @@
 {
   "name": "MI0283QT2",
+  "version": "1.0.0",
   "keywords": "spi, graphics, display, lcd",
   "description": "MI0283QT-2 Display (HX8347D, SPI)",
   "include": "MI0283QT2",

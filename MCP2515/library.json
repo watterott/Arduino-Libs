@@ -1,5 +1,6 @@
 {
   "name": "MCP2515",
+  "version": "1.0.0",
   "keywords": "spi, can-bus, canbus",
   "description": "MCP2515 CAN-Bus-Controller",
   "include": "MCP2515",

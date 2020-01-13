@@ -1,5 +1,6 @@
 {
   "name": "RedFly",
+  "version": "1.0.0",
   "keywords": "wifi, wlan",
   "description": "RedFly-Shield (WiFi/WLAN)",
   "include": "RedFly",

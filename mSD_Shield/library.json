@@ -1,5 +1,6 @@
 {
   "name": "mSD_Shield",
+  "version": "1.0.0",
   "keywords": "microsd, rtc, display, logging",
   "description": "mSD-Shield (Display, microSD, RTC)",
   "include": "mSD_Shield",

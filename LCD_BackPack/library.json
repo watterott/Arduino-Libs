@@ -1,5 +1,6 @@
 {
   "name": "LCD_BackPack",
+  "version": "1.0.0",
   "keywords": "display, hd44780",
   "description": "LCD-BackPack (for HD44780 compatible displays)",
   "include": "LCD_BackPack",

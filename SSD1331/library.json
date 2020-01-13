@@ -1,5 +1,6 @@
 {
   "name": "SSD1331",
+  "version": "1.0.0",
   "keywords": "spi, display, graphics, oled",
   "description": "OLED-Display (SSD1331, SPI)",
   "include": "SSD1331",
