@@ -289,9 +289,15 @@
 // --- Arduino Uno and ATmega168/328 based boards ---
 #elif (defined(ARDUINO_AVR_UNO) || \
        defined(ARDUINO_AVR_DUEMILANOVE) || \
+       defined(__AVR_ATmega8__) || \
+       defined(__AVR_ATmega48__) || \
+       defined(__AVR_ATmega48P__) || \
+       defined(__AVR_ATmega48PB__) || \
+       defined(__AVR_ATmega88P__) || \
+       defined(__AVR_ATmega88PB__) || \
        defined(__AVR_ATmega168__) || \
-       defined(__AVR_ATmega168A__) || \
        defined(__AVR_ATmega168PA__) || \
+       defined(__AVR_ATmega168PB__) || \
        defined(__AVR_ATmega328__) || \
        defined(__AVR_ATmega328P__) || \
        defined(__AVR_ATmega328PB__))
@@ -307,7 +313,7 @@
 #define SPI_HW_MISO_PIN (12) //PB3
 #define SPI_HW_SCK_PIN  (13) //PB1
 
-#if defined(__AVR_ATmega328PB__)
+#if defined(__AVR_ATmega48PB__) || defined(__AVR_ATmega88PB__) || defined(__AVR_ATmega168PB__) || defined(__AVR_ATmega328PB__)
 #define __digitalPinToPortReg(P) \
 (((P) >= 0 && (P) <= 7) ? &PORTD : (((P) >= 8 && (P) <= 13) ? &PORTB : (((P) >= 14 && (P) <= 19) ? &PORTC : &PORTE)))
 #define __digitalPinToDDRReg(P) \
