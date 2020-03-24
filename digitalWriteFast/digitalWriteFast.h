@@ -212,9 +212,22 @@
 (((P) == 3 || (P) == 4) ? 5 : 7)))))))))))))))
 
 
-// --- Arduino 644 ---
-#elif (defined(__AVR_ATmega644__) || \
-       defined(__AVR_ATmega644P__))
+// --- Arduino MightyCore standard pinout ---
+#elif defined(__AVR_ATmega1284P__) || \
+      defined(__AVR_ATmega1284P__) || \
+      defined(__AVR_ATmega644P__)  || \
+      defined(__AVR_ATmega644__)   || \
+      defined(__AVR_ATmega324PB__) || \
+      defined(__AVR_ATmega324PA__) || \
+      defined(__AVR_ATmega324P__)  || \
+      defined(__AVR_ATmega324A__)  || \
+      defined(__AVR_ATmega164P__)  || \
+      defined(__AVR_ATmega164A__)  || \
+      defined(__AVR_ATmega32__)    || \
+      defined(__AVR_ATmega16__)    || \
+      defined(__AVR_ATmega8535__)  && \
+      !defined(BOBUINO_PINOUT)     && \
+      !defined(SANGUINO_PINOUT)
 
 #define UART_RX_PIN     (8) //PD0
 #define UART_TX_PIN     (9) //PD1
@@ -227,6 +240,16 @@
 #define SPI_HW_MISO_PIN (6) //PB6
 #define SPI_HW_SCK_PIN  (7) //PB7
 
+#if defined(__AVR_ATmega324PB__)
+#define __digitalPinToPortReg(P) \
+(((P) >= 0 && (P) <= 7) ? &PORTB : (((P) >= 8 && (P) <= 15) ? &PORTD : (((P) >= 16 && (P) <= 23) ? &PORTC : (((P) >= 24 && (P) <= 31) ? &PORTA : &PORTE))))
+#define __digitalPinToDDRReg(P) \
+(((P) >= 0 && (P) <= 7) ? &DDRB : (((P) >= 8 && (P) <= 15) ? &DDRD : (((P) >= 8 && (P) <= 15) ? &DDRC : (((P) >= 24 && (P) <= 31) ? &DDRA : &DDRE))))
+#define __digitalPinToPINReg(P) \
+(((P) >= 0 && (P) <= 7) ? &PINB : (((P) >= 8 && (P) <= 15) ? &PIND : (((P) >= 8 && (P) <= 15) ? &PINC : (((P) >= 24 && (P) <= 31) ? &PINA : &PINE))))
+#define __digitalPinToBit(P) \
+(((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 15) ? (P) - 8 : (((P) >= 16 && (P) <= 23) ? (P) - 16 : (((P) >= 16 && (P) <= 23) ? (P) - 24 : (P) - 32))))
+#else
 #define __digitalPinToPortReg(P) \
 (((P) >= 0 && (P) <= 7) ? &PORTB : (((P) >= 8 && (P) <= 15) ? &PORTD : (((P) >= 16 && (P) <= 23) ? &PORTC : &PORTA)))
 #define __digitalPinToDDRReg(P) \
@@ -235,7 +258,7 @@
 (((P) >= 0 && (P) <= 7) ? &PINB : (((P) >= 8 && (P) <= 15) ? &PIND : (((P) >= 8 && (P) <= 15) ? &PINC : &PINA)))
 #define __digitalPinToBit(P) \
 (((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 15) ? (P) - 8 : (((P) >= 16 && (P) <= 23) ? (P) - 16 : (P) - 24)))
-
+#endif
 
 // --- Arduino Leonardo and ATmega16U4/32U4 based boards ---
 #elif (defined(ARDUINO_AVR_LEONARDO) || \
@@ -266,9 +289,15 @@
 // --- Arduino Uno and ATmega168/328 based boards ---
 #elif (defined(ARDUINO_AVR_UNO) || \
        defined(ARDUINO_AVR_DUEMILANOVE) || \
+       defined(__AVR_ATmega8__) || \
+       defined(__AVR_ATmega48__) || \
+       defined(__AVR_ATmega48P__) || \
+       defined(__AVR_ATmega48PB__) || \
+       defined(__AVR_ATmega88P__) || \
+       defined(__AVR_ATmega88PB__) || \
        defined(__AVR_ATmega168__) || \
-       defined(__AVR_ATmega168A__) || \
        defined(__AVR_ATmega168PA__) || \
+       defined(__AVR_ATmega168PB__) || \
        defined(__AVR_ATmega328__) || \
        defined(__AVR_ATmega328P__) || \
        defined(__AVR_ATmega328PB__))
@@ -284,7 +313,7 @@
 #define SPI_HW_MISO_PIN (12) //PB3
 #define SPI_HW_SCK_PIN  (13) //PB1
 
-#if defined(__AVR_ATmega328PB__)
+#if defined(__AVR_ATmega48PB__) || defined(__AVR_ATmega88PB__) || defined(__AVR_ATmega168PB__) || defined(__AVR_ATmega328PB__)
 #define __digitalPinToPortReg(P) \
 (((P) >= 0 && (P) <= 7) ? &PORTD : (((P) >= 8 && (P) <= 13) ? &PORTB : (((P) >= 14 && (P) <= 19) ? &PORTC : &PORTE)))
 #define __digitalPinToDDRReg(P) \
