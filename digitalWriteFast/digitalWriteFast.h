@@ -334,6 +334,29 @@
 #endif
 
 
+#elif defined(__AVR_ATmega4809__) // Uno WiFi Rev 2, Nano Every
+
+#define UART_RX_PIN     (0) //PB0
+#define UART_TX_PIN     (1) //PB1
+
+#define I2C_SDA_PIN     (22) //PA2
+#define I2C_SCL_PIN     (23) //PA3
+
+#define SPI_HW_SS_PIN   (8)  //PE3
+#define SPI_HW_MOSI_PIN (11) //PE0
+#define SPI_HW_MISO_PIN (12) //PE1
+#define SPI_HW_SCK_PIN  (13) //PE2
+
+#define __digitalPinToPortReg(P) \
+(((P) == 2 || (P) == 7 ) ? &VPORTA.OUT : ((P) == 5 || (P) == 9 || (P) == 10) ? &VPORTB.OUT : ((P) == 4) ? &VPORTC.OUT : (((P) >= 14 && (P) <= 17) || (P) == 20 || (P) == 21) ? &VPORTD.OUT : ((P) == 8 || (P) == 11 || (P) == 12 || (P) == 13) ? &VPORTE.OUT : &VPORTF.OUT)
+#define __digitalPinToDDRReg(P) \
+(((P) == 2 || (P) == 7 ) ? &VPORTA.DIR : ((P) == 5 || (P) == 9 || (P) == 10) ? &VPORTB.DIR : ((P) == 4) ? &VPORTC.DIR : (((P) >= 14 && (P) <= 17) || (P) == 20 || (P) == 21) ? &VPORTD.DIR : ((P) == 8 || (P) == 11 || (P) == 12 || (P) == 13) ? &VPORTE.DIR : &VPORTF.DIR)
+#define __digitalPinToPINReg(P) \
+(((P) == 2 || (P) == 7 ) ? &VPORTA.IN : ((P) == 5 || (P) == 9 || (P) == 10) ? &VPORTB.IN : ((P) == 4) ? &VPORTC.IN : (((P) >= 14 && (P) <= 17) || (P) == 20 || (P) == 21) ? &VPORTD.IN : ((P) == 8 || (P) == 11 || (P) == 12 || (P) == 13) ? &VPORTE.IN : &VPORTF.IN)
+#define __digitalPinToBit(P) \
+(((P) == 2 || (P) == 9 || (P) == 11 || (P) == 17) ? 0 : ((P) == 7 || (P) == 10 || (P) == 12 || (P) == 16) ? 1 : ((P) == 5 || (P) == 13 || (P) == 15 || (P) == 18) ? 2 : ((P) == 9 || (P) == 14 || (P) == 19) ? 3 : ((P) == 6 || (P) == 20) ? 4 : ((P) == 3 || (P) == 21) ? 5 :  6 )
+
+
 // --- ATtinyX5 ---
 #elif defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
 // we have only PORTB
@@ -348,18 +371,18 @@
 #elif  defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
 #  if defined(ARDUINO_AVR_DIGISPARKPRO)
 /// Strange enumeration of pins on Digispark board and core library
-#define __digitalPinToPortReg(P) (((P) >= 0 && (P) <= 4) ? &PORTB : &PORTA)
-#define __digitalPinToDDRReg(P)  (((P) >= 0 && (P) <= 4) ? &DDRB : &DDRA)
-#define __digitalPinToPINReg(P)  (((P) >= 0 && (P) <= 4) ? &PINB : &PINA)
-#define __digitalPinToBit(P)     (((P) >= 0 && (P) <= 2) ? (P) : (((P) == 3) ? 6 : (((P) == 4) ? 3 : (((P) == 5) ? 7 : (P) - 6 ))))
+#define __digitalPinToPortReg(P) (((P) <= 4) ? &PORTB : &PORTA)
+#define __digitalPinToDDRReg(P)  (((P) <= 4) ? &DDRB : &DDRA)
+#define __digitalPinToPINReg(P)  (((P) <= 4) ? &PINB : &PINA)
+#define __digitalPinToBit(P)     (((P) <= 2) ? (P) : (((P) == 3) ? 6 : (((P) == 4) ? 3 : (((P) == 5) ? 7 : (P) - 6 ))))
 
 #  else
 //  ATtinyX4: PORTA for 0 to 7, PORTB for 8 to 11
 //  ATtinyX7: PORTA for 0 to 7, PORTB for 8 to 15
-#define __digitalPinToPortReg(P) (((P) >= 0 && (P) <= 7) ? &PORTA : &PORTB)
-#define __digitalPinToDDRReg(P)  (((P) >= 0 && (P) <= 7) ? &DDRA : &DDRB)
-#define __digitalPinToPINReg(P)  (((P) >= 0 && (P) <= 7) ? &PINA : &PINB)
-#define __digitalPinToBit(P)     (((P) >= 0 && (P) <= 7) ? (P) : (P) - 8 )
+#define __digitalPinToPortReg(P) (((P) <= 7) ? &PORTA : &PORTB)
+#define __digitalPinToDDRReg(P)  (((P) <= 7) ? &DDRA : &DDRB)
+#define __digitalPinToPINReg(P)  (((P) <= 7) ? &PINA : &PINB)
+#define __digitalPinToBit(P)     (((P) <= 7) ? (P) : (P) - 8 )
 #  endif
 
 
@@ -416,8 +439,8 @@ if (__builtin_constant_p(P) && __builtin_constant_p(V)) { \
 #if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 #define digitalReadFast(P) ( (int) __digitalReadFast((P)) )
 #define __digitalReadFast(P ) \
-  (__builtin_constant_p(P) ) ? ( \
-  ( BIT_READ(*__digitalPinToPINReg(P), __digitalPinToBit(P))) ? HIGH:LOW ) : \
+  (__builtin_constant_p(P) ) ? \
+  (( BIT_READ(*__digitalPinToPINReg(P), __digitalPinToBit(P))) ? HIGH:LOW ) : \
   digitalRead((P))
 #else
 #define digitalReadFast digitalRead
@@ -427,9 +450,15 @@ if (__builtin_constant_p(P) && __builtin_constant_p(V)) { \
 
 #ifndef digitalToggleFast
 #if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
-#define digitalToggleFast(P) BIT_SET(*__digitalPinToPINReg(P), __digitalPinToBit(P))
+#define digitalToggleFast(P) \
+if (__builtin_constant_p(P)) { \
+  BIT_SET(*__digitalPinToPINReg(P), __digitalPinToBit(P)); \
+} else { \
+  digitalWrite(P, ! digitalRead(P)); \
+}
+#else
+#define digitalToggleFast(P) digitalWrite(P, ! digitalRead(P))
 #endif
 #endif
-
 
 #endif //__digitalWriteFast_h_
