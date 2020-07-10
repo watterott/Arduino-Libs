@@ -367,6 +367,14 @@
 (((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 13) ? (P) - 8 : (P) - 14))
 
 
+// --- ATtiny88 ---
+#elif defined(__AVR_ATtiny88__)
+#define __digitalPinToPortReg(P) (((P) >= 0 && (P) <= 7) ? &PORTD : ((P) <= 14 ? &PORTB : ((P) <= 18 ? &PORTA : &PORTC)))
+#define __digitalPinToDDRReg(P)  (((P) >= 0 && (P) <= 7) ? &DDRD : ((P) <= 14 ? &DDRB : ((P) <= 18 ? &DDRA : &DDRC)))
+#define __digitalPinToPINReg(P)  (((P) >= 0 && (P) <= 7) ? &PIND : ((P) <= 14 ? &PINB : ((P) <= 18 ? &PINA : &PINC)))
+#define __digitalPinToBit(P) ( ((P) <= 7) ? (P) : (((P) <= 13) ? ((P) - 8) : (((P) == 14) ? 7 : (((P) <= 16) ? ((P) - 14) : (((P) <= 18) ? ((P) - 17) : (((P) == 25) ? 7 : ((P) - 19)))))) )
+
+
 // --- ATtinyX4 + ATtinyX7 ---
 #elif  defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
 #  if defined(ARDUINO_AVR_DIGISPARKPRO)
