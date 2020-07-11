@@ -375,9 +375,9 @@
 #define __digitalPinToPINReg(P)  (((P) <= 7) ? &PIND : ((P) <= 14 ? &PINB : ((P) <= 18 ? &PINA : &PINC)))
 #define __digitalPinToBit(P) ( ((P) <= 7) ? (P) : (((P) <= 13) ? ((P) - 8) : (((P) == 14) ? 7 : (((P) <= 16) ? ((P) - 14) : (((P) <= 18) ? ((P) - 17) : (((P) == 25) ? 7 : ((P) - 19)))))) )
 #  else
-#define __digitalPinToPortReg(P) (((P) <= 7) ?(&PORTD : (((P) <= 15) ? &PORTB : (((P) <= 22) ? &PORTC : (((P) <= 26) ?(&PORTA : &PORTC))))
-#define __digitalPinToPortReg(P) (((P) <= 7) ?(&DDRD : (((P) <= 15) ? &DDRB : (((P) <= 22) ? &DDRC : (((P) <= 26) ?(&DDRA : &DDRC))))
-#define __digitalPinToPortReg(P) (((P) <= 7) ?(&PIND : (((P) <= 15) ? &PINB : (((P) <= 22) ? &PINC : (((P) <= 26) ?(&PINA : &PINC))))
+#define __digitalPinToPortReg(P) (((P) <= 7) ? (&PORTD : (((P) <= 15) ? &PORTB : (((P) <= 22) ? &PORTC : (((P) <= 26) ? &PORTA : &PORTC)))
+#define __digitalPinToDDRReg(P) (((P) <= 7) ? (&DDRD : (((P) <= 15) ? &DDRB : (((P) <= 22) ? &DDRC : (((P) <= 26) ? &DDRA : &DDRC)))
+#define __digitalPinToPINReg(P) (((P) <= 7) ? (&PIND : (((P) <= 15) ? &PINB : (((P) <= 22) ? &PINC : (((P) <= 26) ? &PINA : &PINC)))
 #define __digitalPinToBit(P) (((P) <= 15) ? ((P) & 0x7) : (((P) == 16) ? (7) : (((P) <= 22) ? ((P) - 17) : (P) == 27) ? (6) : ((P) - 23))))
 #  endif
 
