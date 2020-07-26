@@ -260,6 +260,7 @@
 (((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 15) ? (P) - 8 : (((P) >= 16 && (P) <= 23) ? (P) - 16 : (P) - 24)))
 #endif
 
+
 // --- Arduino Leonardo and ATmega16U4/32U4 based boards ---
 #elif (defined(ARDUINO_AVR_LEONARDO) || \
        defined(__AVR_ATmega16U4__) || \
@@ -334,7 +335,8 @@
 #endif
 
 
-#elif defined(__AVR_ATmega4809__) // Uno WiFi Rev 2, Nano Every
+// --- Arduino Uno WiFi Rev 2, Nano Every ---
+#elif defined(__AVR_ATmega4809__)
 
 #define UART_RX_PIN     (0) //PB0
 #define UART_TX_PIN     (1) //PB1
@@ -368,35 +370,35 @@
 
 // --- ATtiny88 ---
 #elif defined(__AVR_ATtiny88__)
-#  if defined(ARDUINO_AVR_DIGISPARKPRO)
+# if defined(ARDUINO_AVR_DIGISPARKPRO)
 #define __digitalPinToPortReg(P) ((P) <= 7 ? &PORTD : ((P) <= 14 ? &PORTB : ((P) <= 18 ? &PORTA : &PORTC)))
 #define __digitalPinToDDRReg(P)  ((P) <= 7 ? &DDRD : ((P) <= 14 ? &DDRB : ((P) <= 18 ? &DDRA : &DDRC)))
 #define __digitalPinToPINReg(P)  ((P) <= 7 ? &PIND : ((P) <= 14 ? &PINB : ((P) <= 18 ? &PINA : &PINC)))
 #define __digitalPinToBit(P) ( (P) <= 7 ? (P) : ((P) <= 13 ? ((P) - 8) : ((P) == 14 ? 7 : ((P) <= 16 ? ((P) - 14) : ((P) <= 18 ? ((P) - 17) : ((P) == 25 ? 7 : ((P) - 19)))))) )
-#  else
+# else
 #define __digitalPinToPortReg(P) ((P) <= 7 ? &PORTD : ((P) <= 15 ? &PORTB : ((P) <= 22 ? &PORTC : ((P) <= 26 ? &PORTA : &PORTC))))
 #define __digitalPinToDDRReg(P) ((P) <= 7 ? &DDRD : ((P) <= 15 ? &DDRB : ((P) <= 22 ? &DDRC : ((P) <= 26 ? &DDRA : &DDRC))))
 #define __digitalPinToPINReg(P) ((P) <= 7 ? &PIND : ((P) <= 15 ? &PINB : ((P) <= 22 ? &PINC : ((P) <= 26 ? &PINA : &PINC))))
 #define __digitalPinToBit(P) ((P) <= 15 ? ((P) & 0x7) : ((P) == 16 ? (7) : ((P) <= 22 ? ((P) - 17) : ((P) == 27 ? (6) : ((P) - 23)))))
-#  endif
+# endif
+
 
 // --- ATtinyX4 + ATtinyX7 ---
 #elif  defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
-#  if defined(ARDUINO_AVR_DIGISPARKPRO)
-/// Strange enumeration of pins on Digispark board and core library
+# if defined(ARDUINO_AVR_DIGISPARKPRO)
+// Strange enumeration of pins on Digispark board and core library
 #define __digitalPinToPortReg(P) (((P) <= 4) ? &PORTB : &PORTA)
 #define __digitalPinToDDRReg(P)  (((P) <= 4) ? &DDRB : &DDRA)
 #define __digitalPinToPINReg(P)  (((P) <= 4) ? &PINB : &PINA)
 #define __digitalPinToBit(P)     (((P) <= 2) ? (P) : (((P) == 3) ? 6 : (((P) == 4) ? 3 : (((P) == 5) ? 7 : (P) - 6 ))))
-
-#  else
-//  ATtinyX4: PORTA for 0 to 7, PORTB for 8 to 11
-//  ATtinyX7: PORTA for 0 to 7, PORTB for 8 to 15
+# else
+// ATtinyX4: PORTA for 0 to 7, PORTB for 8 to 11
+// ATtinyX7: PORTA for 0 to 7, PORTB for 8 to 15
 #define __digitalPinToPortReg(P) (((P) <= 7) ? &PORTA : &PORTB)
 #define __digitalPinToDDRReg(P)  (((P) <= 7) ? &DDRA : &DDRB)
 #define __digitalPinToPINReg(P)  (((P) <= 7) ? &PINA : &PINB)
 #define __digitalPinToBit(P)     (((P) <= 7) ? (P) : (P) - 8 )
-#  endif
+# endif
 
 
 // --- Other ---
@@ -473,5 +475,6 @@ if (__builtin_constant_p(P)) { \
 #define digitalToggleFast(P) digitalWrite(P, ! digitalRead(P))
 #endif
 #endif
+
 
 #endif //__digitalWriteFast_h_

@@ -7,7 +7,9 @@
 
 #include <digitalWriteFast.h>
 
+
 #define PIN 10
+
 
 void setup()
 {
@@ -22,16 +24,17 @@ void setup()
   digitalWriteFast(PIN, HIGH);
 
   //get pin state of pin PIN
-  pin = digitalReadFast(PIN);  // save a proper high/low value
+  pin = digitalReadFast(PIN); //save a proper high/low value
 
-  // demonstrate optimization of tests
-  if (digitalReadFast(PIN) == HIGH) {
+  //demonstrate optimization of tests
+  if(digitalReadFast(PIN) == HIGH)
+  {
     digitalWriteFast(PIN, LOW);
   }
-  if (digitalReadFast(PIN) == LOW) {
+  if(digitalReadFast(PIN) == LOW)
+  {
     digitalWriteFast(PIN, HIGH);
   }
-
 }
 
 
