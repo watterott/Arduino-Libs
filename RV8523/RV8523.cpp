@@ -24,13 +24,17 @@
 
 RV8523::RV8523(void)
 {
-  Wire.begin();
-
   return;
 }
 
 
 //-------------------- Public --------------------
+
+
+void RV8523::begin(void)
+{
+  Wire.begin(); //init I2C lib
+}
 
 
 void RV8523::start(void)

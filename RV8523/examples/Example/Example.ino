@@ -23,6 +23,7 @@ void setup()
 
   //init RTC
   Serial.println("Init RTC...");
+  rtc.begin();
 
   //set 12 hour mode
   // rtc.set12HourMode();

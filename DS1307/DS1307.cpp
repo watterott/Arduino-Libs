@@ -24,13 +24,17 @@
 
 DS1307::DS1307(void)
 {
-  Wire.begin();
-
   return;
 }
 
 
 //-------------------- Public --------------------
+
+
+void DS1307::begin(void)
+{
+  Wire.begin(); //init I2C lib
+}
 
 
 void DS1307::start(void)

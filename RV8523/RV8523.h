@@ -10,6 +10,7 @@ class RV8523
   public:
     RV8523();
 
+    void begin(void);
     void start(void);
     void stop(void);
     void get(uint8_t *sec, uint8_t *min, uint8_t *hour, uint8_t *day, uint8_t *month, uint16_t *year);
