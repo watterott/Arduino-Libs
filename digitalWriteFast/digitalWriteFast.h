@@ -7,6 +7,8 @@
 #ifndef __digitalWriteFast_h_
 #define __digitalWriteFast_h_ 1
 
+//#define SANGUINO_PINOUT //define for Sanguino pinout
+
 // general macros/defines
 #ifndef BIT_READ
 # define BIT_READ(value, bit)            ((value) &   (1UL << (bit)))
@@ -22,7 +24,7 @@
 #endif
 
 #ifndef SWAP
-#define SWAP(x,y) do{ (x)=(x)^(y); (y)=(x)^(y); (x)=(x)^(y); }while(0)
+# define SWAP(x,y) do{ (x)=(x)^(y); (y)=(x)^(y); (x)=(x)^(y); }while(0)
 #endif
 
 #ifndef DEC
@@ -213,21 +215,21 @@
 
 
 // --- Arduino MightyCore standard pinout ---
-#elif defined(__AVR_ATmega1284P__) || \
-      defined(__AVR_ATmega1284P__) || \
-      defined(__AVR_ATmega644P__)  || \
-      defined(__AVR_ATmega644__)   || \
-      defined(__AVR_ATmega324PB__) || \
-      defined(__AVR_ATmega324PA__) || \
-      defined(__AVR_ATmega324P__)  || \
-      defined(__AVR_ATmega324A__)  || \
-      defined(__AVR_ATmega164P__)  || \
-      defined(__AVR_ATmega164A__)  || \
-      defined(__AVR_ATmega32__)    || \
-      defined(__AVR_ATmega16__)    || \
-      defined(__AVR_ATmega8535__)  && \
-      !defined(BOBUINO_PINOUT)     && \
-      !defined(SANGUINO_PINOUT)
+#elif (defined(__AVR_ATmega1284P__) || \
+       defined(__AVR_ATmega1284__)  || \
+       defined(__AVR_ATmega644P__)  || \
+       defined(__AVR_ATmega644A__)  || \
+       defined(__AVR_ATmega644__)   || \
+       defined(__AVR_ATmega324PB__) || \
+       defined(__AVR_ATmega324PA__) || \
+       defined(__AVR_ATmega324P__)  || \
+       defined(__AVR_ATmega324A__)  || \
+       defined(__AVR_ATmega164P__)  || \
+       defined(__AVR_ATmega164A__)  || \
+       defined(__AVR_ATmega32__)    || \
+       defined(__AVR_ATmega16__)    || \
+       defined(__AVR_ATmega8535__))  && \
+      !defined(BOBUINO_PINOUT)
 
 #define UART_RX_PIN     (8) //PD0
 #define UART_TX_PIN     (9) //PD1
@@ -247,8 +249,13 @@
 (((P) >= 0 && (P) <= 7) ? &DDRB : (((P) >= 8 && (P) <= 15) ? &DDRD : (((P) >= 8 && (P) <= 15) ? &DDRC : (((P) >= 24 && (P) <= 31) ? &DDRA : &DDRE))))
 #define __digitalPinToPINReg(P) \
 (((P) >= 0 && (P) <= 7) ? &PINB : (((P) >= 8 && (P) <= 15) ? &PIND : (((P) >= 8 && (P) <= 15) ? &PINC : (((P) >= 24 && (P) <= 31) ? &PINA : &PINE))))
+# if defined(SANGUINO_PINOUT)
+#define __digitalPinToBit(P) \
+(((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 15) ? (P) - 8 : (((P) >= 16 && (P) <= 23) ? (P) - 16 : (((P) >= 16 && (P) <= 23) ? (7 - ((P) - 24)) : (P) - 32))))
+# else //MightyCore Pinout
 #define __digitalPinToBit(P) \
 (((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 15) ? (P) - 8 : (((P) >= 16 && (P) <= 23) ? (P) - 16 : (((P) >= 16 && (P) <= 23) ? (P) - 24 : (P) - 32))))
+# endif
 #else
 #define __digitalPinToPortReg(P) \
 (((P) >= 0 && (P) <= 7) ? &PORTB : (((P) >= 8 && (P) <= 15) ? &PORTD : (((P) >= 16 && (P) <= 23) ? &PORTC : &PORTA)))
@@ -256,8 +263,13 @@
 (((P) >= 0 && (P) <= 7) ? &DDRB : (((P) >= 8 && (P) <= 15) ? &DDRD : (((P) >= 8 && (P) <= 15) ? &DDRC : &DDRA)))
 #define __digitalPinToPINReg(P) \
 (((P) >= 0 && (P) <= 7) ? &PINB : (((P) >= 8 && (P) <= 15) ? &PIND : (((P) >= 8 && (P) <= 15) ? &PINC : &PINA)))
+# if defined(SANGUINO_PINOUT)
+#define __digitalPinToBit(P) \
+(((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 15) ? (P) - 8 : (((P) >= 16 && (P) <= 23) ? (P) - 16 : (7 - ((P) - 24)))))
+# else //MightyCore Pinout
 #define __digitalPinToBit(P) \
 (((P) >= 0 && (P) <= 7) ? (P) : (((P) >= 8 && (P) <= 15) ? (P) - 8 : (((P) >= 16 && (P) <= 23) ? (P) - 16 : (P) - 24)))
+# endif
 #endif
 
 
