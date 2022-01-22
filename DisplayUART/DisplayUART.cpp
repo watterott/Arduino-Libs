@@ -7,6 +7,8 @@
 #if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 # include <avr/io.h>
 # include <avr/pgmspace.h>
+#elif defined(ESP8266) || defined(ESP32)
+# include <pgmspace.h>
 #endif
 #if ARDUINO >= 100
 # include "Arduino.h"

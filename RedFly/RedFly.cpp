@@ -11,6 +11,9 @@
 #else
 # include <chip.h>
 # include <itoa.h>
+# if defined(ESP8266) || defined(ESP32)
+#  include <pgmspace.h>
+# endif
 #endif
 #if ARDUINO >= 100
 # include "Arduino.h"
